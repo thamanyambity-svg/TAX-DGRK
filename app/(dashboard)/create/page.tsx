@@ -134,7 +134,7 @@ export default function NewDeclarationPage() {
                         <div className="col-span-2 md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Type de Contribuable</label>
                             <select
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.taxpayerType}
                                 onChange={(e) => setFormData({ ...formData, taxpayerType: e.target.value as TaxpayerType })}
                             >
@@ -147,7 +147,7 @@ export default function NewDeclarationPage() {
                             <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
                             <input
                                 type="text"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.city}
                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                             />
@@ -162,7 +162,7 @@ export default function NewDeclarationPage() {
                                 type="text"
                                 required
                                 placeholder="Ex: A1234567K"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase tracking-wide font-mono bg-yellow-50/50 border-yellow-200"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase tracking-wide font-mono bg-yellow-50/50 border-yellow-200 text-gray-900"
                                 value={formData.nif}
                                 onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
                             />
@@ -175,7 +175,7 @@ export default function NewDeclarationPage() {
                                 type="text"
                                 required
                                 placeholder="Ex: Josuah Kitona"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             />
@@ -187,7 +187,7 @@ export default function NewDeclarationPage() {
                                 type="text"
                                 required
                                 placeholder="Ex: 12 Av. de la Libération, Gombe"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.address}
                                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                             />
@@ -205,7 +205,7 @@ export default function NewDeclarationPage() {
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
                             <select
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.category}
                                 onChange={(e) => setFormData({ ...formData, category: e.target.value as VehicleCategory })}
                             >
@@ -221,7 +221,7 @@ export default function NewDeclarationPage() {
                             <input
                                 type="text"
                                 placeholder="Ex: TOYOTA"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase text-gray-900"
                                 value={formData.marque}
                                 onChange={(e) => setFormData({ ...formData, marque: e.target.value })}
                             />
@@ -231,7 +231,7 @@ export default function NewDeclarationPage() {
                             <input
                                 type="text"
                                 placeholder="Ex: PRADO"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase text-gray-900"
                                 value={formData.modele}
                                 onChange={(e) => setFormData({ ...formData, modele: e.target.value })}
                             />
@@ -243,7 +243,7 @@ export default function NewDeclarationPage() {
                                 type="text"
                                 required
                                 placeholder="Ex: 1234AB01"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase font-mono"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase font-mono text-gray-900"
                                 value={formData.plate}
                                 onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
                             />
@@ -255,7 +255,7 @@ export default function NewDeclarationPage() {
                                 type="text"
                                 required
                                 placeholder="Ex: JNX..."
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase font-mono"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase font-mono text-gray-900"
                                 value={formData.chassis}
                                 onChange={(e) => setFormData({ ...formData, chassis: e.target.value })}
                             />
@@ -266,7 +266,7 @@ export default function NewDeclarationPage() {
                             <input
                                 type="text"
                                 placeholder="Ex: 11 CV"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.fiscalPower}
                                 onChange={(e) => setFormData({ ...formData, fiscalPower: e.target.value })}
                             />
@@ -277,7 +277,7 @@ export default function NewDeclarationPage() {
                             <input
                                 type="text"
                                 placeholder="Ex: 1.5 tonnes"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.weight}
                                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                             />

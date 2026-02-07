@@ -144,13 +144,13 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2 text-gray-400">
                             <Clock className="h-4 w-4" />
-                            <span>Date d'échéance:</span>
+                            <span>Date de création:</span>
                         </div>
-                        <span className="font-medium text-gray-900">
+                        <span className="text-gray-900 font-medium">
                             {(() => {
-                                const d = new Date(note.generatedAt);
-                                d.setFullYear(2027);
-                                return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                                // ALIGN WITH REAL DATE (Users Timezone)
+                                const d = new Date();
+                                return `${d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
                             })()}
                         </span>
                     </div>
@@ -158,31 +158,14 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2 text-gray-400">
                             <Clock className="h-4 w-4" />
-                            <span>Date de création:</span>
+                            <span>Date d'échéance:</span>
                         </div>
-                        <span className="text-gray-900 font-medium">
+                        <span className="font-medium text-gray-900">
                             {(() => {
-                                const d = new Date(note.generatedAt);
-                                d.setFullYear(2026);
-
-                                // Logic to force time between 08:30 and 17:00
-                                let h = d.getHours();
-                                let m = d.getMinutes();
-
-                                // If too early (before 8), shift to 8-10 range
-                                if (h < 8) h = 8 + (h % 3);
-                                // If too late (after 17), shift to 14-16 range
-                                if (h > 17) h = 14 + (h % 3);
-
-                                // Refine 08:xx to be at least 08:30
-                                if (h === 8 && m < 30) m = 30 + (m % 30);
-
-                                // Cap exactly at 17:00
-                                if (h === 17) m = 0;
-
-                                d.setHours(h, m);
-
-                                return `${d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+                                // Expiry = Real Date + 1 Year
+                                const d = new Date();
+                                d.setFullYear(d.getFullYear() + 1);
+                                return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
                             })()}
                         </span>
                     </div>

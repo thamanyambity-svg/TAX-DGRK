@@ -199,7 +199,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="taxpayerType"
                                     value={formData.taxpayerType}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 outline-none"
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 outline-none text-gray-900"
                                 >
                                     <option value="Personne Physique">Personne Physique</option>
                                     <option value="Personne Morale">Personne Morale (Société)</option>
@@ -211,7 +211,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="status"
                                     value={formData.status}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 outline-none font-bold"
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 outline-none font-bold text-gray-900"
                                 >
                                     <option value="Payée">Payée (Validé)</option>
                                     <option value="En attente">En attente</option>
@@ -225,7 +225,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 uppercase"
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 uppercase text-gray-900"
                                     required
                                 />
                             </div>
@@ -236,7 +236,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="nif"
                                     value={formData.nif}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg"
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
                                 />
                             </div>
                             <div className="md:col-span-2">
@@ -246,7 +246,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="address"
                                     value={formData.address}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg"
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
                                 />
                             </div>
                         </div>
@@ -263,7 +263,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="plate"
                                     value={formData.plate}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg font-mono uppercase bg-yellow-50"
+                                    className="w-full p-2 border border-gray-300 rounded-lg font-mono uppercase bg-yellow-50 text-gray-900"
                                     required
                                 />
                             </div>
@@ -274,7 +274,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="chassis"
                                     value={formData.chassis}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg font-mono uppercase"
+                                    className="w-full p-2 border border-gray-300 rounded-lg font-mono uppercase text-gray-900"
                                     required
                                 />
                             </div>
@@ -285,7 +285,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="marque"
                                     value={formData.marque}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg uppercase"
+                                    className="w-full p-2 border border-gray-300 rounded-lg uppercase text-gray-900"
                                     placeholder="ex: TOYOTA"
                                 />
                             </div>
@@ -296,7 +296,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="modele"
                                     value={formData.modele}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg uppercase"
+                                    className="w-full p-2 border border-gray-300 rounded-lg uppercase text-gray-900"
                                     placeholder="ex: HILUX"
                                 />
                             </div>
@@ -307,7 +307,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="fiscalPower"
                                     value={formData.fiscalPower}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg"
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
                                     placeholder="ex: 15 CV"
                                     required
                                 />
@@ -318,7 +318,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     name="category"
                                     value={formData.category}
                                     onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg"
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
                                 >
                                     <option value="Vignette Automobile">Vignette Automobile</option>
                                     <option value="Véhicule utilitaire">Véhicule utilitaire / Poids Lourds</option>
