@@ -125,11 +125,15 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Zone d'impression - ID root pour CSS */}
-            <div id="printable-root" className="mx-auto max-w-[210mm]">
+            <div
+                id="printable-root"
+                className="mx-auto"
+                style={{ width: '210mm', minHeight: '297mm', position: 'relative' }}
+            >
                 <div
                     id="printable-bordereau"
                     ref={componentRef}
-                    className="relative max-w-[210mm] mx-auto bg-white shadow-xl px-[30px] py-[20px] text-[10pt] leading-[1.15] box-border"
+                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] leading-[1.15] box-border"
                     style={{
                         width: '210mm',
                         minHeight: '297mm',

@@ -391,12 +391,21 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
             {/* Receipt Container - STRICT A4 FORMAT */}
 
             {/* WRAPPER pour print.css: ID = printable-root */}
-            <div id="printable-root" className="mx-auto w-[210mm]"> {/* Correction ici */}
+            <div
+                id="printable-root"
+                className="mx-auto bg-white relative overflow-hidden"
+                style={{ width: '210mm', minHeight: '297mm' }}
+            >
                 <div
                     id="printable-receipt" // L'ID cible du CSS
                     ref={receiptRef}
-                    className="bg-white shadow-xl print:shadow-none w-[210mm] h-[297mm] p-[10mm] relative flex flex-col justify-between box-border overflow-hidden mx-auto print:mx-auto"
-                    style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+                    className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border overflow-hidden"
+                    style={{
+                        width: '210mm',
+                        height: '297mm',
+                        WebkitPrintColorAdjust: 'exact',
+                        printColorAdjust: 'exact'
+                    }}
                 >
 
                     {/* 1. TOP COPY (BANQUE) - Grows to fill available space */}
