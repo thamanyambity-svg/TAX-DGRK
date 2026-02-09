@@ -65,24 +65,14 @@ export function generateDeclaration(sequence: number): Declaration {
     const plate = `${1000 + sequence}BA${sequence % 10}${Math.floor(sequence / 10) % 10}`;
     const chassis = `JNX${sequence}00${2026 + sequence}XYZ`; // Pseudo-VIN
 
-    // Tax calculation logic (Mock)
-    // "REAJUSTE LE TAUX DECHANGE SUR BASE DE CECI POUR LES VEHICULE ENTRE 1 ET 11CV Taux du Document (Officiel Vignette) 2 355 FC 64,50 $"
-    const EXCHANGE_RATE = 2355;
-    let baseRate = 50 + (CATEGORIES.indexOf(category) * 15.5);
+    // Tax calculation logic (Updated sync with tax-rules.ts)
+    const { calculateTax } = require('./tax-rules');
+    const cvValue = 10 + (sequence % 20); // Generator range
+    const taxInfo = calculateTax(cvValue, category);
 
-    // Apply specific rule for generated data if we can infer CV
-    // In this generator, CV is `${10 + (sequence % 20)} CV`
-    const cvValue = 10 + (sequence % 20);
-    if (cvValue >= 1 && cvValue <= 11) {
-        baseRate = 64.50;
-    }
-
-    let totalAmount = baseRate * EXCHANGE_RATE;
-
-    // User request: "cette somme en dollard doit faire FC 151,910"
-    if (baseRate === 64.50) {
-        totalAmount = 151910;
-    }
+    const baseRate = taxInfo.totalAmount;
+    const EXCHANGE_RATE = 2271.1668;
+    const totalAmount = baseRate * EXCHANGE_RATE;
 
     const declaration: Declaration = {
         id,

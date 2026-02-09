@@ -109,16 +109,27 @@ export const getDeclarationById = async (id: string): Promise<Declaration | unde
             return undefined;
         }
 
-        // Normalize data to match Declaration interface
-        const declaration = {
-            ...data,
-            createdAt: data.created_at || data.createdAt,
-            updatedAt: data.updated_at || data.updatedAt,
-            // Rehydrate
-            taxpayer: data.taxpayer || (data.meta && data.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'Personne Physique' }
-        } as Declaration;
+        // NORMAL RECOVERY
+        if (data) {
+            return {
+                ...data,
+                createdAt: data.created_at || data.createdAt,
+                updatedAt: data.updated_at || data.updatedAt,
+                taxpayer: data.taxpayer || (data.meta && data.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'Personne Physique' }
+            } as Declaration;
+        }
 
-        return declaration;
+        // 3. FALLBACK: Deterministic Generator (Allow previews of logical IDs even if not in DB)
+        if (id.startsWith('DECL-2026-')) {
+            const { generateDeclaration, DECL_BASE } = await import('./generator');
+            const sequenceStr = id.split('-').pop();
+            const val = parseInt(sequenceStr || '0', 16);
+            if (!isNaN(val) && val >= DECL_BASE) {
+                return generateDeclaration(val - DECL_BASE);
+            }
+        }
+
+        return undefined;
     } catch (e) {
         console.error("Unexpected error: ", e);
         return undefined;
