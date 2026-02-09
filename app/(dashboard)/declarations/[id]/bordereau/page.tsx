@@ -72,6 +72,7 @@ export default function BordereauPage({ params }: PageProps) {
     const taxpayerRef = `5B${Math.random().toString(16).substring(2, 8).toUpperCase()}`;
 
     // Tax calculation
+    // Force fiscalPower to be a number to avoid TypeScript errors
     const taxInfo = calculateTax(Number(decl.vehicle.fiscalPower) || 0, decl.vehicle.type || '');
     const displayTotal = taxInfo.totalAmount;
     const displayCredit = taxInfo.creditAmount;
@@ -106,7 +107,7 @@ export default function BordereauPage({ params }: PageProps) {
                 </div>
             </div>
 
-            {/* PAPER - Format exact Solidaire Bank */}
+            {/* PAPER - Format exact Solidaire Bank + FOND ORIGINEL */}
             <div
                 id="printable-bordereau"
                 ref={componentRef}
@@ -115,28 +116,16 @@ export default function BordereauPage({ params }: PageProps) {
                     fontFamily: '"Courier New", Courier, monospace',
                     fontWeight: 400,
                     color: 'black',
+                    // RESTAURATION DU FOND
+                    backgroundImage: 'url(/bordereau-bg.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundRepeat: 'no-repeat',
                     WebkitPrintColorAdjust: 'exact',
                     printColorAdjust: 'exact'
                 } as React.CSSProperties}
             >
-                {/* Logo Solidaire Bank - Espace en haut */}
-                <div className="h-[100px] flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-4">
-                        <div className="w-[80px] h-[80px] border border-gray-300 flex items-center justify-center text-[8pt] text-gray-400">
-                            LOGO
-                        </div>
-                        <div className="text-[9pt]">
-                            <div className="font-bold text-[12pt]">SOLIDAIRE BANK</div>
-                            <div>Societe Anonyme</div>
-                            <div>RCCM: CD/KIN/RCCM/XX-X-XXXX</div>
-                        </div>
-                    </div>
-                    <div className="text-right text-[8pt] text-gray-600">
-                        <div>DIRECTION GENERALE DES</div>
-                        <div>RECETTES DE KINSHASA</div>
-                        <div className="font-bold">DGRK</div>
-                    </div>
-                </div>
+                {/* ESPACE RESERVE POUR LE LOGO (déjà présent sur le fond) */}
+                <div className="h-[120px]"></div>
 
                 {/* TITRE & NUMERO */}
                 <div className="text-center mb-6">
