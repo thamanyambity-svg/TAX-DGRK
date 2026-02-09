@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getDeclarationById } from '@/lib/store';
 import { calculateTax } from '@/lib/tax-rules';
+import { generateNote } from '@/lib/generator';
 import type { Declaration } from '@/types';
 import { ArrowLeft, Printer, Download } from 'lucide-react';
 
@@ -71,9 +72,10 @@ export default function BordereauPage({ params }: PageProps) {
     // 1. Numéro unique imposé pour tous les bordereaux
     const taxpayerPhone = '+243823646048';
 
-    // 2. Référence réelle = Clé primaire de la déclaration (NDP-...)
-    // On utilise strictement l'ID de la base de données sans modification.
-    const taxpayerRef = decl.id;
+    // 2. Référence via generateNote pour obtenir l'ID "NDP-..." comme sur le Récépissé
+    // Cela garantit que le Bordereau affiche la même référence officielle que le Récépissé.
+    const note = generateNote(decl);
+    const taxpayerRef = note.id;
 
     // Tax calculation
     // Force fiscalPower to be a number to avoid TypeScript errors
