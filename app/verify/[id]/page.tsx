@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { CheckCircle, Clock, ShieldCheck, AlertCircle, Truck, User, CreditCard, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { generateDeclaration, generateNote, DECL_BASE } from '@/lib/generator';
