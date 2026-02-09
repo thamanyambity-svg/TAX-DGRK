@@ -83,22 +83,31 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
     const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
     const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-    // Taxpayer info
-    const taxpayerName = decl.meta?.manualTaxpayer?.name || 'CLIENT';
-
-    // 1. DONNEE CRITIQUE MAINTENUE : Numéro unique imposé pour tous les bordereaux
-    const taxpayerPhone = '+243823646048';
-
-    // 2. DONNEE CRITIQUE MAINTENUE : Référence via generateNote pour obtenir l'ID "NDP-..." comme sur le Récépissé
-    const note = generateNote(decl);
-    const taxpayerRef = note.id;
-
     // Tax calculation
     const taxInfo = calculateTax(Number(decl.vehicle.fiscalPower) || 0, decl.vehicle.type || '');
     const displayTotal = taxInfo.totalAmount;
     const displayCredit = taxInfo.creditAmount;
     const timbre = taxInfo.timbre;
     const taxes = taxInfo.taxe;
+
+    // --- AUTOMATION: REMETTANT & MOTIF ---
+    const { CONGO_NAMES, generateRandomPhone } = require('@/lib/generator');
+
+    // 2. Récupérer l'ID NDP pour le motif
+    const note = generateNote(decl);
+    const taxpayerRef = note.id;
+
+    // Seed based on sequence for stability
+    const facilitatorName = CONGO_NAMES[sequence % CONGO_NAMES.length];
+    const facilitatorLastName = CONGO_NAMES[(sequence * 7) % CONGO_NAMES.length];
+    const facilitatorPhone = generateRandomPhone(sequence);
+
+    const remettantDisplay = `${facilitatorName} ${facilitatorLastName} / ${facilitatorPhone}`.replace(/\/ $/, '');
+
+    // Motif: Prenom proprietaire + NDP ID
+    const ownerFullName = (decl.meta?.manualTaxpayer?.name || 'CLIENT').trim();
+    const ownerFirstName = ownerFullName.split(' ')[0].toUpperCase();
+    const motifDisplay = `${ownerFirstName} / ${taxpayerRef}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 font-mono text-black">
@@ -225,14 +234,14 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                     <span>Nom du remettant</span>
                                     <span className="mr-2">.:</span>
                                 </span>
-                                <span>{taxpayerName.toUpperCase()}/{taxpayerPhone}</span>
+                                <span>{remettantDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[160px] flex justify-between">
                                     <span>Adresse</span>
                                     <span className="mr-2">:</span>
                                 </span>
-                                <span>{taxpayerName.toUpperCase()}/{taxpayerRef}</span>
+                                <span>{remettantDisplay.toUpperCase()}</span>
                             </div>
                             <div className="ml-[160px]">
                                 310 - REP DEM CONGO
@@ -242,7 +251,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                     <span>Motif</span>
                                     <span className="mr-2">:</span>
                                 </span>
-                                <span>{taxpayerName.toUpperCase()}/{taxpayerRef}</span>
+                                <span>{motifDisplay.toUpperCase()}</span>
                             </div>
                         </div>
 

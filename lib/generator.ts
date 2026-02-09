@@ -12,6 +12,25 @@ const TAXPAYER_TYPES: TaxpayerType[] = ['Personne Physique', 'Personne Morale'];
 const CITIES = ['Kinshasa', 'Lubumbashi', 'Goma', 'Matadi', 'Kisangani'];
 const COMMUNES = ['Gombe', 'Kintambo', 'Ngaliema', 'Limete', 'Makala', 'Bandalungwa'];
 
+const CONGO_NAMES = [
+    'MUKENDI', 'TSHIMANGA', 'LIKUTA', 'MBALA', 'KABAMBA', 'NGALULA', 'ILUNGA', 'MWAMBA',
+    'MUTOMBO', 'NDAYA', 'KABEDI', 'KABONGO', 'TSHIBANGU', 'MUSAU', 'KALONJI', 'MULUMBA',
+    'TSHISUAKA', 'MBUYI', 'KADIMA', 'KABEYA', 'TSHIBOLA', 'MPUTU', 'KANYINDA', 'MUTEBA',
+    'LUKUSA', 'TSHILOMBO', 'KAYEMBE', 'BOKETSHU', 'YAMBA', 'MALU'
+];
+
+const PHONE_PREFIXES = ['81', '82', '85', '89', '97', '99'];
+
+function generateRandomPhone(seed: number): string {
+    if (seed % 7 === 0) return ''; // Randomly empty
+    const prefix = getFromList(PHONE_PREFIXES, seed);
+    // Generate 7 digits based on seed
+    const digits = ((seed * 1234567) % 10000000).toString().padStart(7, '0');
+    return `+243${prefix}${digits}`;
+}
+
+export { CONGO_NAMES, generateRandomPhone };
+
 // Helper to generate a consistent logical ID from a sequence number
 // User requested base: DECL-2026-B9ED76
 export const DECL_BASE = 0xB9ED76;
