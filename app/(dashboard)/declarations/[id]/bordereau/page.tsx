@@ -72,7 +72,7 @@ export default function BordereauPage({ params }: PageProps) {
     const taxpayerRef = `5B${Math.random().toString(16).substring(2, 8).toUpperCase()}`;
 
     // Tax calculation
-    const taxInfo = calculateTax(decl.vehicle.fiscalPower || 0, decl.vehicle.type || '');
+    const taxInfo = calculateTax(Number(decl.vehicle.fiscalPower) || 0, decl.vehicle.type || '');
     const displayTotal = taxInfo.totalAmount;
     const displayCredit = taxInfo.creditAmount;
     const timbre = taxInfo.timbre;
