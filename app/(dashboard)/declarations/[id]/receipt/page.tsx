@@ -191,7 +191,7 @@ const ReceiptView = ({
                                     <div className="w-[65px] h-[65px] bg-gray-100" />
                                 )}
                             </div>
-                            <p className="text-[7px] text-gray-400 italic mb-1 font-medium">Vérifié sur www.irms-dgrk.com</p>
+                            <p className="text-[7px] text-gray-500 italic mb-1 font-medium">Scan pour vérifier</p>
                         </div>
 
                         {/* Timestamp - Added below QR Box */}
