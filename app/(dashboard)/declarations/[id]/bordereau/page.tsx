@@ -208,8 +208,8 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             })()}
                         </span>
                     </div>
-                    <div className="whitespace-pre">
-                        310 - REP DEM CONGO
+                    <div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;310 - REP DEM CONGO
                     </div>
                     <div className="flex mt-1">
                         <span className="w-[150px]">Motif</span>
