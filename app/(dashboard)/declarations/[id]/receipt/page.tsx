@@ -191,7 +191,7 @@ const ReceiptView = ({
                                     <div className="w-[65px] h-[65px] bg-gray-100" />
                                 )}
                             </div>
-                            <p className="text-[7px] text-gray-500 italic mb-1 font-medium">Scan pour vérifier</p>
+                            <p className="text-[7px] text-gray-400 italic mb-1 font-medium">Vérifié sur www.irms-dgrk.com</p>
                         </div>
 
                         {/* Timestamp - Added below QR Box */}
@@ -340,7 +340,7 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
         );
     }
 
-    const verifyUrl = `https://Irms-dgrk.com/verify/${id}`;
+    const verifyUrl = `https://tax-portal-two.vercel.app/verify/${id}`;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-10 print:bg-white print:p-0 font-sans text-gray-900">
