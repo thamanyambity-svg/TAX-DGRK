@@ -55,8 +55,7 @@ export default function NewDeclarationPage() {
 
         // Apply FC override rule if applicable (legacy check, but rules usually handle it)
         if (baseRate === 64.50) {
-            // Note: tax-rules now returns 63.00 for standard, so 64.50 might be deprecated? 
-            // Trusting tax-rules output (63, 69, 73) primarily.
+            // Trusting tax-rules output (63, 69, 75) primarily.
         }
         // Specific override for 63$ -> specific FC amount check if needed?
         // tax-rules handles logic.

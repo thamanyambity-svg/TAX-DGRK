@@ -34,7 +34,7 @@ async function verifyData() {
     const { data: fleet, error: fleetError } = await supabase
         .from('declarations')
         .select('vehicle, tax')
-        .eq('taxpayer->>name', 'STE KIN PLUS SARL');
+        .eq('meta->manualTaxpayer->>name', 'STE KIN PLUS SARL');
 
     if (fleetError) {
         console.error('❌ Error fetching fleet:', fleetError);
@@ -46,7 +46,7 @@ async function verifyData() {
     // 3. Breakdown by Type/Price
     let howoCount = 0;
     let wingleCount = 0;
-    let price73 = 0;
+    let price75 = 0;
     let price69 = 0;
 
     fleet.forEach(d => {
@@ -55,16 +55,16 @@ async function verifyData() {
         if ((d.vehicle as any).modele === 'WINGLE') wingleCount++;
 
         // Check Price
-        if ((d.tax as any).baseRate === 73) price73++;
+        if ((d.tax as any).baseRate === 75) price75++;
         if ((d.tax as any).baseRate === 69) price69++;
     });
 
     console.log(`   - HOWO Trucks (35CV): ${howoCount}`);
     console.log(`   - Wingle Pickups (12CV): ${wingleCount}`);
-    console.log(`   - Tax $73 Checks: ${price73}`);
+    console.log(`   - Tax $75 Checks: ${price75}`);
     console.log(`   - Tax $69 Checks: ${price69}`);
 
-    if (howoCount === 10 && wingleCount === 10 && price73 === 10 && price69 === 10) {
+    if (howoCount === 10 && wingleCount === 10 && price75 === 10 && price69 === 10) {
         console.log('✅ INTEGRETY CHECK PASSED: Fleet composition is perfect.');
     } else {
         console.warn('⚠️ INTEGRETY WARNING: Fleet composition mismatch.');

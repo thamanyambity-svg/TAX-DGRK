@@ -53,7 +53,7 @@ const realDeclarations = [
 ];
 
 // --- FLOTTE KIN PLUS SARL (MIXTE - 20 VÉHICULES) ---
-// 1. LES CAMIONS HOWO (35 CV -> 73$)
+// 1. LES CAMIONS HOWO (35 CV -> 75$)
 const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
     const seq = i + 1;
     // Séquence réelle observée sur les docs : ...298258, 298260...
@@ -74,7 +74,7 @@ const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
             category: 'Véhicule utilitaire' as const,
             plate: `${plateNum}BV01`,
             chassis: `LZZ5BLSD6RN${chassisSuffix}`, // Châssis EXACT
-            fiscalPower: '35 CV', // TARIF 73$
+            fiscalPower: '35 CV', // TARIF 75$
             weight: 'N/A',
             type: 'Personne Morale' as const,
             marque: 'SINOTRUK',
@@ -84,9 +84,9 @@ const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
             annee: '2024'
         },
         tax: {
-            baseRate: 73.00,
+            baseRate: 75.00,
             currency: 'USD' as const,
-            totalAmountFC: 165795.17,
+            totalAmountFC: 170337.00, // 75 * 2271.16
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,

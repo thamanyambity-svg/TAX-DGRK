@@ -37,7 +37,7 @@ export const calculateTax = (fiscalPower: number, vehicleType: string): TaxCalcu
 
     // REGLE 2 : 11-15 CV -> 69 USD
     // S'applique à TOUS les véhicules dans cette tranche (ex: Pick-up Wingle 12CV)
-    if (cv >= 11 && cv <= 15) {
+    if (cv <= 15) {
         return {
             totalAmount: 69.00,
             creditAmount: 65.00,
@@ -52,23 +52,19 @@ export const calculateTax = (fiscalPower: number, vehicleType: string): TaxCalcu
         };
     }
 
-    // REGLE 3 : > 15 CV OU (Camion > 10 CV non capturé par 11-15 ?)
-    // L'utilisateur dit "DE 10 A PLUS DE CATHEGORIE CAMION C EST 73 USD".
-    // Mais Wingle (12CV) est à 69$. Donc 11-15 prime.
-    // Donc on réserve 73$ pour les > 15 CV (Comme HOWO 35 CV).
-    // Ou si l'utilisateur insiste sur "Camion > 10", c'est ambigu avec Wingle.
-    // On assume ici que 35 CV -> 73$.
-
+    // REGLE 3 : > 15 CV -> 75 USD
+    // L'utilisateur dit "Plus de 15cv 75$".
+    // 75 = 71 (crédit) + 4 (frais)
     return {
-        totalAmount: 73.00,
-        creditAmount: 69.00,
+        totalAmount: 75.00,
+        creditAmount: 71.00,
         timbre: 3.45,
         taxe: 0.55,
-        textAmount: "soixante neuf",
+        textAmount: "soixante onze",
         billBreakdown: [
-            { value: 20, count: 2, total: 40 },
-            { value: 10, count: 3, total: 30 },
-            { value: 1, count: 3, total: 3 }
+            { value: 50, count: 1, total: 50 },
+            { value: 20, count: 1, total: 20 },
+            { value: 5, count: 1, total: 5 }
         ]
     };
 };
