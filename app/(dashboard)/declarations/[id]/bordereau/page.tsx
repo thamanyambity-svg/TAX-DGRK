@@ -71,15 +71,9 @@ export default function BordereauPage({ params }: PageProps) {
     // 1. Numéro unique imposé pour tous les bordereaux
     const taxpayerPhone = '+243823646048';
 
-    // 2. Référence réelle du récépissé (NDP-...)
-    // Si l'ID commence déjà par NDP, on le garde, sinon on le formate ou on utilise celui de meta
-    let taxpayerRef = decl.id;
-    if (!taxpayerRef.startsWith('NDP-')) {
-        // Fallback: essaie de construire un format NDP si l'ID est simple, ou utilise l'ID tel quel
-        taxpayerRef = `NDP-${new Date().getFullYear()}-${decl.id.split('-').pop()}`;
-    }
-    // Si une référence spécifique existe dans meta, on la privilégie peut-être ? 
-    // D'après votre demande "les personnes enregistrées ont déjà leur numéro", on suppose que c'est l'ID principal.
+    // 2. Référence réelle = Clé primaire de la déclaration (NDP-...)
+    // On utilise strictement l'ID de la base de données sans modification.
+    const taxpayerRef = decl.id;
 
     // Tax calculation
     // Force fiscalPower to be a number to avoid TypeScript errors
