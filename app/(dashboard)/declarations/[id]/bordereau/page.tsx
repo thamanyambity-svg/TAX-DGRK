@@ -320,23 +320,21 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             </div>
                         </div>
 
-                        {/* FOOTER - MISE EN FORME PHYSIQUE BANQUE (CORRIGÉ : PAS DE GRAS) */}
-                        <div className="mt-8 pt-4 border-t border-dashed border-gray-400">
+                        {/* FOOTER - MISE EN FORME PHYSIQUE BANQUE (CORRECTIONS PRÉCISES) */}
+                        <div className="mt-8 pt-4">
                             <div className="text-[10pt] leading-relaxed">
-                                {/* Ligne Crédit */}
-                                <div className="flex justify-between">
-                                    <span>Nous portons au credit du compte no 33000061711-79</span>
-                                    <div className="flex w-[200px]">
-                                        <span className="w-[60px]">USD :</span>
-                                        <span className="flex-1 text-right mr-8">{displayCredit.toFixed(2)}</span>
-                                    </div>
-                                </div>
-
-                                {/* Ligne Valeur */}
-                                <div className="flex justify-end">
-                                    <div className="flex w-[200px]">
-                                        <span className="w-[60px]">Valeur :</span>
-                                        <span className="flex-1 text-right mr-8">{dateStr}</span>
+                                {/* Ligne Crédit & Valeur avec alignement 3 espaces */}
+                                <div className="flex">
+                                    <span className="whitespace-pre">Nous portons au credit du compte no 33000061711-79   </span>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between">
+                                            <span>USD :</span>
+                                            <span className="mr-8">{displayCredit.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Valeur :</span>
+                                            <span className="mr-8">{dateStr}</span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -345,15 +343,16 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                     <span>Soit {taxInfo.textAmount} USD</span>
                                 </div>
 
-                                {/* Ligne de séparation signatures */}
-                                <div className="mt-4 border-t border-dashed border-black w-full"></div>
-
                                 {/* Signatures et Mention */}
-                                <div className="mt-2 flex items-start">
-                                    <div className="w-[300px] flex justify-around">
-                                        <span>CLIENT</span>
-                                        <span className="font-normal">!</span>
-                                        <span>GUICHETIER</span>
+                                <div className="mt-6 flex items-start">
+                                    <div className="w-[360px]">
+                                        {/* Pointillés au dessus de CLIENT/GUICHETIER limited length */}
+                                        <div className="border-t border-dashed border-black w-full mb-2"></div>
+                                        <div className="flex justify-around">
+                                            <span>CLIENT</span>
+                                            <span className="font-normal">!</span>
+                                            <span>GUICHETIER</span>
+                                        </div>
                                     </div>
                                     <div className="flex-1 text-center pt-2">
                                         <span className="tracking-[0.2em] text-[9pt]">OPERATION EFFECTUEE</span>
