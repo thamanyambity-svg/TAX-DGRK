@@ -320,11 +320,40 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             </div>
                         </div>
 
-                        {/* FOOTER - Ajouté pour correspondre au footer complet */}
-                        <div className="mb-4">
-                            <div className="flex justify-between">
-                                <p>Nous portons au credit du compte no 33000061711-79</p>
-                                <p className="mr-8">{displayCredit.toFixed(2)}</p>
+                        {/* FOOTER - MISE EN FORME PHYSIQUE BANQUE */}
+                        <div className="mt-12 pt-6 border-t-2 border-dashed border-gray-400 relative">
+                            <div className="pr-16">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-[10pt]">Nous portons au credit du compte no 33000061711-79 USD :</span>
+                                    <span className="font-bold text-[11pt] mr-8">{displayCredit.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-end text-[9pt] mr-8 -mt-1">
+                                    <span>Valeur : {dateStr}</span>
+                                </div>
+                                <div className="mt-4 text-[10pt]">
+                                    <span>Soit {taxInfo.textAmount} USD</span>
+                                </div>
+
+                                {/* ESPACE SIGNATURES */}
+                                <div className="mt-16 flex justify-between px-4 pb-8">
+                                    <div className="flex flex-col items-center">
+                                        <div className="h-[60px]"></div> {/* Espace pour signature facitilateur */}
+                                        <div className="border-t border-black w-32 mb-1"></div>
+                                        <span className="font-bold text-[9pt]">CLIENT</span>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <div className="h-[60px]"></div> {/* Espace pour cachet banque */}
+                                        <div className="border-t border-black w-32 mb-1"></div>
+                                        <span className="font-bold text-[9pt]">GUICHETIER</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* TEXTE VERTICAL - OPERATION EFFECTUEE */}
+                            <div className="absolute right-0 top-0 bottom-0 w-8 flex items-center justify-center">
+                                <div className="rotate-[-90deg] whitespace-nowrap font-bold text-[10pt] tracking-[0.2em] text-gray-800">
+                                    OPERATION EFFECTUEE
+                                </div>
                             </div>
                         </div>
 
