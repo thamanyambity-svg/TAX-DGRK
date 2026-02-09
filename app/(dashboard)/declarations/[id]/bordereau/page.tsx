@@ -188,7 +188,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                     </div>
                 </div>
 
-                {/* 5. REMETTANT ET MOTIF */}
+                {/* 5. REMETTANT ET MOTIF - Format officiel aligné */}
                 <div className="mb-8 mt-6">
                     <div className="flex">
                         <span className="w-[150px]">Nom du remettant.</span>
