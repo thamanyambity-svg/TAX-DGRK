@@ -236,13 +236,6 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                 </span>
                                 <span>{remettantDisplay.toUpperCase()}</span>
                             </div>
-                            <div className="flex">
-                                <span className="w-[160px] flex justify-between">
-                                    <span>Adresse</span>
-                                    <span className="mr-2">:</span>
-                                </span>
-                                <span>{remettantDisplay.toUpperCase()}</span>
-                            </div>
                             <div className="ml-[160px]">
                                 310 - REP DEM CONGO
                             </div>
