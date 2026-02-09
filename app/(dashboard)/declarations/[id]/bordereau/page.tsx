@@ -187,24 +187,30 @@ export default function BordereauPage({ params }: PageProps) {
                     </div>
                 </div>
 
-                {/* REMETTANT - Format exact */}
+                {/* REMETTANT - Format exact aligné */}
                 <div className="mb-4 mt-4 space-y-0">
                     <div className="flex">
-                        <span className="w-[130px]">Nom du remettant</span>
-                        <span className="mr-1">.:</span>
+                        <span className="w-[160px] flex justify-between">
+                            <span>Nom du remettant</span>
+                            <span className="mr-2">.:</span>
+                        </span>
                         <span>{taxpayerName.toUpperCase()}/{taxpayerPhone}</span>
                     </div>
                     <div className="flex">
-                        <span className="w-[130px]">Adresse</span>
-                        <span className="mr-1">............:</span>
+                        <span className="w-[160px] flex justify-between">
+                            <span>Adresse</span>
+                            <span className="mr-2">:</span>
+                        </span>
                         <span>{taxpayerName.toUpperCase()}/{taxpayerRef}</span>
                     </div>
                     <div className="ml-[160px]">
                         310 - REP DEM CONGO
                     </div>
                     <div className="flex">
-                        <span className="w-[130px]">Motif</span>
-                        <span className="mr-1">...........:</span>
+                        <span className="w-[160px] flex justify-between">
+                            <span>Motif</span>
+                            <span className="mr-2">:</span>
+                        </span>
                         <span>{taxpayerName.toUpperCase()}/{taxpayerRef}</span>
                     </div>
                 </div>
