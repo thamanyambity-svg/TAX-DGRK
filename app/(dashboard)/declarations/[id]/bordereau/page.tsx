@@ -79,9 +79,9 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
     const sequence = parseInt(numericPart, 10) || 0;
     const bordereauNo = 39383 + (sequence % 10000); // Base cohérente avec la démo
 
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-    const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
+    const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+    const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
     // Taxpayer info
     const taxpayerName = decl.meta?.manualTaxpayer?.name || 'CLIENT';

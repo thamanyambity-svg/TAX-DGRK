@@ -38,8 +38,9 @@ const ReceiptView = ({
         maximumFractionDigits: 2
     });
 
-    const dateStr = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const timeStr = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const creationDate = note.generatedAt ? new Date(note.generatedAt) : new Date();
+    const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
     return (
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">

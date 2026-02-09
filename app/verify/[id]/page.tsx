@@ -150,8 +150,8 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                         </div>
                         <span className="text-gray-900 font-medium">
                             {(() => {
-                                // ALIGN WITH REAL DATE (Users Timezone)
-                                const d = new Date();
+                                // ALIGN WITH REAL DATE 
+                                const d = note.generatedAt ? new Date(note.generatedAt) : new Date();
                                 return `${d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })} ${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
                             })()}
                         </span>
@@ -165,7 +165,7 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                         <span className="font-medium text-gray-900">
                             {(() => {
                                 // Expiry = Real Date + 1 Year
-                                const d = new Date();
+                                const d = note.generatedAt ? new Date(note.generatedAt) : new Date();
                                 d.setFullYear(d.getFullYear() + 1);
                                 return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
                             })()}
