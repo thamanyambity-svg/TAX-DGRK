@@ -139,27 +139,13 @@ const KIN_PLUS_WINGLE = Array.from({ length: 10 }).map((_, i) => {
 const allDeclarations = [...realDeclarations, ...KIN_PLUS_HOWO, ...KIN_PLUS_WINGLE];
 
 async function seedRealData() {
-    console.log('🚀 Starting to seed real declarations...');
-    console.log(`📦 Preparing to insert ${allDeclarations.length} declarations including KIN PLUS fleet...`);
+    console.log('✅ Starting to seed/update real declarations...');
 
-    // Delete existing
-    const { error: deleteError } = await supabase
-        .from('declarations')
-        .delete()
-        .neq('id', 'dummy');
-
-    if (deleteError) {
-        console.error('❌ Error deleting old data:', deleteError);
-        return;
-    }
-
-    console.log('✅ Old data deleted');
-
-    // Insert
+    // Insert/Upsert
     for (const decl of allDeclarations) {
         const { error } = await supabase
             .from('declarations')
-            .insert({
+            .upsert({
                 id: decl.id,
                 status: decl.status,
                 createdAt: decl.createdAt,
@@ -167,6 +153,7 @@ async function seedRealData() {
                 vehicle: decl.vehicle,
                 tax: decl.tax,
                 meta: {
+                    ...(decl as any).meta,
                     systemId: decl.id,
                     reference: 'Décret Provincial N°001/2024',
                     manualTaxpayer: decl.taxpayer
@@ -174,9 +161,7 @@ async function seedRealData() {
             });
 
         if (error) {
-            console.error(`❌ Error inserting ${decl.id}:`, error);
-        } else {
-            // console.log(`✅ Inserted ${decl.id}`); 
+            console.error(`❌ Error upserting ${decl.id}:`, error);
         }
     }
 
