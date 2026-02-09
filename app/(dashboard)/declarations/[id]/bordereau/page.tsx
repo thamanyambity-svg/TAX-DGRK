@@ -208,7 +208,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             })()}
                         </span>
                     </div>
-                    <div className="pl-[170px]">
+                    <div className="whitespace-pre">
                         310 - REP DEM CONGO
                     </div>
                     <div className="flex mt-1">
