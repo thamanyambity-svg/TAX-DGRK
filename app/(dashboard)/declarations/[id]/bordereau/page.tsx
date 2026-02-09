@@ -68,8 +68,18 @@ export default function BordereauPage({ params }: PageProps) {
 
     // Taxpayer info
     const taxpayerName = decl.meta?.manualTaxpayer?.name || 'CLIENT';
-    const taxpayerPhone = decl.meta?.manualTaxpayer?.phone || '+243000000000';
-    const taxpayerRef = `5B${Math.random().toString(16).substring(2, 8).toUpperCase()}`;
+    // 1. Numéro unique imposé pour tous les bordereaux
+    const taxpayerPhone = '+243823646048';
+
+    // 2. Référence réelle du récépissé (NDP-...)
+    // Si l'ID commence déjà par NDP, on le garde, sinon on le formate ou on utilise celui de meta
+    let taxpayerRef = decl.id;
+    if (!taxpayerRef.startsWith('NDP-')) {
+        // Fallback: essaie de construire un format NDP si l'ID est simple, ou utilise l'ID tel quel
+        taxpayerRef = `NDP-${new Date().getFullYear()}-${decl.id.split('-').pop()}`;
+    }
+    // Si une référence spécifique existe dans meta, on la privilégie peut-être ? 
+    // D'après votre demande "les personnes enregistrées ont déjà leur numéro", on suppose que c'est l'ID principal.
 
     // Tax calculation
     // Force fiscalPower to be a number to avoid TypeScript errors
@@ -255,7 +265,7 @@ export default function BordereauPage({ params }: PageProps) {
 
                     <div className="mt-2">
                         {/* Dynamic bill rows */}
-                        {taxInfo.billBreakdown.map((row, i: number) => (
+                        {taxInfo.billBreakdown.map((row: any, i: number) => (
                             <div key={i} className="flex text-[9pt]">
                                 <span className="w-[60px]">{row.value.toFixed(2).replace('.', ',')}</span>
                                 <span className="w-[60px] text-center">{row.count}</span>
@@ -267,12 +277,12 @@ export default function BordereauPage({ params }: PageProps) {
                         ))}
                     </div>
 
-                    {/* Separators */}
+                    {/* Separators - Tirets réduits */}
                     <div className="flex text-[9pt] mt-2">
                         <span className="w-[60px]"></span>
-                        <span className="w-[140px]">----------------------</span>
+                        <span className="w-[140px]">------------------</span>
                         <span className="w-[80px]"></span>
-                        <span className="w-[140px]">------------------------------</span>
+                        <span className="w-[140px]">-----------------------</span>
                     </div>
 
                     {/* Totals */}
