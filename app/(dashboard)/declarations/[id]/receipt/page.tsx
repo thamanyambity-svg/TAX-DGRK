@@ -9,7 +9,6 @@ import QRCode from 'react-qr-code';
 import { ArrowLeft, Download, Scissors } from 'lucide-react';
 
 // --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
-// --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
 const ReceiptView = ({
     type,
     note,
@@ -30,7 +29,6 @@ const ReceiptView = ({
 
     // Exchange Rate implied from reference: 156 710.51 / 69.00 = 2271.1668
     const EXCHANGE_RATE = 2271.1668115942;
-    // const amountUSD = taxInfo.creditAmount; 
 
     const displayAmountUSD = taxInfo.totalAmount;
     const displayAmountFC = (displayAmountUSD * EXCHANGE_RATE).toLocaleString('fr-FR', {
@@ -240,6 +238,18 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
     const [error, setError] = useState<string | null>(null);
     const receiptRef = useRef<HTMLDivElement>(null);
 
+    // --- Ajout du CSS d'impression ---
+    useEffect(() => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/print.css';
+        link.media = 'print';
+        document.head.appendChild(link);
+        return () => {
+            // document.head.removeChild(link);
+        };
+    }, []);
+
     useEffect(() => {
         let isMounted = true;
         let timeoutId: NodeJS.Timeout;
@@ -279,15 +289,7 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
 
         // Timeout safeguard
         timeoutId = setTimeout(() => {
-            // Check if we already have data by checking the state setter or a ref?
-            // Better yet, just rely on the fact that if data loaded, we cleared this timeout.
-            // But if fetch is insanely slow (hanging), this runs.
-            // We must check if 'note' is set? No, closure trap limits access to updated 'note'.
-            // So we rely on isMounted. 
-            // If this runs, it means fetchManualData didn't clear it yet.
             if (isMounted) {
-                // Double check if we really don't have data? 
-                // Since we cleared timeout on success, reaching here means success didn't happen.
                 setError("Le chargement prend trop de temps. Veuillez réessayer.");
             }
         }, 12000);
@@ -304,7 +306,7 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
         setIsGeneratingPDF(true);
         try {
             const { downloadElementAsPDF } = await import('@/lib/pdf-utils');
-            await downloadElementAsPDF('printable-receipt', `recepisse-${id}`);
+            await downloadElementAsPDF('printable-root', `recepisse-${id}`);
         } catch (error) {
             console.error('PDF error', error);
         } finally {
@@ -343,7 +345,7 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
     return (
         <div className="min-h-screen bg-gray-50 pb-10 print:bg-white print:p-0 font-sans text-gray-900">
             {/* Toolbar */}
-            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 py-3 mb-6 print:hidden shadow-sm">
+            <div className="no-print sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 py-3 mb-6 print:hidden shadow-sm">
                 <div className="max-w-4xl mx-auto flex justify-between items-center">
                     <button
                         onClick={() => router.push('/')}
@@ -387,9 +389,11 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Receipt Container - STRICT A4 FORMAT */}
-            <div className="w-[210mm] mx-auto print:mx-auto print:w-[210mm]">
+
+            {/* WRAPPER pour print.css: ID = printable-root */}
+            <div id="printable-root" className="mx-auto w-[210mm]"> {/* Correction ici */}
                 <div
-                    id="printable-receipt"
+                    id="printable-receipt" // L'ID cible du CSS
                     ref={receiptRef}
                     className="bg-white shadow-xl print:shadow-none w-[210mm] h-[297mm] p-[10mm] relative flex flex-col justify-between box-border overflow-hidden mx-auto print:mx-auto"
                     style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
@@ -413,14 +417,9 @@ export default function ReceiptPage({ params }: { params: { id: string } }) {
                     <div className="flex-1 flex flex-col justify-center">
                         <ReceiptView type="CONTRIBUABLE" note={note} verifyUrl={verifyUrl} />
                     </div>
-
-                    {/* Footer mentions légales (Absolument en bas de page si besoin, ou juste caché) */}
-                    {/* <div className="absolute bottom-1 left-0 w-full text-center">
-                        <p className="text-[8px] text-gray-300">DGRK - Système de Gestion Fiscal - Page 1/1</p>
-                    </div> */}
                 </div>
 
-                <p className="text-center text-[10px] text-gray-400 mt-6 mb-12 print:hidden select-none">
+                <p className="no-print text-center text-[10px] text-gray-400 mt-6 mb-12 select-none">
                     Format A4 Standard (210 x 297 mm). Ajustez l'échelle à 100% lors de l'impression.
                 </p>
             </div>
