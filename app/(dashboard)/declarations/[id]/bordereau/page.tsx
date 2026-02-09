@@ -208,12 +208,12 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             })()}
                         </span>
                     </div>
-                    <div className="pl-[166px]">
+                    <div className="pl-[170px]">
                         310 - REP DEM CONGO
                     </div>
                     <div className="flex mt-1">
                         <span className="w-[150px]">Motif</span>
-                        <span className="mr-2">:.......... :</span>
+                        <span className="mr-2 tracking-wider">:.......... :</span>
                         <span>VGT/{rabRef}/{taxpayerName.toUpperCase()}</span>
                     </div>
                 </div>
