@@ -103,11 +103,10 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
     const facilitatorPhone = generateRandomPhone(sequence);
 
     const remettantDisplay = `${facilitatorName} ${facilitatorLastName} / ${facilitatorPhone}`.replace(/\/ $/, '');
-
-    // Motif: Prenom proprietaire + NDP ID
-    const ownerFullName = (decl.meta?.manualTaxpayer?.name || 'CLIENT').trim();
-    const ownerFirstName = ownerFullName.split(' ')[0].toUpperCase();
-    const motifDisplay = `${ownerFirstName} /${taxpayerRef.replace('NDP-2026-', '')}`;
+    // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
+    // Change NDP-2026-1579A471 to FULL NAME /1579A471 format
+    const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
+    const motifDisplay = `${ownerFullName} /${note.id.replace('NDP-2026-', '')}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 text-black">

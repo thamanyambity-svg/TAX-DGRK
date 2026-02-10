@@ -43,9 +43,9 @@ const ReceiptView = ({
     const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
     // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
-    // Change NDP-2026-1579A471 to STE /1579A471 format
-    const ownerFirstName = (note.taxpayer.name || 'CLIENT').trim().split(' ')[0].toUpperCase();
-    const formattedRef = `${ownerFirstName} /${note.id.replace('NDP-2026-', '')}`;
+    // Change NDP-2026-1579A471 to FULL NAME /1579A471 format
+    const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
+    const formattedRef = `${ownerFullName} /${note.id.replace('NDP-2026-', '')}`;
 
     return (
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
