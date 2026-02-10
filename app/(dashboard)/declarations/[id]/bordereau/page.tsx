@@ -297,15 +297,15 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
 
                         {/* FOOTER - ALIGNEMENT CARACTÈRE PAR CARACTÈRE (GRID) */}
                         <div className="mt-10 text-[10pt] leading-[1.4] text-gray-800" style={{ fontFamily: '"Courier New", Courier, monospace', fontWeight: 400 }}>
-                            {/* Ligne Crédit & USD - Alignées sur une grille de 80 chars */}
+                            {/* Ligne Crédit & USD - Alignement millimétré des deux-points */}
                             <div className="whitespace-pre">
                                 <span className="inline-block">Nous portons au credit du compte no 33000061711-79   USD :</span>
                                 <span className="inline-block w-[140px] text-right">{displayCredit.toFixed(2)}</span>
                             </div>
 
-                            {/* Ligne Valeur - Alignée exactement sous USD : */}
+                            {/* Ligne Valeur - Alignement parfait (50 espaces + Valeur :) */}
                             <div className="whitespace-pre">
-                                <span className="inline-block">                                                    Valeur :</span>
+                                <span className="inline-block">                                                  Valeur :</span>
                                 <span className="inline-block w-[140px] text-right">{dateStr}</span>
                             </div>
 
