@@ -133,7 +133,7 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">Marque/Type:</span>
                                     <span className="uppercase text-[9px] font-medium text-gray-800 truncate">
-                                        {note.vehicle.marque} / {note.vehicle.category.replace(/_/g, ' ')}
+                                        {(note.vehicle as any).manualMarqueType || `${note.vehicle.marque} / ${(note.vehicle.category || '').replace(/_/g, ' ')}`}
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
@@ -252,7 +252,8 @@ export default function ReceiptPage() {
     const [showAdminDates, setShowAdminDates] = useState(false);
     const [editReceiptDate, setEditReceiptDate] = useState('');
     const [editPaymentDate, setEditPaymentDate] = useState('');
-    const [editBaseAmount, setEditBaseAmount] = useState(''); // NEW: Base Amount
+    const [editBaseAmount, setEditBaseAmount] = useState('');
+    const [editMarqueType, setEditMarqueType] = useState(''); // NEW: Marque Override
     const [isSavingDates, setIsSavingDates] = useState(false);
 
     // --- Ajout du CSS d'impression ---
@@ -294,6 +295,11 @@ export default function ReceiptPage() {
                         if ((manualDecl.meta as any)?.manualTaxpayer) {
                             manualNote.taxpayer = (manualDecl.meta as any).manualTaxpayer;
                         }
+                        // Manual Marque Override
+                        if ((manualDecl.meta as any)?.manualMarqueType) {
+                            (manualNote.vehicle as any).manualMarqueType = (manualDecl.meta as any).manualMarqueType;
+                        }
+
                         setNote(manualNote);
 
                         // Initialize inputs
@@ -316,6 +322,10 @@ export default function ReceiptPage() {
                         // 3. Base Amount (Manual or Existing)
                         const currentBase = (manualDecl.meta as any)?.manualBaseAmount || manualDecl.tax?.baseRate || 0;
                         setEditBaseAmount(currentBase.toString());
+
+                        // 4. Marque/Type Override
+                        const currentMarque = (manualDecl.meta as any)?.manualMarqueType || '';
+                        setEditMarqueType(currentMarque);
 
                         // CRITICAL FIX: Clear timeout immediately on success
                         if (timeoutId) clearTimeout(timeoutId);
@@ -384,7 +394,8 @@ export default function ReceiptPage() {
                 meta: {
                     ...decl.meta,
                     manualPaymentDate: newPaymentDate,
-                    manualBaseAmount: newBaseAmount // Store explicit override
+                    manualBaseAmount: newBaseAmount,
+                    manualMarqueType: editMarqueType // Save override
                 }
             };
 
@@ -522,6 +533,16 @@ export default function ReceiptPage() {
                                 onChange={(e) => setEditBaseAmount(e.target.value)}
                             />
                         </div>
+                    </div>
+                    <div className="flex flex-col gap-1 w-full md:w-auto">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque / Type (Override)</label>
+                        <input
+                            type="text"
+                            placeholder="Ex: TOYOTA PRADO / 4x4"
+                            className="px-2 py-1 w-full md:w-48 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            value={editMarqueType}
+                            onChange={(e) => setEditMarqueType(e.target.value)}
+                        />
                     </div>
                     <button
                         onClick={handleSaveDates}

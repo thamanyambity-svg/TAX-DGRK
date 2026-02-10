@@ -111,13 +111,22 @@ export default function BordereauPage() {
     // FIX: Check for manual base amount override first
     if ((decl.meta as any)?.manualBaseAmount) {
         // User manually set the "Base Price" (Credit)
-        displayCredit = parseFloat((decl.meta as any).manualBaseAmount);
-        // Bank Fee Logic: Always Base + 4$
+        const rawBase = parseFloat((decl.meta as any).manualBaseAmount);
+
+        // Custom Rounding Rule requested: 58.70 -> 59.00
+        // "la banque arrondi a 59 sans mention visible"
+        // We will round to nearest integer for credit? Or just for 58.7?
+        // "tien compte pour les montant de base 58,70 la banque arrondi a 59"
+        // Let's generalize: Math.round? Or specific check.
+        // If specific:
+        displayCredit = Math.abs(rawBase - 58.70) < 0.01 ? 59.00 : rawBase;
+
+        // Bank Fee Logic: Always Credit + 4$
         displayTotal = displayCredit + 4.00;
 
         // Mock taxInfo for manual override to prevent crashes
         taxInfo = {
-            textAmount: `${displayTotal.toFixed(2)}`, // Simplified text representation
+            textAmount: `${Math.floor(displayTotal)}`, // Simplified text representation, integer usually
             billBreakdown: [
                 { value: displayTotal, count: 1, total: displayTotal }
             ]
