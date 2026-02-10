@@ -509,52 +509,51 @@ export default function ReceiptPage() {
                     </div>
                 </div>
             )}
-        </div>
 
-            {/* Receipt Container - STRICT A4 FORMAT */ }
+            {/* Receipt Container - STRICT A4 FORMAT */}
 
-    {/* WRAPPER pour print.css: ID = printable-root */ }
-    <div
-        id="printable-root"
-        className="mx-auto bg-white relative overflow-hidden"
-        style={{ width: '210mm', minHeight: '297mm' }}
-    >
-        <div
-            id="printable-receipt" // L'ID cible du CSS
-            ref={receiptRef}
-            className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border overflow-hidden"
-            style={{
-                width: '210mm',
-                height: '297mm',
-                WebkitPrintColorAdjust: 'exact',
-                printColorAdjust: 'exact'
-            }}
-        >
+            {/* WRAPPER pour print.css: ID = printable-root */}
+            <div
+                id="printable-root"
+                className="mx-auto bg-white relative overflow-hidden"
+                style={{ width: '210mm', minHeight: '297mm' }}
+            >
+                <div
+                    id="printable-receipt" // L'ID cible du CSS
+                    ref={receiptRef}
+                    className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border overflow-hidden"
+                    style={{
+                        width: '210mm',
+                        height: '297mm',
+                        WebkitPrintColorAdjust: 'exact',
+                        printColorAdjust: 'exact'
+                    }}
+                >
 
-            {/* 1. TOP COPY (BANQUE) - Grows to fill available space */}
-            <div className="flex-1 flex flex-col justify-center">
-                <ReceiptView type="BANQUE" note={note} verifyUrl={verifyUrl} />
+                    {/* 1. TOP COPY (BANQUE) - Grows to fill available space */}
+                    <div className="flex-1 flex flex-col justify-center">
+                        <ReceiptView type="BANQUE" note={note} verifyUrl={verifyUrl} />
+                    </div>
+
+                    {/* CENTRE: LIGNE DE DÉCOUPE (Hauteur fixe réduite ULTRA) */}
+                    <div className="h-[10mm] flex items-center justify-center gap-4 text-gray-400 shrink-0">
+                        <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+                        <Scissors className="h-3 w-3 text-gray-400 transform rotate-180" />
+                        <span className="text-[8px] uppercase font-bold tracking-[0.2em] text-gray-400 whitespace-nowrap">COUPER ICI</span>
+                        <Scissors className="h-3 w-3 text-gray-400" />
+                        <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+                    </div>
+
+                    {/* 2. BOTTOM COPY (CONTRIBUABLE) - Grows to fill available space */}
+                    <div className="flex-1 flex flex-col justify-center">
+                        <ReceiptView type="CONTRIBUABLE" note={note} verifyUrl={verifyUrl} />
+                    </div>
+                </div>
+
+                <p className="no-print text-center text-[10px] text-gray-400 mt-6 mb-12 select-none">
+                    Format A4 Standard (210 x 297 mm). Ajustez l'échelle à 100% lors de l'impression.
+                </p>
             </div>
-
-            {/* CENTRE: LIGNE DE DÉCOUPE (Hauteur fixe réduite ULTRA) */}
-            <div className="h-[10mm] flex items-center justify-center gap-4 text-gray-400 shrink-0">
-                <div className="h-px w-full border-t border-dashed border-gray-400"></div>
-                <Scissors className="h-3 w-3 text-gray-400 transform rotate-180" />
-                <span className="text-[8px] uppercase font-bold tracking-[0.2em] text-gray-400 whitespace-nowrap">COUPER ICI</span>
-                <Scissors className="h-3 w-3 text-gray-400" />
-                <div className="h-px w-full border-t border-dashed border-gray-400"></div>
-            </div>
-
-            {/* 2. BOTTOM COPY (CONTRIBUABLE) - Grows to fill available space */}
-            <div className="flex-1 flex flex-col justify-center">
-                <ReceiptView type="CONTRIBUABLE" note={note} verifyUrl={verifyUrl} />
-            </div>
-        </div>
-
-        <p className="no-print text-center text-[10px] text-gray-400 mt-6 mb-12 select-none">
-            Format A4 Standard (210 x 297 mm). Ajustez l'échelle à 100% lors de l'impression.
-        </p>
-    </div>
         </div >
     );
 }
