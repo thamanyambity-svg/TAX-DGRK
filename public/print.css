@@ -51,5 +51,7 @@
     margin: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    font-family: "Courier New", Courier, monospace !important;
+    font-weight: normal !important;
   }
 }

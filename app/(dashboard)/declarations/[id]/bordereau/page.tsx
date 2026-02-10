@@ -110,7 +110,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
     const motifDisplay = `${ownerFirstName} / ${taxpayerRef}`;
 
     return (
-        <div className="min-h-screen bg-gray-100 py-8 font-mono text-black">
+        <div className="min-h-screen bg-gray-100 py-8 font-mono font-normal text-black">
             {/* Toolbar */}
             <div className="no-print max-w-[210mm] mx-auto mb-6 px-4 flex justify-between items-center">
                 <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-black bg-white px-4 py-2 rounded shadow-sm text-sm">
@@ -144,7 +144,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                 <div
                     id="printable-bordereau"
                     ref={componentRef}
-                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] leading-[1.15] box-border"
+                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] font-normal leading-[1.15] box-border"
                     style={{
                         width: '210mm',
                         minHeight: '297mm',
