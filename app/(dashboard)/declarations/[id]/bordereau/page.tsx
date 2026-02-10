@@ -117,8 +117,8 @@ export default function BordereauPage() {
     // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
     // User requested format for Bordereau: NAME /1579A471 (ID Suffix)
     const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
-    const idSuffix = note.id.split('-').pop() || '';
-    const motifDisplay = `${ownerFullName} /${idSuffix}`;
+    const noteSuffix = note.id.split('-').pop() || '';
+    const motifDisplay = `${ownerFullName} /${noteSuffix}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 text-black">
