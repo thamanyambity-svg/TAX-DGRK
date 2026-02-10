@@ -57,3 +57,36 @@ export function getNowOrBusinessHours(): string {
     // Fallback to random valid date if current time is invalid
     return generateValidDate(now.getTime()).toISOString();
 }
+
+/**
+ * Calculates a payment date that is approx 48h after the creation date,
+ * strictly respecting business hours and skipping Sundays.
+ */
+export function getPaymentDate(creationDateStr: string): string {
+    const date = new Date(creationDateStr);
+
+    // Add 2 days (48 hours)
+    date.setUTCDate(date.getUTCDate() + 2);
+
+    // If result is Sunday, move to Monday
+    if (date.getUTCDay() === 0) {
+        date.setUTCDate(date.getUTCDate() + 1);
+    }
+
+    // Ensure it's within business hours for that day
+    // If it's too early or late, adjust to mid-day
+    const hour = date.getUTCHours();
+    const day = date.getUTCDay();
+
+    if (day === 6) { // Saturday (8:30 - 14:00)
+        if (hour < 9 || hour >= 13) {
+            date.setUTCHours(10, 30, 0, 0);
+        }
+    } else { // Mon-Fri (9:00 - 17:30)
+        if (hour < 10 || hour >= 16) {
+            date.setUTCHours(11, 0, 0, 0);
+        }
+    }
+
+    return date.toISOString();
+}
