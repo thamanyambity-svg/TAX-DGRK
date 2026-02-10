@@ -166,87 +166,45 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                         {/* ESPACE POUR LE LOGO */}
                         <div className="h-[120px]"></div>
 
-                        {/* TITRE & NUMERO */}
-                        <div className="text-center mb-6">
-                            <span className="tracking-[4px]">
-                                BORDEREAU DE VERSEMENT DEVISE No
-                            </span>
-                            <span className="ml-2">{bordereauNo}</span>
+                        {/* TITRE & NUMERO - ESPACEMENT MANUEL CARACTERE PAR CARACTERE */}
+                        <div className="text-center mb-6 whitespace-pre">
+                            <span>B O R D E R E A U   D E   V E R S E M E N T   D E V I S E   N o   {bordereauNo}</span>
                         </div>
 
-                        {/* REF ET DATE */}
-                        <div className="flex justify-between mb-4">
-                            <div>33000061711-79</div>
-                            <div>
-                                {dateStr} a {timeStr}
-                            </div>
+                        {/* REF ET DATE - ALIGNEMENT GRID */}
+                        <div className="whitespace-pre mb-6">
+                            <span>33000061711-79                                     {dateStr} a {timeStr}</span>
                         </div>
 
-                        {/* BLOC INFO - Format exact */}
-                        <div className="space-y-0 mb-4 text-[10pt]">
-                            <div className="flex">
-                                <span className="w-[100px]">Agence</span>
-                                <span className="mr-1">....:</span>
-                                <span>00010 AGENCE GOMBE</span>
-                            </div>
-                            <div className="flex">
-                                <span className="w-[100px]">Devise</span>
-                                <span className="mr-1">....:</span>
-                                <span>USD</span>
-                                <span className="ml-4">DOLLAR USA</span>
-                            </div>
+                        {/* BLOC INFO - FORMAT TERMINAL BANCAIRE STRICT */}
+                        <div className="whitespace-pre text-[10pt] leading-[1.3] mb-6">
+                            <div>Agence          .... : 00010 AGENCE GOMBE</div>
+                            <div>Devise          .... : USD   DOLLAR USA</div>
                             <div className="flex justify-between">
-                                <div className="flex">
-                                    <span className="w-[100px]">Caisse</span>
-                                    <span className="mr-1">....:</span>
-                                    <span>140</span>
-                                    <span className="ml-4">CAISSE SEC. GOMBE USD - 140</span>
-                                </div>
+                                <span>Caisse          .... : 140   CAISSE SEC. GOMBE USD - 140</span>
                                 <span>VILLE DE KINSHASA</span>
                             </div>
                             <div className="flex justify-between">
-                                <div className="flex">
-                                    <span className="w-[100px]">Guichetier</span>
-                                    <span className="mr-1">..:</span>
-                                    <span>VNGOMBA</span>
-                                </div>
+                                <span>Guichetier      .. : VNGOMBA</span>
                                 <span>COLONEL EBEYA</span>
                             </div>
                             <div className="flex justify-between">
-                                <div className="flex">
-                                    <span className="w-[100px]">Gestionnaire</span>
-                                    <span className="mr-1">:</span>
-                                    <span>DIRECTEUR GENERAL</span>
-                                </div>
-                                <span>GOMBE</span>
+                                <span>Gestionnaire    : DIRECTEUR GENERAL</span>
+                                <span className="ml-[100px]">GOMBE</span>
                             </div>
-                            <div className="flex justify-end">
+                            <div className="flex justify-end pr-[42px]">
                                 <span>KINSHASA</span>
                             </div>
-                            <div className="flex justify-end">
+                            <div className="flex justify-end pr-[42px]">
                                 <span>KINSHASA</span>
                             </div>
                         </div>
 
-                        {/* REMETTANT - Format exact aligné (DONNÉES CORRECTES MAINTENUES) */}
-                        <div className="mb-4 mt-4 space-y-0">
-                            <div className="flex">
-                                <span className="w-[160px] flex justify-between">
-                                    <span>Nom du remettant</span>
-                                    <span className="mr-2">.:</span>
-                                </span>
-                                <span>{remettantDisplay.toUpperCase()}</span>
-                            </div>
-                            <div className="ml-[160px]">
-                                310 - REP DEM CONGO
-                            </div>
-                            <div className="flex">
-                                <span className="w-[160px] flex justify-between">
-                                    <span>Motif</span>
-                                    <span className="mr-2">:</span>
-                                </span>
-                                <span>{motifDisplay.toUpperCase()}</span>
-                            </div>
+                        {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
+                        <div className="mb-6 mt-6 whitespace-pre text-[10pt]">
+                            <div>Nom du remettant .. : {remettantDisplay.toUpperCase()}</div>
+                            <div className="ml-[200px]">310 - REP DEM CONGO</div>
+                            <div className="mt-1">Motif             : {motifDisplay.toUpperCase()}</div>
                         </div>
 
                         {/* MONTANTS */}
