@@ -27,13 +27,11 @@ const ReceiptView = ({
 
     // Dynamic Pricing Logic based on Fiscal Power
     const { calculateTax } = require('@/lib/tax-rules');
-    const taxInfo = calculateTax(note.vehicle.fiscalPower || 0, note.vehicle.genre || '');
+    const principalUSD = note.payment.principalTaxUSD;
+    const totalFC = note.payment.totalAmountFC;
 
-    // Exchange Rate implied from reference: 156 710.51 / 69.00 = 2271.1668
-    const EXCHANGE_RATE = 2271.1668115942;
-
-    const displayAmountUSD = taxInfo.totalAmount;
-    const displayAmountFC = (displayAmountUSD * EXCHANGE_RATE).toLocaleString('fr-FR', {
+    const displayAmountUSD = principalUSD;
+    const displayAmountFC = totalFC.toLocaleString('fr-FR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });

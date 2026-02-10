@@ -32,7 +32,7 @@ function generateRandomPhone(seed: number): string {
 export { CONGO_NAMES, generateRandomPhone };
 
 // Helper to generate a consistent logical ID from a sequence number
-// User requested base: NDP-2026-1579A471
+// User requested base series: 1579A471
 export const DECL_BASE = 0x1579A471;
 export const NDP_BASE = 0x1579A471;
 
@@ -40,8 +40,9 @@ export const NDP_BASE = 0x1579A471;
  * Generates a high-entropy unique sequence number to prevent collisions.
  */
 export function getSecureSequence(): number {
-    // Large random range for absolute uniqueness
-    return Math.floor(Math.random() * 9000000) + 100000;
+    // Generate a sequence that, when added to base, stays within a reasonable hex range
+    // Using Date.now() offset for absolute temporal uniqueness
+    return Math.floor((Date.now() % 100000000) / 10);
 }
 
 export function generateDeclarationId(sequence: number): string {
@@ -116,18 +117,18 @@ export function generateDeclaration(sequence: number): Declaration {
 }
 
 export function generateNote(declaration: Declaration): NoteDePerception {
-    // 1. Get the Unique Hex Suffix from the Declaration ID
-    // If ID is DECL-2026-B9ED76, suffix is B9ED76
+    // 1. Extract the unique ID suffix from the Declaration (e.g., 1579A471)
     const idParts = declaration.id.split('-');
     const hexSuffix = idParts[idParts.length - 1] || '0';
 
-    // 2. Determine the Reference ID (NDP ID)
-    // We prioritize the stored one, otherwise we mirror the declaration suffix
-    const referenceId = declaration.meta?.ndpId || `NDP - 2026-${hexSuffix}`;
+    // 2. Format the Reference strictly: NDP - 2026-XXXXXXXX
+    // This uses the declaration suffix to ensure absolute uniqueness per vehicle
+    const referenceId = `NDP - 2026-${hexSuffix}`;
 
     const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
         (declaration.taxpayer as any)?.name ||
-        (declaration.vehicle.type === 'Personne Morale' ? "ENTREPRISE SARL" : "CITOYEN KIN");
+        "CONTRIBUABLE";
+
 
     const finalNote: NoteDePerception = {
         id: referenceId,
