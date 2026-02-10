@@ -178,22 +178,24 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
 
                         {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE (RECALIBRÉ) */}
                         <div className="relative mb-6 text-[10pt] leading-[1.3] whitespace-pre">
-                            <div>Agence      ....: 00010 AGENCE GOMBE</div>
-                            <div>Devise      ....: USD   DOLLAR USA</div>
                             <div className="flex">
-                                <div className="w-[500px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</div>
+                                <div className="w-[500px]">Agence      ....: 00010 AGENCE GOMBE</div>
+                                <div></div>
+                            </div>
+                            <div className="flex">
+                                <div className="w-[500px]">Devise      ....: USD   DOLLAR USA</div>
                                 <div>VILLE DE KINSHASA</div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]">Guichetier  ..: VNGOMBA</div>
+                                <div className="w-[500px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</div>
                                 <div>COLONEL EBEYA</div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]">Gestionnaire  : DIRECTEUR GENERAL</div>
-                                <div>GOMBE</div>
+                                <div className="w-[500px]">Guichetier  ..: VNGOMBA</div>
+                                <div>     GOMBE</div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]"></div>
+                                <div className="w-[500px]">Gestionnaire  : DIRECTEUR GENERAL</div>
                                 <div>KINSHASA</div>
                             </div>
                             <div className="flex">
