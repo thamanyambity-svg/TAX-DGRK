@@ -119,7 +119,21 @@ export function generateDeclaration(sequence: number): Declaration {
 export function generateNote(declaration: Declaration): NoteDePerception {
     // 1. Extract the unique ID suffix from the Declaration (e.g., 1579A471)
     const idParts = declaration.id.split('-');
-    const hexSuffix = idParts[idParts.length - 1] || '0';
+    const rawSuffix = idParts[idParts.length - 1] || '0';
+    let hexSuffix = rawSuffix.toUpperCase();
+
+    // --- LEGACY/IMPORT FALLBACK ---
+    // If the ID is an import (IMP) or not a 8-char hex, force it into the target series
+    const isStandardHex = /^[0-9A-F]{8}$/.test(hexSuffix);
+    const isLegacy = declaration.id.includes('IMP') || !isStandardHex;
+
+    if (isLegacy) {
+        // Deterministic mapping to ensure stable IDs for existing records
+        // Extract numbers from the suffix or use a hash of the full ID
+        const numericSeed = parseInt(rawSuffix.replace(/[^0-9]/g, '') || '1', 10);
+        const stableId = 0x1579A000 + (numericSeed % 0xFFFFF);
+        hexSuffix = stableId.toString(16).toUpperCase();
+    }
 
     // 2. Format the Reference strictly: NDP - 2026-XXXXXXXX
     // This uses the declaration suffix to ensure absolute uniqueness per vehicle
