@@ -536,13 +536,17 @@ export default function ReceiptPage() {
                     </div>
                     <div className="flex flex-col gap-1 w-full md:w-auto">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque / Type (Override)</label>
-                        <input
-                            type="text"
-                            placeholder="Ex: TOYOTA PRADO / 4x4"
+                        <select
                             className="px-2 py-1 w-full md:w-48 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
                             value={editMarqueType}
                             onChange={(e) => setEditMarqueType(e.target.value)}
-                        />
+                        >
+                            <option value="">-- Sélectionner --</option>
+                            <option value="touristique_heavy">Touristique Heavy</option>
+                            <option value="touristique_medium">Touristique Medium</option>
+                            <option value="utilitaire_heavy">Utilitaire Heavy</option>
+                            <option value="utilitaire_medium">Utilitaire Medium</option>
+                        </select>
                     </div>
                     <button
                         onClick={handleSaveDates}
