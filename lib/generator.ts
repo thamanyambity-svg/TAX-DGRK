@@ -38,13 +38,10 @@ export const NDP_BASE = 0x1579A471;
 
 /**
  * Generates a high-entropy unique sequence number to prevent collisions.
- * Uses millisecond resolution + a 4-digit random salt.
  */
 export function getSecureSequence(): number {
-    const baseDate = new Date('2026-01-01').getTime();
-    const now = Date.now();
-    // Offset in milliseconds + 4-digit random suffix for sub-millisecond safety
-    return (now - baseDate) * 1000 + Math.floor(Math.random() * 1000);
+    // Use a large random range (100,000 to 9,999,999) to ensure uniqueness
+    return Math.floor(Math.random() * 9000000) + 100000;
 }
 
 export function generateDeclarationId(sequence: number): string {
@@ -119,33 +116,46 @@ export function generateDeclaration(sequence: number): Declaration {
 }
 
 export function generateNote(declaration: Declaration): NoteDePerception {
-    // Legacy fallback parsing logic (shared)
+    // 1. CRITICAL: Always prioritize the uniquely stored reference from the DB
+    if (declaration.meta?.ndpId) {
+        const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
+            (declaration.taxpayer as any)?.name ||
+            "CONTRIBUABLE";
+
+        return {
+            id: declaration.meta.ndpId,
+            declarationId: declaration.id,
+            taxpayer: {
+                name: taxpayerName,
+                nif: declaration.meta?.manualTaxpayer?.nif || "N/A",
+                address: declaration.meta?.manualTaxpayer?.address || "KINSHASA",
+            },
+            vehicle: declaration.vehicle,
+            bankDetails: { reservedBox: true },
+            payment: {
+                principalTaxUSD: declaration.tax.baseRate,
+                totalAmountFC: declaration.tax.totalAmountFC,
+            },
+            generatedAt: declaration.createdAt,
+        };
+    }
+
+    // 2. Fallback logic for legacy/mock data
     const sequenceStr = declaration.id.split('-').pop();
     const declarationVal = parseInt(sequenceStr || '0', 16);
     let sequence = !isNaN(declarationVal) ? declarationVal - DECL_BASE : 0;
     if (sequence < 0) sequence = 0;
 
-    // Stable NIF generation based on name hash (if no manual NIF)
-    const getStableNIF = (name: string) => {
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) {
-            hash = ((hash << 5) - hash) + name.charCodeAt(i);
-            hash |= 0;
-        }
-        const num = Math.abs(hash % 900000) + 100000;
-        return `A${num}K`;
-    };
-
     const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
         (declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`);
 
     const finalNote: NoteDePerception = {
-        id: declaration.meta?.ndpId || generateNoteId(sequence), // Prioritize stored NDP ID
+        id: generateNoteId(sequence),
         declarationId: declaration.id,
         taxpayer: {
             name: taxpayerName,
-            nif: declaration.meta?.manualTaxpayer?.nif || getStableNIF(taxpayerName),
-            address: declaration.meta?.manualTaxpayer?.address || `${sequence * 12 + 1} Av. Des Poids Lourds, ${getFromList(COMMUNES, sequence)}, ${getFromList(CITIES, sequence)}`,
+            nif: declaration.meta?.manualTaxpayer?.nif || `A${900000 + sequence}K`,
+            address: declaration.meta?.manualTaxpayer?.address || "ADRESSE GENEREE",
         },
         vehicle: {
             chassis: declaration.vehicle.chassis,
@@ -156,9 +166,7 @@ export function generateNote(declaration: Declaration): NoteDePerception {
             marque: declaration.vehicle.marque,
             modele: declaration.vehicle.modele,
         },
-        bankDetails: {
-            reservedBox: true,
-        },
+        bankDetails: { reservedBox: true },
         payment: {
             principalTaxUSD: declaration.tax.baseRate,
             totalAmountFC: declaration.tax.totalAmountFC,
