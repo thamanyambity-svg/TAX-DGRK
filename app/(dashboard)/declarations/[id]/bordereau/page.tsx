@@ -203,17 +203,15 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                 <div>KINSHASA</div>
                             </div>
 
-                            {/* Triangle rouge décoratif (conforme image 782) */}
-                            <div
-                                className="absolute right-[30px] bottom-[15px]"
-                                style={{
-                                    width: 0,
-                                    height: 0,
-                                    borderTop: '18px solid transparent',
-                                    borderBottom: '18px solid transparent',
-                                    borderLeft: '28px solid #C40000', // Rouge banque profond
-                                }}
-                            ></div>
+                            {/* Symbole rouge banque (reproduction exacte image 834) */}
+                            <div className="absolute right-[20px] bottom-[20px]">
+                                <svg width="35" height="35" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                    <path
+                                        d="M100,0 L100,100 L0,85 C40,75 70,45 100,0 Z"
+                                        fill="#C40000"
+                                    />
+                                </svg>
+                            </div>
                         </div>
 
                         {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
