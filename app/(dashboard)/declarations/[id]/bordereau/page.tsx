@@ -166,49 +166,50 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                         {/* ESPACE POUR LE LOGO */}
                         <div className="h-[120px]"></div>
 
-                        {/* TITRE & NUMERO - ESPACEMENT NORMAL */}
+                        {/* TITRE & NUMERO - ALIGNEMENT CENTRE */}
                         <div className="text-center mb-4 whitespace-pre">
                             <span>BORDEREAU DE VERSEMENT DEVISE No  {bordereauNo}</span>
                         </div>
 
-                        {/* REF ET DATE - ALIGNEMENT EQUILIBRE */}
-                        <div className="whitespace-pre mb-8 pl-12">
-                            <span>33000061711-79                           {dateStr} a {timeStr}</span>
+                        {/* REF ET DATE - ALIGNEMENT GRID */}
+                        <div className="whitespace-pre mb-8 pl-10">
+                            <span>33000061711-79                                     {dateStr} a {timeStr}</span>
                         </div>
 
-                        {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE */}
+                        {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE (RECALIBRÉ) */}
                         <div className="relative mb-6 text-[10pt] leading-[1.3] whitespace-pre">
                             <div>Agence      ....: 00010 AGENCE GOMBE</div>
                             <div>Devise      ....: USD   DOLLAR USA</div>
                             <div className="flex">
-                                <span className="w-[480px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</span>
-                                <span>VILLE DE KINSHASA</span>
+                                <div className="w-[500px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</div>
+                                <div>VILLE DE KINSHASA</div>
                             </div>
                             <div className="flex">
-                                <span className="w-[480px]">Guichetier  ..: VNGOMBA</span>
-                                <span>COLONEL EBEYA</span>
+                                <div className="w-[500px]">Guichetier  ..: VNGOMBA</div>
+                                <div>COLONEL EBEYA</div>
                             </div>
                             <div className="flex">
-                                <span className="w-[480px]">Gestionnaire  : DIRECTEUR GENERAL</span>
-                                <span>GOMBE</span>
+                                <div className="w-[500px]">Gestionnaire  : DIRECTEUR GENERAL</div>
+                                <div>GOMBE</div>
                             </div>
-                            <div className="flex justify-end pr-24">
-                                <span>KINSHASA</span>
+                            <div className="flex">
+                                <div className="w-[500px]"></div>
+                                <div>KINSHASA</div>
                             </div>
-                            <div className="flex justify-end pr-24">
-                                <span>KINSHASA</span>
+                            <div className="flex">
+                                <div className="w-[500px]"></div>
+                                <div>KINSHASA</div>
                             </div>
 
-                            {/* Triangle rouge décoratif (conforme image 754) */}
+                            {/* Triangle rouge décoratif (conforme image 782) */}
                             <div
-                                className="absolute right-0 bottom-[-10px]"
+                                className="absolute right-[30px] bottom-[15px]"
                                 style={{
                                     width: 0,
                                     height: 0,
-                                    borderTop: '20px solid transparent',
-                                    borderBottom: '20px solid transparent',
-                                    borderLeft: '30px solid #C00', // Rouge banque
-                                    transform: 'rotate(0deg)'
+                                    borderTop: '18px solid transparent',
+                                    borderBottom: '18px solid transparent',
+                                    borderLeft: '28px solid #C40000', // Rouge banque profond
                                 }}
                             ></div>
                         </div>
