@@ -79,8 +79,8 @@ export default function NewDeclarationPage() {
                 totalAmountFC: totalAmount,
             },
             meta: {
-                systemId: `MANUAL-${sequence}`,
-                reference: noteId.replace('NDP-2026-', ''),
+                systemId: id,
+                reference: noteId.replace('NDP - 2026-', ''),
                 ndpId: noteId,
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),

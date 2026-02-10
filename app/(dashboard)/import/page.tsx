@@ -198,7 +198,7 @@ export default function ImportPage() {
                     },
                     meta: {
                         systemId: id,
-                        reference: noteId.replace('NDP-2026-', ''),
+                        reference: noteId.replace('NDP - 2026-', ''),
                         ndpId: noteId,
                         manualTaxpayer: {
                             name: (row.NOM || 'INCONNU').toString().toUpperCase(),
