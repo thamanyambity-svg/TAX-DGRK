@@ -345,14 +345,16 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                 <span>------------------------------------------</span>
                             </div>
 
-                            {/* Matrice de signatures ultra-calibrée */}
-                            <div className="mt-1 whitespace-pre">
-                                <div>      CLIENT       !    GUICHETIER    !</div>
-                                <div>                   !                  !</div>
-                                <div>                   !                  !</div>
-                                <div className="flex">
-                                    <span className="flex-1">                   !                  !</span>
-                                    <span className="tracking-[0.05em]">   OPERATION EFFECTUEE</span>
+                            {/* Matrice de signatures & Mention Opération répartie */}
+                            <div className="mt-1 flex items-end justify-between">
+                                <div className="whitespace-pre">
+                                    <div>      CLIENT       !    GUICHETIER    !</div>
+                                    <div>                   !                  !</div>
+                                    <div>                   !                  !</div>
+                                    <div>                   !                  !</div>
+                                </div>
+                                <div className="pb-1">
+                                    <span className="tracking-[0.05em]">OPERATION EFFECTUEE</span>
                                 </div>
                             </div>
                         </div>
