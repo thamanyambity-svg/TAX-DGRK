@@ -32,15 +32,15 @@ function generateRandomPhone(seed: number): string {
 export { CONGO_NAMES, generateRandomPhone };
 
 // Helper to generate a consistent logical ID from a sequence number
-// User requested base: DECL-2026-B9ED76
-export const DECL_BASE = 0xB9ED76;
+// User requested base: NDP-2026-1579A471
+export const DECL_BASE = 0x1579A471;
 export const NDP_BASE = 0x1579A471;
 
 /**
  * Generates a high-entropy unique sequence number to prevent collisions.
  */
 export function getSecureSequence(): number {
-    // Use a large random range (100,000 to 9,999,999) to ensure uniqueness
+    // Large random range for absolute uniqueness
     return Math.floor(Math.random() * 9000000) + 100000;
 }
 
@@ -53,7 +53,7 @@ export function generateDeclarationId(sequence: number): string {
 export function generateNoteId(sequence: number): string {
     const currentId = NDP_BASE + sequence;
     const hexSuffix = currentId.toString(16).toUpperCase();
-    return `NDP-2026-${hexSuffix}`;
+    return `NDP - 2026-${hexSuffix}`;
 }
 
 // Deterministic random helper (simple LCG or just modulo for demo)
@@ -123,7 +123,7 @@ export function generateNote(declaration: Declaration): NoteDePerception {
 
     // 2. Determine the Reference ID (NDP ID)
     // We prioritize the stored one, otherwise we mirror the declaration suffix
-    const referenceId = declaration.meta?.ndpId || `NDP-2026-${hexSuffix}`;
+    const referenceId = declaration.meta?.ndpId || `NDP - 2026-${hexSuffix}`;
 
     const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
         (declaration.taxpayer as any)?.name ||

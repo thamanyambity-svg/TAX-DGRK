@@ -115,9 +115,10 @@ export default function BordereauPage() {
 
     const remettantDisplay = `${facilitatorName} ${facilitatorLastName} / ${facilitatorPhone}`.replace(/\/ $/, '');
     // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
-    // Change NDP-2026-1579A471 to FULL NAME /1579A471 format
+    // User requested format for Bordereau: NAME /1579A471 (ID Suffix)
     const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
-    const motifDisplay = `${ownerFullName} /${note.id.replace('NDP-2026-', '')}`;
+    const idSuffix = note.id.split('-').pop() || '';
+    const motifDisplay = `${ownerFullName} /${idSuffix}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 text-black">
