@@ -8,7 +8,7 @@ import { getDeclarationById } from '@/lib/store';
 import { generateNote } from '@/lib/generator';
 import { NoteDePerception } from '@/types';
 import QRCode from 'react-qr-code';
-import { ArrowLeft, Download, Scissors } from 'lucide-react';
+import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-react';
 
 // --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
 const ReceiptView = ({
@@ -247,6 +247,13 @@ export default function ReceiptPage() {
     const [error, setError] = useState<string | null>(null);
     const receiptRef = useRef<HTMLDivElement>(null);
 
+    // --- ADMIN DATE CONTROL STATE ---
+    const [decl, setDecl] = useState<any>(null); // Store full declaration
+    const [showAdminDates, setShowAdminDates] = useState(false);
+    const [editReceiptDate, setEditReceiptDate] = useState('');
+    const [editPaymentDate, setEditPaymentDate] = useState('');
+    const [isSavingDates, setIsSavingDates] = useState(false);
+
     // --- Ajout du CSS d'impression ---
     useEffect(() => {
         const link = document.createElement('link');
@@ -277,11 +284,33 @@ export default function ReceiptPage() {
                 if (isMounted) {
                     if (manualDecl) {
                         // console.log("✅ Declaration found:", manualDecl);
+                        const { getPaymentDate } = await import('@/lib/business-calendar');
+
+                        // Store full decl
+                        setDecl(manualDecl);
+
                         const manualNote = generateNote(manualDecl);
                         if ((manualDecl.meta as any)?.manualTaxpayer) {
                             manualNote.taxpayer = (manualDecl.meta as any).manualTaxpayer;
                         }
                         setNote(manualNote);
+
+                        // Initialize inputs
+                        // 1. Receipt Date (created_at)
+                        const rDate = manualDecl.createdAt ? new Date(manualDecl.createdAt) : new Date();
+                        // Format for datetime-local: YYYY-MM-DDTHH:mm
+                        const toLocalIso = (d: Date) => {
+                            const offset = d.getTimezoneOffset() * 60000;
+                            return new Date(d.getTime() - offset).toISOString().slice(0, 16);
+                        };
+                        setEditReceiptDate(toLocalIso(rDate));
+
+                        // 2. Payment Date (meta.manualPaymentDate OR calculated)
+                        let pDateStr = (manualDecl.meta as any)?.manualPaymentDate;
+                        if (!pDateStr) {
+                            pDateStr = getPaymentDate(manualDecl.createdAt);
+                        }
+                        setEditPaymentDate(toLocalIso(new Date(pDateStr)));
                         // CRITICAL FIX: Clear timeout immediately on success
                         if (timeoutId) clearTimeout(timeoutId);
                     } else {
@@ -323,6 +352,40 @@ export default function ReceiptPage() {
         }
     };
 
+    const handleSaveDates = async () => {
+        if (!decl || !id) return;
+        setIsSavingDates(true);
+        try {
+            const { updateDeclaration } = await import('@/lib/store');
+
+            // Convert inputs back to ISO strings
+            const newReceiptDate = new Date(editReceiptDate).toISOString();
+            const newPaymentDate = new Date(editPaymentDate).toISOString();
+
+            const updates = {
+                createdAt: newReceiptDate,
+                meta: {
+                    ...decl.meta,
+                    manualPaymentDate: newPaymentDate
+                }
+            };
+
+            const result = await updateDeclaration(id, updates);
+            if (result.success) {
+                // Determine if we need to reload to reflect changes or just update state
+                // Reloading is safer to re-run all generators
+                window.location.reload();
+            } else {
+                alert("Erreur lors de la sauvegarde: " + result.error);
+            }
+        } catch (e) {
+            console.error("Save failed", e);
+            alert("Erreur interne lors de la sauvegarde.");
+        } finally {
+            setIsSavingDates(false);
+        }
+    };
+
     if (error) {
         return (
             <div className="min-h-screen flex flex-col gap-4 items-center justify-center text-gray-500 bg-white">
@@ -356,13 +419,24 @@ export default function ReceiptPage() {
             {/* Toolbar */}
             <div className="no-print sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 py-3 mb-6 print:hidden shadow-sm">
                 <div className="max-w-4xl mx-auto flex justify-between items-center">
-                    <button
-                        onClick={() => router.push('/')}
-                        className="flex items-center text-gray-600 hover:text-black transition-colors"
-                    >
-                        <ArrowLeft className="h-4 w-4 mr-1.5" />
-                        <span className="text-sm font-medium">Tableau de bord</span>
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => router.push('/')}
+                            className="flex items-center text-gray-600 hover:text-black transition-colors"
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-1.5" />
+                            <span className="text-sm font-medium">Tableau de bord</span>
+                        </button>
+
+                        {/* ADMIN TOGGLE */}
+                        <button
+                            onClick={() => setShowAdminDates(!showAdminDates)}
+                            className={`flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium transition-colors ${showAdminDates ? 'bg-blue-100 text-blue-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                        >
+                            <CalendarClock className="h-3.5 w-3.5" />
+                            {showAdminDates ? 'Masquer Admin' : 'Admin Dates'}
+                        </button>
+                    </div>
 
                     <div className="flex gap-2">
                         {/* BOUTON BORDEREAU */}
@@ -397,50 +471,90 @@ export default function ReceiptPage() {
                 </div>
             </div>
 
-            {/* Receipt Container - STRICT A4 FORMAT */}
-
-            {/* WRAPPER pour print.css: ID = printable-root */}
-            <div
-                id="printable-root"
-                className="mx-auto bg-white relative overflow-hidden"
-                style={{ width: '210mm', minHeight: '297mm' }}
-            >
-                <div
-                    id="printable-receipt" // L'ID cible du CSS
-                    ref={receiptRef}
-                    className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border overflow-hidden"
-                    style={{
-                        width: '210mm',
-                        height: '297mm',
-                        WebkitPrintColorAdjust: 'exact',
-                        printColorAdjust: 'exact'
-                    }}
-                >
-
-                    {/* 1. TOP COPY (BANQUE) - Grows to fill available space */}
-                    <div className="flex-1 flex flex-col justify-center">
-                        <ReceiptView type="BANQUE" note={note} verifyUrl={verifyUrl} />
+            {/* ADMIN DATE PANEL */}
+            {showAdminDates && (
+                <div className="max-w-4xl mx-auto mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md shadow-inner mb-4 flex flex-wrap items-end gap-4 animate-in fade-in slide-in-from-top-2">
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Création (Récépissé)</label>
+                        <input
+                            type="datetime-local"
+                            className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            value={editReceiptDate}
+                            onChange={(e) => setEditReceiptDate(e.target.value)}
+                        />
                     </div>
-
-                    {/* CENTRE: LIGNE DE DÉCOUPE (Hauteur fixe réduite ULTRA) */}
-                    <div className="h-[10mm] flex items-center justify-center gap-4 text-gray-400 shrink-0">
-                        <div className="h-px w-full border-t border-dashed border-gray-400"></div>
-                        <Scissors className="h-3 w-3 text-gray-400 transform rotate-180" />
-                        <span className="text-[8px] uppercase font-bold tracking-[0.2em] text-gray-400 whitespace-nowrap">COUPER ICI</span>
-                        <Scissors className="h-3 w-3 text-gray-400" />
-                        <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Paiement (Banque 48h)</label>
+                        <input
+                            type="datetime-local"
+                            className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            value={editPaymentDate}
+                            onChange={(e) => setEditPaymentDate(e.target.value)}
+                        />
                     </div>
-
-                    {/* 2. BOTTOM COPY (CONTRIBUABLE) - Grows to fill available space */}
-                    <div className="flex-1 flex flex-col justify-center">
-                        <ReceiptView type="CONTRIBUABLE" note={note} verifyUrl={verifyUrl} />
+                    <button
+                        onClick={handleSaveDates}
+                        disabled={isSavingDates}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-bold hover:bg-blue-700 disabled:opacity-50 shadow-sm"
+                    >
+                        {isSavingDates ? (
+                            <span className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" />
+                        ) : (
+                            <Save className="h-3.5 w-3.5" />
+                        )}
+                        Sauvegarder
+                    </button>
+                    <div className="text-[10px] text-blue-600/70 max-w-xs leading-tight ml-auto italic">
+                        Les modifications mettent à jour la date enregistrée et forcent la date de paiement pour le bordereau.
                     </div>
                 </div>
+            )}
+        </div>
 
-                <p className="no-print text-center text-[10px] text-gray-400 mt-6 mb-12 select-none">
-                    Format A4 Standard (210 x 297 mm). Ajustez l'échelle à 100% lors de l'impression.
-                </p>
+            {/* Receipt Container - STRICT A4 FORMAT */ }
+
+    {/* WRAPPER pour print.css: ID = printable-root */ }
+    <div
+        id="printable-root"
+        className="mx-auto bg-white relative overflow-hidden"
+        style={{ width: '210mm', minHeight: '297mm' }}
+    >
+        <div
+            id="printable-receipt" // L'ID cible du CSS
+            ref={receiptRef}
+            className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border overflow-hidden"
+            style={{
+                width: '210mm',
+                height: '297mm',
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact'
+            }}
+        >
+
+            {/* 1. TOP COPY (BANQUE) - Grows to fill available space */}
+            <div className="flex-1 flex flex-col justify-center">
+                <ReceiptView type="BANQUE" note={note} verifyUrl={verifyUrl} />
+            </div>
+
+            {/* CENTRE: LIGNE DE DÉCOUPE (Hauteur fixe réduite ULTRA) */}
+            <div className="h-[10mm] flex items-center justify-center gap-4 text-gray-400 shrink-0">
+                <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+                <Scissors className="h-3 w-3 text-gray-400 transform rotate-180" />
+                <span className="text-[8px] uppercase font-bold tracking-[0.2em] text-gray-400 whitespace-nowrap">COUPER ICI</span>
+                <Scissors className="h-3 w-3 text-gray-400" />
+                <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+            </div>
+
+            {/* 2. BOTTOM COPY (CONTRIBUABLE) - Grows to fill available space */}
+            <div className="flex-1 flex flex-col justify-center">
+                <ReceiptView type="CONTRIBUABLE" note={note} verifyUrl={verifyUrl} />
             </div>
         </div>
+
+        <p className="no-print text-center text-[10px] text-gray-400 mt-6 mb-12 select-none">
+            Format A4 Standard (210 x 297 mm). Ajustez l'échelle à 100% lors de l'impression.
+        </p>
+    </div>
+        </div >
     );
 }

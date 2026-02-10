@@ -94,7 +94,8 @@ export default function BordereauPage() {
 
     // --- 48H DIFFERENCE LOGIC ---
     const { getPaymentDate } = require('@/lib/business-calendar');
-    const paymentDateStr = getPaymentDate(decl.createdAt);
+    // Use manual override if available in meta, otherwise calculate standard 48h
+    const paymentDateStr = (decl.meta as any)?.manualPaymentDate || getPaymentDate(decl.createdAt);
     const paymentDate = new Date(paymentDateStr);
 
     const dateStr = paymentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });
