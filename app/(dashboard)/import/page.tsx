@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Save, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { saveDeclaration } from '@/lib/store';
-import { generateDeclarationId } from '@/lib/generator';
+import { generateDeclarationId, getSecureSequence } from '@/lib/generator';
 import { calculateTax } from '@/lib/tax-rules';
 import { Declaration } from '@/types';
 
@@ -159,11 +159,11 @@ export default function ImportPage() {
                     continue;
                 }
 
-                // Generate ID
-                const randomSeq = Math.floor(Math.random() * 900000) + 100000;
-                const id = `DECL-2026-IMP-${randomSeq}`; // Special prefix for imports
+                // Generate unique ID using secure sequence offset for each row (Fixes Grave Error)
+                const sequence = getSecureSequence() + successCount; // Add successCount for sub-millisecond safety in loops
+                const id = generateDeclarationId(sequence);
 
-                const status = row.STATUS && row.STATUS.toLowerCase().includes('pay') ? 'Payée' : 'Payée'; // Default to Payée as requested, override logic if needed
+                const status = 'Payée'; // Default to Payée as requested
 
                 // Prepare Payload
                 const newDecl: Declaration = {

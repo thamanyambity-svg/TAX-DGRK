@@ -73,11 +73,12 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
 
     if (!decl) return <div className="p-10 text-center font-mono text-sm">Chargement...</div>;
 
-    // Calculs pour le bordereau
+    // Calculs pour le bordereau - Correction HEX
+    const { DECL_BASE } = require('@/lib/generator');
     const idSuffix = id.split('-').pop() || '';
-    const numericPart = idSuffix.replace(/\D/g, '');
-    const sequence = parseInt(numericPart, 10) || 0;
-    const bordereauNo = 39383 + (sequence % 10000); // Base cohérente avec la démo
+    const declarationVal = parseInt(idSuffix, 16);
+    const sequence = !isNaN(declarationVal) ? declarationVal - DECL_BASE : 0;
+    const bordereauNo = 39383 + (Math.abs(sequence) % 100000); // Plage plus large pour éviter les doublons bordereau
 
     const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
     const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });

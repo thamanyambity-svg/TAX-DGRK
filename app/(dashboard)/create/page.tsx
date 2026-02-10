@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, FileText, Car, User } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
-import { generateDeclarationId } from '@/lib/generator';
+import { generateDeclarationId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
 
 export default function NewDeclarationPage() {
@@ -47,7 +47,8 @@ export default function NewDeclarationPage() {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const sequence = Math.floor(Math.random() * 10000) + 9000;
+        // Generate a unique sequence based on time to avoid collisions (Grave Error Fix)
+        const sequence = getSecureSequence();
         const id = generateDeclarationId(sequence);
 
         // Use the calculated tax from the rules

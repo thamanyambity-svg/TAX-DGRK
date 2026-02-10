@@ -36,6 +36,18 @@ export { CONGO_NAMES, generateRandomPhone };
 export const DECL_BASE = 0xB9ED76;
 export const NDP_BASE = 0x1579A471;
 
+/**
+ * Generates a unique sequence number based on time to avoid collisions (fleet management)
+ */
+export function getSecureSequence(): number {
+    const now = new Date();
+    const baseDate = new Date('2026-01-01');
+    // Total minutes since 2026-01-01 + high-resolution random component
+    const timeMinutes = Math.floor((now.getTime() - baseDate.getTime()) / 60000);
+    // Large enough random to avoid collisions within the same minute for small fleets
+    return timeMinutes * 100 + Math.floor(Math.random() * 100);
+}
+
 export function generateDeclarationId(sequence: number): string {
     const currentId = DECL_BASE + sequence;
     const hexSuffix = currentId.toString(16).toUpperCase();
@@ -162,13 +174,26 @@ export function generateNote(declaration: Declaration): NoteDePerception {
     }
     if (sequence < 0) sequence = 0;
 
+    // Stable NIF generation based on name hash (if no manual NIF)
+    const getStableNIF = (name: string) => {
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = ((hash << 5) - hash) + name.charCodeAt(i);
+            hash |= 0;
+        }
+        const num = Math.abs(hash % 900000) + 100000;
+        return `A${num}K`;
+    };
+
+    const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
+        (declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`);
+
     return {
         id: generateNoteId(sequence),
         declarationId: declaration.id,
         taxpayer: {
-            name: declaration.meta?.manualTaxpayer?.name ||
-                (declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`),
-            nif: declaration.meta?.manualTaxpayer?.nif || `A${(sequence + 90000).toString()}K`,
+            name: taxpayerName,
+            nif: declaration.meta?.manualTaxpayer?.nif || getStableNIF(taxpayerName),
             address: declaration.meta?.manualTaxpayer?.address || `${sequence * 12 + 1} Av. Des Poids Lourds, ${getFromList(COMMUNES, sequence)}, ${getFromList(CITIES, sequence)}`,
         },
         vehicle: {
