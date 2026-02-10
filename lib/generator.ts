@@ -166,9 +166,10 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         id: generateNoteId(sequence),
         declarationId: declaration.id,
         taxpayer: {
-            name: declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`,
-            nif: `A${(sequence + 90000).toString()}K`,
-            address: `${sequence * 12 + 1} Av. Des Poids Lourds, ${getFromList(COMMUNES, sequence)}, ${getFromList(CITIES, sequence)}`,
+            name: declaration.meta?.manualTaxpayer?.name ||
+                (declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`),
+            nif: declaration.meta?.manualTaxpayer?.nif || `A${(sequence + 90000).toString()}K`,
+            address: declaration.meta?.manualTaxpayer?.address || `${sequence * 12 + 1} Av. Des Poids Lourds, ${getFromList(COMMUNES, sequence)}, ${getFromList(CITIES, sequence)}`,
         },
         vehicle: {
             chassis: declaration.vehicle.chassis,
