@@ -320,42 +320,44 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             </div>
                         </div>
 
-                        {/* FOOTER - MISE EN FORME PHYSIQUE BANQUE (CORRECTIONS PRÉCISES) */}
-                        <div className="mt-8 pt-4">
-                            <div className="text-[10pt] leading-relaxed">
-                                {/* Ligne Crédit & Valeur avec alignement 3 espaces */}
+                        {/* FOOTER - MISE EN FORME PHYSIQUE BANQUE (STRICT CONFORMITY) */}
+                        <div className="mt-10 font-mono text-[9.5pt] leading-[1.3] text-gray-800">
+                            {/* Lignes Crédit & Valeur */}
+                            <div className="flex whitespace-pre">
+                                <span className="flex-1">Nous portons au credit du compte no 33000061711-79</span>
+                                <div className="w-[280px]">
+                                    <div className="flex justify-between">
+                                        <span>USD :</span>
+                                        <span className="mr-8">{displayCredit.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Valeur :</span>
+                                        <span className="mr-8">{dateStr}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Montant en lettres */}
+                            <div className="mt-1">
+                                <span>Soit {taxInfo.textAmount} USD</span>
+                            </div>
+
+                            {/* Espace & Tirets */}
+                            <div className="mt-4">
+                                <span>------------------------------------</span>
+                            </div>
+
+                            {/* Matrice de Signatures & Opération */}
+                            <div className="mt-1 whitespace-pre">
                                 <div className="flex">
-                                    <span className="whitespace-pre">Nous portons au credit du compte no 33000061711-79   </span>
-                                    <div className="flex-1">
-                                        <div className="flex justify-between">
-                                            <span>USD :</span>
-                                            <span className="mr-8">{displayCredit.toFixed(2)}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>Valeur :</span>
-                                            <span className="mr-8">{dateStr}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Montant en lettres */}
-                                <div className="mt-2">
-                                    <span>Soit {taxInfo.textAmount} USD</span>
-                                </div>
-
-                                {/* Signatures et Mention */}
-                                <div className="mt-6 flex items-start">
                                     <div className="w-[360px]">
-                                        {/* Pointillés au dessus de CLIENT/GUICHETIER limited length */}
-                                        <div className="border-t border-dashed border-black w-full mb-2"></div>
-                                        <div className="flex justify-around">
-                                            <span>CLIENT</span>
-                                            <span className="font-normal">!</span>
-                                            <span>GUICHETIER</span>
+                                        <div>      CLIENT       !    GUICHETIER    !</div>
+                                        <div>                   !                  !</div>
+                                        <div>                   !                  !</div>
+                                        <div className="flex items-end">
+                                            <span className="flex-1">                   !                  !</span>
+                                            <span className="text-[9pt] tracking-[0.1em]">        OPERATION EFFECTUEE</span>
                                         </div>
-                                    </div>
-                                    <div className="flex-1 text-center pt-2">
-                                        <span className="tracking-[0.2em] text-[9pt]">OPERATION EFFECTUEE</span>
                                     </div>
                                 </div>
                             </div>
