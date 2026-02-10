@@ -6,6 +6,7 @@ import { ArrowLeft, Save, FileText, Car, User } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
 import { generateDeclarationId } from '@/lib/generator';
+import { getNowOrBusinessHours } from '@/lib/business-calendar';
 
 export default function NewDeclarationPage() {
     const router = useRouter();
@@ -62,8 +63,8 @@ export default function NewDeclarationPage() {
 
         const newDeclaration: Declaration = {
             id,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: getNowOrBusinessHours(),
+            updatedAt: getNowOrBusinessHours(),
             status: 'Payée', // User requested "Tous payer" by default
             vehicle: {
                 category: formData.category,

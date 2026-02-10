@@ -1,5 +1,6 @@
-import { config } from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+import { generateValidDate } from '../lib/business-calendar';
+import { config } from 'dotenv';
 
 // Load environment variables
 config({ path: '.env.local' });
@@ -46,8 +47,8 @@ const realDeclarations = [
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,
-        createdAt: new Date('2024-08-16').toISOString(),
-        updatedAt: new Date('2024-08-16').toISOString()
+        createdAt: generateValidDate(1).toISOString(),
+        updatedAt: generateValidDate(1).toISOString()
     },
     // ... (Adding the KIN PLUS SARL Fleet)
 ];
@@ -90,8 +91,8 @@ const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,
-        createdAt: new Date('2024-06-12').toISOString(),
-        updatedAt: new Date('2024-06-12').toISOString()
+        createdAt: generateValidDate(2000 + seq).toISOString(),
+        updatedAt: generateValidDate(2000 + seq).toISOString()
     };
 });
 
@@ -130,8 +131,8 @@ const KIN_PLUS_WINGLE = Array.from({ length: 10 }).map((_, i) => {
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,
-        createdAt: new Date('2024-07-14').toISOString(),
-        updatedAt: new Date('2024-07-14').toISOString()
+        createdAt: generateValidDate(3000 + seq).toISOString(),
+        updatedAt: generateValidDate(3000 + seq).toISOString()
     };
 });
 

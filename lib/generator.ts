@@ -63,15 +63,11 @@ function getFromList<T>(list: T[], seed: number): T {
 
 // Helper for deterministic dates based on sequence
 // Helper for deterministic dates based on sequence
+import { generateValidDate } from './business-calendar';
+
 function getStableDate(sequence: number, offsetDays = 0): string {
-    // Base date: Jan 1, 2026
-    const baseLine = new Date('2026-01-01T10:00:00Z').getTime();
-
-    // Fix for large IDs: Use modulo 365 to keep the date within 2026
-    // This prevents "Invalid Time Value" errors for sequences like 0x26547276
-    const dayOffset = (sequence % 365) + offsetDays;
-
-    const date = new Date(baseLine + (dayOffset * 86400000));
+    // Generate a valid date based on the sequence
+    const date = generateValidDate(sequence + offsetDays);
     return date.toISOString();
 }
 

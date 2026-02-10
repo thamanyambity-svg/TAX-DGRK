@@ -1,47 +1,13 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { calculateTax } from '../lib/tax-rules';
+import { generateValidDate } from '../lib/business-calendar';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Règles de dates
-const START_DATE = new Date('2026-01-15T09:00:00');
-const END_DATE = new Date('2026-02-07T14:00:00');
-
 function getRandomValidDate() {
-    let found = false;
-    let randomDate = new Date();
-
-    while (!found) {
-        const startTimestamp = START_DATE.getTime();
-        const endTimestamp = END_DATE.getTime();
-        const randomTimestamp = Math.floor(Math.random() * (endTimestamp - startTimestamp)) + startTimestamp;
-        randomDate = new Date(randomTimestamp);
-
-        const day = randomDate.getDay(); // 0: Dimanche, 6: Samedi
-        const hour = randomDate.getHours();
-        const minutes = randomDate.getMinutes();
-        const timeValue = hour + minutes / 60;
-
-        // Règle Dimanche
-        if (day === 0) continue;
-
-        // Règle Samedi (08h30 - 14h00)
-        if (day === 6) {
-            if (timeValue >= 8.5 && timeValue <= 14) {
-                found = true;
-            }
-            continue;
-        }
-
-        // Règle Semaine (09h00 - 17h30)
-        if (timeValue >= 9 && timeValue <= 17.5) {
-            found = true;
-        }
-    }
-    return randomDate.toISOString();
+    return generateValidDate(Math.floor(Math.random() * 1000000)).toISOString();
 }
 
 async function updateExistingAndAddNew() {
