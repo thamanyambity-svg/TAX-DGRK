@@ -3,23 +3,33 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { getDeclarationById } from '@/lib/store';
 import { Declaration } from '@/types';
 import { ArrowLeft, Printer, Download } from 'lucide-react';
 import { calculateTax } from '@/lib/tax-rules';
 import { generateNote } from '@/lib/generator';
 
-export default function BordereauPage({ params }: { params: { id: string } }) {
-    let rawId = params?.id;
-    if ((!rawId || rawId === 'undefined') && typeof window !== 'undefined') {
+export default function BordereauPage() {
+    const params = useParams();
+    // Robust ID retrieval with fallback
+    let rawId = params?.id as string;
+
+    // EMERGENCY FALLBACK: If params.id is missing or 'undefined', parse from URL
+    if ((!rawId || rawId === 'undefined' || rawId === '[id]') && typeof window !== 'undefined') {
         try {
             const segments = window.location.pathname.split('/');
             const idx = segments.indexOf('declarations');
-            if (idx !== -1) rawId = segments[idx + 1];
+            if (idx !== -1 && segments[idx + 1]) {
+                const recoveredId = segments[idx + 1];
+                if (recoveredId && recoveredId !== '[id]') {
+                    rawId = recoveredId;
+                    console.warn("⚠️ Params missing. ID recovered from window.location:", rawId);
+                }
+            }
         } catch (e) { }
     }
-    const id = rawId ? decodeURIComponent(rawId) : '';
+    const id = rawId && rawId !== 'undefined' ? decodeURIComponent(rawId).trim() : '';
 
     const router = useRouter();
     const [decl, setDecl] = useState<Declaration | null>(null);

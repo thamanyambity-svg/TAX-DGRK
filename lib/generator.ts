@@ -37,15 +37,15 @@ export const DECL_BASE = 0xB9ED76;
 export const NDP_BASE = 0x1579A471;
 
 /**
- * Generates a unique sequence number based on time to avoid collisions (fleet management)
+ * Generates a unique sequence number based on time and randomness to avoid collisions
  */
 export function getSecureSequence(): number {
     const now = new Date();
     const baseDate = new Date('2026-01-01');
-    // Total minutes since 2026-01-01 + high-resolution random component
-    const timeMinutes = Math.floor((now.getTime() - baseDate.getTime()) / 60000);
-    // Large enough random to avoid collisions within the same minute for small fleets
-    return timeMinutes * 100 + Math.floor(Math.random() * 100);
+    // Seconds since 2026-01-01
+    const seconds = Math.floor((now.getTime() - baseDate.getTime()) / 1000);
+    // Add 3 random digits for sub-second unique collisions
+    return seconds * 1000 + Math.floor(Math.random() * 1000);
 }
 
 export function generateDeclarationId(sequence: number): string {
@@ -60,20 +60,11 @@ export function generateNoteId(sequence: number): string {
     return `NDP-2026-${hexSuffix}`;
 }
 
-// ... (keep getFromList and getStableDate as is, omitted for brevity if not changing) ...
-// Actually I need to replace the whole block or be very specific. 
-// I will target the top part first to export constants.
-
-// ...
-
-
-
 // Deterministic random helper (simple LCG or just modulo for demo)
 function getFromList<T>(list: T[], seed: number): T {
     return list[seed % list.length];
 }
 
-// Helper for deterministic dates based on sequence
 // Helper for deterministic dates based on sequence
 import { generateValidDate } from './business-calendar';
 
@@ -129,49 +120,10 @@ export function generateDeclaration(sequence: number): Declaration {
 }
 
 export function generateNote(declaration: Declaration): NoteDePerception {
-    // 1. Prefer Stored Unique ID
-    if (declaration.meta && declaration.meta.ndpId) {
-        return {
-            id: declaration.meta.ndpId,
-            declarationId: declaration.id,
-            taxpayer: {
-                name: declaration.vehicle.type === 'Personne Morale'
-                    ? (declaration.taxpayer?.name || declaration.meta?.manualTaxpayer?.name || `ENTREPRISE SARL`)
-                    : (declaration.taxpayer?.name || declaration.meta?.manualTaxpayer?.name || `CONTRIBUABLE`),
-                nif: declaration.taxpayer?.nif || declaration.meta?.manualTaxpayer?.nif || 'N/A',
-                address: declaration.taxpayer?.address || declaration.meta?.manualTaxpayer?.address || 'N/A',
-            },
-            vehicle: {
-                chassis: declaration.vehicle.chassis,
-                plate: declaration.vehicle.plate,
-                category: declaration.vehicle.category,
-                fiscalPower: declaration.vehicle.fiscalPower,
-                genre: declaration.vehicle.genre,
-                marque: declaration.vehicle.marque,
-                modele: declaration.vehicle.modele,
-            },
-            bankDetails: {
-                reservedBox: true,
-            },
-            payment: {
-                principalTaxUSD: declaration.tax.baseRate,
-                totalAmountFC: declaration.tax.totalAmountFC,
-            },
-            generatedAt: declaration.createdAt,
-        };
-    }
-
-    // 2. Legacy Fallback (Only for fresh mock data)
-    // Extract sequence from ID for consistency (simple parsing)
+    // Legacy fallback parsing logic (shared)
     const sequenceStr = declaration.id.split('-').pop();
-    // Parse as Hex because ID is hex
     const declarationVal = parseInt(sequenceStr || '0', 16);
-
-    // Calculate offset from base
-    let sequence = 0;
-    if (!isNaN(declarationVal)) {
-        sequence = declarationVal - DECL_BASE;
-    }
+    let sequence = !isNaN(declarationVal) ? declarationVal - DECL_BASE : 0;
     if (sequence < 0) sequence = 0;
 
     // Stable NIF generation based on name hash (if no manual NIF)
@@ -188,8 +140,8 @@ export function generateNote(declaration: Declaration): NoteDePerception {
     const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
         (declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`);
 
-    return {
-        id: generateNoteId(sequence),
+    const finalNote: NoteDePerception = {
+        id: declaration.meta?.ndpId || generateNoteId(sequence), // Prioritize stored NDP ID
         declarationId: declaration.id,
         taxpayer: {
             name: taxpayerName,
@@ -214,4 +166,17 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         },
         generatedAt: declaration.createdAt,
     };
+
+    // Override with explicit stored data if it exists
+    if (declaration.meta && (declaration.meta as any).taxpayerData) {
+        finalNote.taxpayer = (declaration.meta as any).taxpayerData;
+    }
+    if (declaration.meta?.manualTaxpayer) {
+        finalNote.taxpayer = {
+            ...finalNote.taxpayer,
+            ...declaration.meta.manualTaxpayer
+        };
+    }
+
+    return finalNote;
 }

@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { getDeclarationById } from '@/lib/store';
 import { generateNote } from '@/lib/generator';
 import { NoteDePerception } from '@/types';
@@ -218,19 +218,23 @@ const ReceiptView = ({
 
 
 
-export default function ReceiptPage({ params }: { params: { id: string } }) {
+export default function ReceiptPage() {
+    const params = useParams();
     // Robust ID retrieval with fallback
-    let rawId = params?.id;
+    let rawId = params?.id as string;
 
     // EMERGENCY FALLBACK: If params.id is missing or 'undefined', parse from URL
-    if ((!rawId || rawId === 'undefined') && typeof window !== 'undefined') {
+    if ((!rawId || rawId === 'undefined' || rawId === '[id]') && typeof window !== 'undefined') {
         try {
             const segments = window.location.pathname.split('/');
             // Path: /declarations/[id]/receipt -> index of 'declarations' + 1
             const declIdx = segments.indexOf('declarations');
             if (declIdx !== -1 && segments[declIdx + 1]) {
-                rawId = segments[declIdx + 1];
-                console.warn("⚠️ Params missing. ID recovered from window.location:", rawId);
+                const recoveredId = segments[declIdx + 1];
+                if (recoveredId && recoveredId !== '[id]') {
+                    rawId = recoveredId;
+                    console.warn("⚠️ Params missing. ID recovered from window.location:", rawId);
+                }
             }
         } catch (e) {
             console.error("Failed to parse window location", e);
