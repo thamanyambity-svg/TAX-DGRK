@@ -116,56 +116,28 @@ export function generateDeclaration(sequence: number): Declaration {
 }
 
 export function generateNote(declaration: Declaration): NoteDePerception {
-    // 1. CRITICAL: Always prioritize the uniquely stored reference from the DB
-    if (declaration.meta?.ndpId) {
-        const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
-            (declaration.taxpayer as any)?.name ||
-            "CONTRIBUABLE";
+    // 1. Get the Unique Hex Suffix from the Declaration ID
+    // If ID is DECL-2026-B9ED76, suffix is B9ED76
+    const idParts = declaration.id.split('-');
+    const hexSuffix = idParts[idParts.length - 1] || '0';
 
-        return {
-            id: declaration.meta.ndpId,
-            declarationId: declaration.id,
-            taxpayer: {
-                name: taxpayerName,
-                nif: declaration.meta?.manualTaxpayer?.nif || "N/A",
-                address: declaration.meta?.manualTaxpayer?.address || "KINSHASA",
-            },
-            vehicle: declaration.vehicle,
-            bankDetails: { reservedBox: true },
-            payment: {
-                principalTaxUSD: declaration.tax.baseRate,
-                totalAmountFC: declaration.tax.totalAmountFC,
-            },
-            generatedAt: declaration.createdAt,
-        };
-    }
-
-    // 2. Fallback logic for legacy/mock data
-    const sequenceStr = declaration.id.split('-').pop();
-    const declarationVal = parseInt(sequenceStr || '0', 16);
-    let sequence = !isNaN(declarationVal) ? declarationVal - DECL_BASE : 0;
-    if (sequence < 0) sequence = 0;
+    // 2. Determine the Reference ID (NDP ID)
+    // We prioritize the stored one, otherwise we mirror the declaration suffix
+    const referenceId = declaration.meta?.ndpId || `NDP-2026-${hexSuffix}`;
 
     const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
-        (declaration.vehicle.type === 'Personne Morale' ? `ENTREPRISE ${sequence} SARL` : `CITOYEN ${sequence} KITONA`);
+        (declaration.taxpayer as any)?.name ||
+        (declaration.vehicle.type === 'Personne Morale' ? "ENTREPRISE SARL" : "CITOYEN KIN");
 
     const finalNote: NoteDePerception = {
-        id: generateNoteId(sequence),
+        id: referenceId,
         declarationId: declaration.id,
         taxpayer: {
             name: taxpayerName,
-            nif: declaration.meta?.manualTaxpayer?.nif || `A${900000 + sequence}K`,
-            address: declaration.meta?.manualTaxpayer?.address || "ADRESSE GENEREE",
+            nif: declaration.meta?.manualTaxpayer?.nif || "N/A",
+            address: declaration.meta?.manualTaxpayer?.address || "KINSHASA",
         },
-        vehicle: {
-            chassis: declaration.vehicle.chassis,
-            plate: declaration.vehicle.plate,
-            category: declaration.vehicle.category,
-            fiscalPower: declaration.vehicle.fiscalPower,
-            genre: declaration.vehicle.genre,
-            marque: declaration.vehicle.marque,
-            modele: declaration.vehicle.modele,
-        },
+        vehicle: declaration.vehicle,
         bankDetails: { reservedBox: true },
         payment: {
             principalTaxUSD: declaration.tax.baseRate,
