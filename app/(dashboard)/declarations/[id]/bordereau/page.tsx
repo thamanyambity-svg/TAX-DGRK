@@ -113,13 +113,9 @@ export default function BordereauPage() {
         // User manually set the "Base Price" (Credit)
         const rawBase = parseFloat((decl.meta as any).manualBaseAmount);
 
-        // Custom Rounding Rule requested: 58.70 -> 59.00
-        // "la banque arrondi a 59 sans mention visible"
-        // We will round to nearest integer for credit? Or just for 58.7?
-        // "tien compte pour les montant de base 58,70 la banque arrondi a 59"
-        // Let's generalize: Math.round? Or specific check.
-        // If specific:
-        displayCredit = Math.abs(rawBase - 58.70) < 0.01 ? 59.00 : rawBase;
+        // Custom Rounding Rule: Bank always rounds UP to nearest integer
+        // Examples: 58.70 -> 59, 64.50 -> 65, 68.20 -> 69
+        displayCredit = Math.ceil(rawBase);
 
         // Bank Fee Logic: Always Credit + 4$
         displayTotal = displayCredit + 4.00;
