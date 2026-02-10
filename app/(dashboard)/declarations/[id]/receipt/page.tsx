@@ -524,14 +524,18 @@ export default function ReceiptPage() {
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($ sans frais)</label>
                         <div className="relative">
-                            <span className="absolute left-2 top-1 text-blue-800 font-bold text-xs">$</span>
-                            <input
-                                type="number"
-                                step="0.01"
-                                className="pl-5 pr-2 py-1 w-24 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
+                            <span className="absolute left-2 top-1 text-blue-800 font-bold text-xs z-10">$</span>
+                            <select
+                                className="pl-5 pr-2 py-1 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
                                 value={editBaseAmount}
                                 onChange={(e) => setEditBaseAmount(e.target.value)}
-                            />
+                            >
+                                <option value="">-- Sélectionner --</option>
+                                <option value="58.70">58.70</option>
+                                <option value="64.50">64.50</option>
+                                <option value="68.20">68.20</option>
+                                <option value="70.10">70.10</option>
+                            </select>
                         </div>
                     </div>
                     <div className="flex flex-col gap-1 w-full md:w-auto">
