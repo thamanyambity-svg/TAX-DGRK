@@ -110,7 +110,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
     const motifDisplay = `${ownerFirstName} / ${taxpayerRef}`;
 
     return (
-        <div className="min-h-screen bg-gray-100 py-8 font-mono font-normal text-black">
+        <div className="min-h-screen bg-gray-100 py-8 text-black">
             {/* Toolbar */}
             <div className="no-print max-w-[210mm] mx-auto mb-6 px-4 flex justify-between items-center">
                 <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-black bg-white px-4 py-2 rounded shadow-sm text-sm">
@@ -144,12 +144,12 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                 <div
                     id="printable-bordereau"
                     ref={componentRef}
-                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] font-normal leading-[1.2] box-border"
+                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] leading-[1.2] box-border"
                     style={{
                         width: '210mm',
                         minHeight: '297mm',
-                        fontFamily: 'Courier, monospace',
-                        letterSpacing: '-0.01em',
+                        fontFamily: '"Courier New", Courier, monospace',
+                        fontWeight: 400,
                         position: 'relative'
                     }}
                 >
@@ -162,7 +162,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                     />
 
                     {/* Contenu du bordereau */}
-                    <div className="content-layer relative z-10">
+                    <div className="content-layer relative z-10 text-gray-800" style={{ fontFamily: '"Courier New", Courier, monospace', fontWeight: 400 }}>
                         {/* ESPACE POUR LE LOGO */}
                         <div className="h-[120px]"></div>
 
@@ -322,7 +322,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                         </div>
 
                         {/* FOOTER - ALIGNEMENT CARACTÈRE PAR CARACTÈRE (GRID) */}
-                        <div className="mt-10 font-mono text-[10pt] leading-[1.4] text-gray-900 font-normal">
+                        <div className="mt-10 text-[10pt] leading-[1.4] text-gray-800" style={{ fontFamily: '"Courier New", Courier, monospace', fontWeight: 400 }}>
                             {/* Ligne Crédit & USD - Alignées sur une grille de 80 chars */}
                             <div className="whitespace-pre">
                                 <span className="inline-block">Nous portons au credit du compte no 33000061711-79   USD :</span>
@@ -336,7 +336,7 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             </div>
 
                             {/* Montant en lettres */}
-                            <div className="mt-2">
+                            <div className="mt-2 text-gray-800">
                                 <span>Soit {taxInfo.textAmount} USD</span>
                             </div>
 

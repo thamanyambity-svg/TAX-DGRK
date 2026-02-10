@@ -52,6 +52,7 @@
     width: 100% !important;
     height: 100% !important;
     font-family: "Courier New", Courier, monospace !important;
-    font-weight: normal !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
   }
 }
