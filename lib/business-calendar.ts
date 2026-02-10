@@ -35,8 +35,10 @@ export function generateValidDate(seed: number): Date {
     let result = new Date();
 
     while (!found && attempts < 1000) {
-        // Deterministic random based on seed + attempts
-        const offset = ((seed * 1103515245 + 12345 + attempts) % range);
+        // More robust deterministic pseudo-random using a larger multiplier for attempts
+        // This ensures each attempt jumps significantly through the range
+        const salt = (attempts * 1664525) + 1013904223;
+        const offset = Math.abs((seed ^ salt) % range);
         result = new Date(startTs + offset);
 
         if (isWithinBusinessHours(result)) {
