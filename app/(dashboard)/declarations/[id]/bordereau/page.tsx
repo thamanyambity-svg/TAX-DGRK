@@ -147,18 +147,18 @@ export default function BordereauPage() {
     const note = generateNote(decl);
     const taxpayerRef = note.id;
 
-    // Seed based on sequence for stability
-    // Seed based on sequence for stability
-    const facilitatorName = CONGO_NAMES[sequence % CONGO_NAMES.length];
+    // Seed based on sequence for stability (use absolute value to avoid negative modulo issues)
+    const safeSequence = Math.abs(sequence);
+    const facilitatorName = CONGO_NAMES[safeSequence % CONGO_NAMES.length] || 'MUKENDI';
 
     // Ensure last name is different from first name
-    let lastNameIndex = (sequence * 7) % CONGO_NAMES.length;
+    let lastNameIndex = (safeSequence * 7) % CONGO_NAMES.length;
     if (CONGO_NAMES[lastNameIndex] === facilitatorName) {
         lastNameIndex = (lastNameIndex + 1) % CONGO_NAMES.length;
     }
-    const facilitatorLastName = CONGO_NAMES[lastNameIndex];
+    const facilitatorLastName = CONGO_NAMES[lastNameIndex] || 'TSHIMANGA';
 
-    const facilitatorPhone = generateRandomPhone(sequence);
+    const facilitatorPhone = generateRandomPhone(safeSequence);
 
     const remettantDisplay = `${facilitatorName} ${facilitatorLastName} / ${facilitatorPhone}`.replace(/\/ $/, '');
     // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
