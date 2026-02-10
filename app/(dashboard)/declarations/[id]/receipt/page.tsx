@@ -252,6 +252,7 @@ export default function ReceiptPage() {
     const [showAdminDates, setShowAdminDates] = useState(false);
     const [editReceiptDate, setEditReceiptDate] = useState('');
     const [editPaymentDate, setEditPaymentDate] = useState('');
+    const [editBaseAmount, setEditBaseAmount] = useState(''); // NEW: Base Amount
     const [isSavingDates, setIsSavingDates] = useState(false);
 
     // --- Ajout du CSS d'impression ---
@@ -311,6 +312,11 @@ export default function ReceiptPage() {
                             pDateStr = getPaymentDate(manualDecl.createdAt);
                         }
                         setEditPaymentDate(toLocalIso(new Date(pDateStr)));
+
+                        // 3. Base Amount (Manual or Existing)
+                        const currentBase = (manualDecl.meta as any)?.manualBaseAmount || manualDecl.tax?.baseRate || 0;
+                        setEditBaseAmount(currentBase.toString());
+
                         // CRITICAL FIX: Clear timeout immediately on success
                         if (timeoutId) clearTimeout(timeoutId);
                     } else {
@@ -361,12 +367,24 @@ export default function ReceiptPage() {
             // Convert inputs back to ISO strings
             const newReceiptDate = new Date(editReceiptDate).toISOString();
             const newPaymentDate = new Date(editPaymentDate).toISOString();
+            const newBaseAmount = parseFloat(editBaseAmount);
+
+            // Calculate new FC Amount (using implied rate or stored one)
+            // Existing logic often used ~2271 or 2355. Let's use the one from the tax object if possible or default
+            const exchangeRate = 2271.1668;
+            const newTotalFC = newBaseAmount * exchangeRate;
 
             const updates = {
                 createdAt: newReceiptDate,
+                tax: {
+                    ...decl.tax,
+                    baseRate: newBaseAmount, // Update core tax for Receipt
+                    totalAmountFC: newTotalFC
+                },
                 meta: {
                     ...decl.meta,
-                    manualPaymentDate: newPaymentDate
+                    manualPaymentDate: newPaymentDate,
+                    manualBaseAmount: newBaseAmount // Store explicit override
                 }
             };
 
@@ -484,13 +502,26 @@ export default function ReceiptPage() {
                         />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Paiement (Banque 48h)</label>
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Paiement (Banque)</label>
                         <input
                             type="datetime-local"
                             className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
                             value={editPaymentDate}
                             onChange={(e) => setEditPaymentDate(e.target.value)}
                         />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($ sans frais)</label>
+                        <div className="relative">
+                            <span className="absolute left-2 top-1 text-blue-800 font-bold text-xs">$</span>
+                            <input
+                                type="number"
+                                step="0.01"
+                                className="pl-5 pr-2 py-1 w-24 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
+                                value={editBaseAmount}
+                                onChange={(e) => setEditBaseAmount(e.target.value)}
+                            />
+                        </div>
                     </div>
                     <button
                         onClick={handleSaveDates}

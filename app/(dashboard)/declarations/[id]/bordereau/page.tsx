@@ -102,17 +102,38 @@ export default function BordereauPage() {
     const timeStr = paymentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 
     // Tax calculation
-    // FIX: Pass category and weight to ensure new pricing rules apply correctly
-    const taxInfo = calculateTax(
-        Number(decl.vehicle.fiscalPower) || 0,
-        decl.vehicle.category,
-        decl.vehicle.weight
-    );
-    // User Requirement: Bordereau shows Total WITH Fees
-    const displayTotal = taxInfo.totalAmount;
-    const displayCredit = taxInfo.creditAmount;
-    const timbre = taxInfo.timbre;
-    const taxes = taxInfo.taxe;
+    let displayTotal = 0;
+    let displayCredit = 0;
+    let timbre = 3.45;
+    let taxes = 0.55;
+    let taxInfo: any = {}; // Initialize empty
+
+    // FIX: Check for manual base amount override first
+    if ((decl.meta as any)?.manualBaseAmount) {
+        // User manually set the "Base Price" (Credit)
+        displayCredit = parseFloat((decl.meta as any).manualBaseAmount);
+        // Bank Fee Logic: Always Base + 4$
+        displayTotal = displayCredit + 4.00;
+
+        // Mock taxInfo for manual override to prevent crashes
+        taxInfo = {
+            textAmount: `${displayTotal.toFixed(2)}`, // Simplified text representation
+            billBreakdown: [
+                { value: displayTotal, count: 1, total: displayTotal }
+            ]
+        };
+    } else {
+        // Standard Auto-Calculation
+        taxInfo = calculateTax(
+            Number(decl.vehicle.fiscalPower) || 0,
+            decl.vehicle.category,
+            decl.vehicle.weight
+        );
+        displayTotal = taxInfo.totalAmount;
+        displayCredit = taxInfo.creditAmount;
+        timbre = taxInfo.timbre;
+        taxes = taxInfo.taxe;
+    }
 
     // --- AUTOMATION: REMETTANT & MOTIF ---
     const { CONGO_NAMES, generateRandomPhone } = require('@/lib/generator');
