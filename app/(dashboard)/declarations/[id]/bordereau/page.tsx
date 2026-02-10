@@ -144,11 +144,12 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                 <div
                     id="printable-bordereau"
                     ref={componentRef}
-                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] font-normal leading-[1.15] box-border"
+                    className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] font-normal leading-[1.2] box-border"
                     style={{
                         width: '210mm',
                         minHeight: '297mm',
-                        fontFamily: '"Courier New", Courier, monospace',
+                        fontFamily: 'Courier, monospace',
+                        letterSpacing: '-0.01em',
                         position: 'relative'
                     }}
                 >
@@ -320,45 +321,38 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                             </div>
                         </div>
 
-                        {/* FOOTER - MISE EN FORME PHYSIQUE BANQUE (STRICT CONFORMITY) */}
-                        <div className="mt-10 font-mono text-[9.5pt] leading-[1.3] text-gray-800">
-                            {/* Lignes Crédit & Valeur */}
-                            <div className="flex whitespace-pre">
-                                <span className="flex-1">Nous portons au credit du compte no 33000061711-79</span>
-                                <div className="w-[280px]">
-                                    <div className="flex justify-between">
-                                        <span>USD :</span>
-                                        <span className="mr-8">{displayCredit.toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Valeur :</span>
-                                        <span className="mr-8">{dateStr}</span>
-                                    </div>
-                                </div>
+                        {/* FOOTER - ALIGNEMENT CARACTÈRE PAR CARACTÈRE (GRID) */}
+                        <div className="mt-10 font-mono text-[10pt] leading-[1.4] text-gray-900 font-normal">
+                            {/* Ligne Crédit & USD - Alignées sur une grille de 80 chars */}
+                            <div className="whitespace-pre">
+                                <span className="inline-block">Nous portons au credit du compte no 33000061711-79   USD :</span>
+                                <span className="inline-block w-[140px] text-right">{displayCredit.toFixed(2)}</span>
+                            </div>
+
+                            {/* Ligne Valeur - Alignée exactement sous USD : */}
+                            <div className="whitespace-pre">
+                                <span className="inline-block">                                                    Valeur :</span>
+                                <span className="inline-block w-[140px] text-right">{dateStr}</span>
                             </div>
 
                             {/* Montant en lettres */}
-                            <div className="mt-1">
+                            <div className="mt-2">
                                 <span>Soit {taxInfo.textAmount} USD</span>
                             </div>
 
-                            {/* Espace & Tirets */}
+                            {/* Barre de tirets matching exact length */}
                             <div className="mt-4">
-                                <span>------------------------------------</span>
+                                <span>------------------------------------------</span>
                             </div>
 
-                            {/* Matrice de Signatures & Opération */}
+                            {/* Matrice de signatures ultra-calibrée */}
                             <div className="mt-1 whitespace-pre">
+                                <div>      CLIENT       !    GUICHETIER    !</div>
+                                <div>                   !                  !</div>
+                                <div>                   !                  !</div>
                                 <div className="flex">
-                                    <div className="w-[360px]">
-                                        <div>      CLIENT       !    GUICHETIER    !</div>
-                                        <div>                   !                  !</div>
-                                        <div>                   !                  !</div>
-                                        <div className="flex items-end">
-                                            <span className="flex-1">                   !                  !</span>
-                                            <span className="text-[9pt] tracking-[0.1em]">        OPERATION EFFECTUEE</span>
-                                        </div>
-                                    </div>
+                                    <span className="flex-1">                   !                  !</span>
+                                    <span className="tracking-[0.05em]">   OPERATION EFFECTUEE</span>
                                 </div>
                             </div>
                         </div>
