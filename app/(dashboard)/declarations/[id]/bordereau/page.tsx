@@ -166,44 +166,57 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                         {/* ESPACE POUR LE LOGO */}
                         <div className="h-[120px]"></div>
 
-                        {/* TITRE & NUMERO - ESPACEMENT MANUEL CARACTERE PAR CARACTERE */}
-                        <div className="text-center mb-6 whitespace-pre">
-                            <span>B O R D E R E A U   D E   V E R S E M E N T   D E V I S E   N o   {bordereauNo}</span>
+                        {/* TITRE & NUMERO - ESPACEMENT NORMAL */}
+                        <div className="text-center mb-4 whitespace-pre">
+                            <span>BORDEREAU DE VERSEMENT DEVISE No  {bordereauNo}</span>
                         </div>
 
-                        {/* REF ET DATE - ALIGNEMENT GRID */}
-                        <div className="whitespace-pre mb-6">
-                            <span>33000061711-79                                     {dateStr} a {timeStr}</span>
+                        {/* REF ET DATE - ALIGNEMENT EQUILIBRE */}
+                        <div className="whitespace-pre mb-8 pl-12">
+                            <span>33000061711-79                           {dateStr} a {timeStr}</span>
                         </div>
 
-                        {/* BLOC INFO - FORMAT TERMINAL BANCAIRE STRICT */}
-                        <div className="whitespace-pre text-[10pt] leading-[1.3] mb-6">
-                            <div>Agence          .... : 00010 AGENCE GOMBE</div>
-                            <div>Devise          .... : USD   DOLLAR USA</div>
-                            <div className="flex justify-between">
-                                <span>Caisse          .... : 140   CAISSE SEC. GOMBE USD - 140</span>
+                        {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE */}
+                        <div className="relative mb-6 text-[10pt] leading-[1.3] whitespace-pre">
+                            <div>Agence      ....: 00010 AGENCE GOMBE</div>
+                            <div>Devise      ....: USD   DOLLAR USA</div>
+                            <div className="flex">
+                                <span className="w-[480px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</span>
                                 <span>VILLE DE KINSHASA</span>
                             </div>
-                            <div className="flex justify-between">
-                                <span>Guichetier      .. : VNGOMBA</span>
+                            <div className="flex">
+                                <span className="w-[480px]">Guichetier  ..: VNGOMBA</span>
                                 <span>COLONEL EBEYA</span>
                             </div>
-                            <div className="flex justify-between">
-                                <span>Gestionnaire    : DIRECTEUR GENERAL</span>
-                                <span className="ml-[100px]">GOMBE</span>
+                            <div className="flex">
+                                <span className="w-[480px]">Gestionnaire  : DIRECTEUR GENERAL</span>
+                                <span>GOMBE</span>
                             </div>
-                            <div className="flex justify-end pr-[42px]">
+                            <div className="flex justify-end pr-24">
                                 <span>KINSHASA</span>
                             </div>
-                            <div className="flex justify-end pr-[42px]">
+                            <div className="flex justify-end pr-24">
                                 <span>KINSHASA</span>
                             </div>
+
+                            {/* Triangle rouge décoratif (conforme image 754) */}
+                            <div
+                                className="absolute right-0 bottom-[-10px]"
+                                style={{
+                                    width: 0,
+                                    height: 0,
+                                    borderTop: '20px solid transparent',
+                                    borderBottom: '20px solid transparent',
+                                    borderLeft: '30px solid #C00', // Rouge banque
+                                    transform: 'rotate(0deg)'
+                                }}
+                            ></div>
                         </div>
 
                         {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
-                        <div className="mb-6 mt-6 whitespace-pre text-[10pt]">
-                            <div>Nom du remettant .. : {remettantDisplay.toUpperCase()}</div>
-                            <div className="ml-[200px]">310 - REP DEM CONGO</div>
+                        <div className="mb-6 mt-8 whitespace-pre text-[10pt]">
+                            <div>Nom du remettant ..: {remettantDisplay.toUpperCase()}</div>
+                            <div className="ml-[185px]">310 - REP DEM CONGO</div>
                             <div className="mt-1">Motif             : {motifDisplay.toUpperCase()}</div>
                         </div>
 
