@@ -42,6 +42,11 @@ const ReceiptView = ({
     const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
+    // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
+    // Change NDP-2026-1579A471 to STE /1579A471 format
+    const ownerFirstName = (note.taxpayer.name || 'CLIENT').trim().split(' ')[0].toUpperCase();
+    const formattedRef = `${ownerFirstName} /${note.id.replace('NDP-2026-', '')}`;
+
     return (
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
             {/* Main Container - ULTRA COMPACT MODE */}
@@ -74,7 +79,7 @@ const ReceiptView = ({
 
                 {/* Reference Banner - Minimal Margin (mb-2) */}
                 <div className="bg-[#F5F5F5] py-1 mb-2 text-center rounded-sm mx-auto w-full border border-gray-100">
-                    <h2 className="text-base font-bold text-[#2C5EB5] tracking-widest leading-none">{note.id}</h2>
+                    <h2 className="text-base font-bold text-[#2C5EB5] tracking-widest leading-none">{formattedRef}</h2>
                     <p className="text-[7px] text-gray-500 uppercase font-bold mt-0 tracking-wider">N° DE RÉFÉRENCE (À MENTIONNER AU PAIEMENT)</p>
                 </div>
 
