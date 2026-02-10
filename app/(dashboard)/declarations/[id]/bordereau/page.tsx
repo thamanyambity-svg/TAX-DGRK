@@ -80,8 +80,8 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
     const bordereauNo = 39383 + (sequence % 10000); // Base cohérente avec la démo
 
     const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
-    const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-    const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 
     // Tax calculation
     const taxInfo = calculateTax(Number(decl.vehicle.fiscalPower) || 0, decl.vehicle.type || '');

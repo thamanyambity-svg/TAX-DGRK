@@ -12,9 +12,9 @@ export const START_DATE = new Date('2026-01-15T09:00:00Z');
 export const END_DATE = new Date('2026-02-07T14:00:00Z');
 
 export function isWithinBusinessHours(date: Date): boolean {
-    const day = date.getDay(); // 0: Sun, 6: Sat
-    const hour = date.getHours();
-    const minute = date.getMinutes();
+    const day = date.getUTCDay(); // 0: Sun, 6: Sat
+    const hour = date.getUTCHours();
+    const minute = date.getUTCMinutes();
     const timeValue = hour + minute / 60;
 
     if (day === 0) return false; // Sunday
