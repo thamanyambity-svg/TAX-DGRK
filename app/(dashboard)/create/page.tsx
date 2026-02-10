@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, FileText, Car, User } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
-import { generateDeclarationId, getSecureSequence } from '@/lib/generator';
+import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
 
 export default function NewDeclarationPage() {
@@ -50,23 +50,19 @@ export default function NewDeclarationPage() {
         // Generate a unique sequence based on time to avoid collisions (Grave Error Fix)
         const sequence = getSecureSequence();
         const id = generateDeclarationId(sequence);
+        const noteId = generateNoteId(sequence);
 
         // Use the calculated tax from the rules
         const baseRate = currentTax.totalAmount;
         let totalAmount = currentAmountFC;
 
-        // Apply FC override rule if applicable (legacy check, but rules usually handle it)
-        if (baseRate === 64.50) {
-            // Trusting tax-rules output (63, 69, 75) primarily.
-        }
-        // Specific override for 63$ -> specific FC amount check if needed?
-        // tax-rules handles logic.
+        const dateIso = getNowOrBusinessHours();
 
         const newDeclaration: Declaration = {
             id,
-            createdAt: getNowOrBusinessHours(),
-            updatedAt: getNowOrBusinessHours(),
-            status: 'Payée', // User requested "Tous payer" by default
+            createdAt: dateIso,
+            updatedAt: dateIso,
+            status: formData.taxpayerType === 'Personne Physique' ? 'Payée' : 'Facturée',
             vehicle: {
                 category: formData.category,
                 type: formData.taxpayerType,
@@ -74,8 +70,8 @@ export default function NewDeclarationPage() {
                 chassis: formData.chassis.toUpperCase(),
                 fiscalPower: formData.fiscalPower,
                 weight: formData.weight,
-                marque: formData.marque, // Add if fields exist in form
-                modele: formData.modele, // Add if fields exist in form
+                marque: (formData as any).marque?.toUpperCase() || '',
+                modele: (formData as any).modele?.toUpperCase() || '',
             },
             tax: {
                 baseRate,
@@ -84,11 +80,12 @@ export default function NewDeclarationPage() {
             },
             meta: {
                 systemId: `MANUAL-${sequence}`,
-                reference: `REF-${new Date().getFullYear()}-${sequence}`,
+                reference: noteId.replace('NDP-2026-', ''),
+                ndpId: noteId,
                 manualTaxpayer: {
-                    name: formData.name,
+                    name: formData.name.toUpperCase(),
                     nif: formData.nif.toUpperCase(),
-                    address: `${formData.address}${formData.city ? ', ' + formData.city : ''}`,
+                    address: formData.address.toUpperCase(),
                 }
             }
         } as any;

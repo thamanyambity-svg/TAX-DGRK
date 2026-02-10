@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Save, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { saveDeclaration } from '@/lib/store';
-import { generateDeclarationId, getSecureSequence } from '@/lib/generator';
+import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { calculateTax } from '@/lib/tax-rules';
 import { Declaration } from '@/types';
 
@@ -160,22 +160,23 @@ export default function ImportPage() {
                 }
 
                 // Generate unique ID using secure sequence offset for each row (Fixes Grave Error)
-                const sequence = getSecureSequence() + successCount; // Add successCount for sub-millisecond safety in loops
+                const sequence = getSecureSequence() + successCount;
                 const id = generateDeclarationId(sequence);
+                const noteId = generateNoteId(sequence);
 
-                const status = 'Payée'; // Default to Payée as requested
+                const status = 'Payée'; // Default to Payée as requested per mission rules
 
                 // Prepare Payload
                 const newDecl: Declaration = {
                     id,
-                    status: 'Payée', // FORCE "Payée" per latest request
+                    status: 'Payée',
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    taxpayer: { // Explicitly mapping for safety
-                        name: row.NOM || 'INCONNU',
-                        nif: row.NIF || 'N/A',
-                        address: row.ADRESSE || 'KINSHASA',
-                        type: row.TYPE_CONTRIBUABLE || 'Personne Morale' // Default if not specified, often Corporate
+                    taxpayer: {
+                        name: (row.NOM || 'INCONNU').toString().toUpperCase(),
+                        nif: (row.NIF || 'N/A').toString().toUpperCase(),
+                        address: (row.ADRESSE || 'KINSHASA').toString().toUpperCase(),
+                        type: row.TYPE_CONTRIBUABLE || 'Personne Morale'
                     },
                     vehicle: {
                         plate: (row.PLAQUE || '').toString().toUpperCase(),
@@ -189,7 +190,7 @@ export default function ImportPage() {
                         annee: (row.ANNEE || '').toString(),
                         weight: row.POIDS || '-',
                         type: row.TYPE_CONTRIBUABLE || 'Personne Physique',
-                    } as any, // Cast for loose typing
+                    } as any,
                     tax: {
                         baseRate: row._taxUSD,
                         currency: 'USD',
@@ -197,11 +198,12 @@ export default function ImportPage() {
                     },
                     meta: {
                         systemId: id,
-                        reference: `IMPORT-${new Date().toLocaleDateString()}`,
+                        reference: noteId.replace('NDP-2026-', ''),
+                        ndpId: noteId,
                         manualTaxpayer: {
-                            name: row.NOM || 'INCONNU',
-                            nif: row.NIF || 'N/A', // Store NIF in meta too based on previous logic
-                            address: row.ADRESSE || 'KINSHASA',
+                            name: (row.NOM || 'INCONNU').toString().toUpperCase(),
+                            nif: (row.NIF || 'N/A').toString().toUpperCase(),
+                            address: (row.ADRESSE || 'KINSHASA').toString().toUpperCase(),
                         }
                     }
                 } as any;

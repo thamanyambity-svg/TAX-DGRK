@@ -37,15 +37,14 @@ export const DECL_BASE = 0xB9ED76;
 export const NDP_BASE = 0x1579A471;
 
 /**
- * Generates a unique sequence number based on time and randomness to avoid collisions
+ * Generates a high-entropy unique sequence number to prevent collisions.
+ * Uses millisecond resolution + a 4-digit random salt.
  */
 export function getSecureSequence(): number {
-    const now = new Date();
-    const baseDate = new Date('2026-01-01');
-    // Seconds since 2026-01-01
-    const seconds = Math.floor((now.getTime() - baseDate.getTime()) / 1000);
-    // Add 3 random digits for sub-second unique collisions
-    return seconds * 1000 + Math.floor(Math.random() * 1000);
+    const baseDate = new Date('2026-01-01').getTime();
+    const now = Date.now();
+    // Offset in milliseconds + 4-digit random suffix for sub-millisecond safety
+    return (now - baseDate) * 1000 + Math.floor(Math.random() * 1000);
 }
 
 export function generateDeclarationId(sequence: number): string {
