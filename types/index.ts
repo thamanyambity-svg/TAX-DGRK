@@ -6,6 +6,8 @@ export type VehicleCategory =
   | 'Motocycle'
   | 'Véhicule utilitaire'
   | 'Véhicule touristique'
+  | 'touristique_light'
+  | 'utilitaire_heavy'
   | 'Véhicule tracteur'
   | 'Véhicule remorque'
   | 'Transport public'
@@ -72,6 +74,8 @@ export interface NoteDePerception {
     genre?: string;
     marque?: string;
     modele?: string;
+    weight?: string;
+    type?: string;
   };
   bankDetails: {
     reservedBox: boolean; // placeholder for UI

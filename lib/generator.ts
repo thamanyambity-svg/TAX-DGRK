@@ -3,6 +3,7 @@ import { Declaration, NoteDePerception, TaxpayerType, VehicleCategory } from '@/
 // Constants for generation
 const CATEGORIES: VehicleCategory[] = [
     'Motocycle', 'Véhicule utilitaire', 'Véhicule touristique',
+    'touristique_light', 'utilitaire_heavy',
     'Véhicule tracteur', 'Véhicule remorque', 'Transport public',
     'Immatriculé IT', 'Exonéré'
 ];
@@ -83,11 +84,13 @@ export function generateDeclaration(sequence: number): Declaration {
     // Tax calculation logic (Updated sync with tax-rules.ts)
     const { calculateTax } = require('./tax-rules');
     const cvValue = 10 + (sequence % 20); // Generator range
-    const taxInfo = calculateTax(cvValue, category);
+    const weightStr = `${1 + (sequence % 15)} tonnes`; // Generate logical weight
+    const taxInfo = calculateTax(cvValue, category, weightStr);
 
-    const baseRate = taxInfo.totalAmount;
+    // Consistent with Create Page: stored baseRate is Raw Price (creditAmount)
+    const baseRate = taxInfo.creditAmount;
     const EXCHANGE_RATE = 2271.1668;
-    const totalAmount = baseRate * EXCHANGE_RATE;
+    const totalAmount = (taxInfo.totalAmount) * EXCHANGE_RATE; // Pay Total in FC
 
     const declaration: Declaration = {
         id,
@@ -99,8 +102,8 @@ export function generateDeclaration(sequence: number): Declaration {
             type,
             plate,
             chassis,
-            fiscalPower: `${10 + (sequence % 20)} CV`,
-            weight: `${1 + (sequence % 5)} tonnes`,
+            fiscalPower: `${cvValue} CV`,
+            weight: weightStr,
         },
         tax: {
             baseRate,

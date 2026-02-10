@@ -39,9 +39,11 @@ export default function NewDeclarationPage() {
     };
 
     // Calculate current tax based on form state for Preview & Submission
-    const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category);
+    const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category, formData.weight);
     const EXCHANGE_RATE = 2355;
-    const currentAmountFC = currentTax.totalAmount * EXCHANGE_RATE;
+    // User Requirement: Receipt shows RAW price (creditAmount), Bordereau shows Total (w/ fees)
+    // We store the RAW price in the declaration so the Receipt (which reads stored data) is correct.
+    const currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -53,7 +55,8 @@ export default function NewDeclarationPage() {
         const noteId = generateNoteId(sequence);
 
         // Use the calculated tax from the rules
-        const baseRate = currentTax.totalAmount;
+        // Store RAW PRICE (creditAmount) for Receipt
+        const baseRate = currentTax.creditAmount;
         let totalAmount = currentAmountFC;
 
         const dateIso = getNowOrBusinessHours();
@@ -208,8 +211,10 @@ export default function NewDeclarationPage() {
                                 onChange={(e) => setFormData({ ...formData, category: e.target.value as VehicleCategory })}
                             >
                                 <option value="Vignette Automobile">Vignette Automobile</option>
-                                <option value="Véhicule utilitaire">Véhicule utilitaire</option>
-                                <option value="Véhicule touristique">Véhicule touristique (Ancien)</option>
+                                <option value="Véhicule utilitaire">Véhicule utilitaire (Standard)</option>
+                                <option value="Véhicule touristique">Véhicule touristique (Standard)</option>
+                                <option value="touristique_light">Touristique Light (0-10 CV)</option>
+                                <option value="utilitaire_heavy">Utilitaire Heavy (Poids lourd)</option>
                                 <option value="Transport public">Transport public</option>
                             </select>
                         </div>
@@ -289,7 +294,7 @@ export default function NewDeclarationPage() {
                             <p className="text-[10px] text-indigo-400">Basé sur {getCV(formData.fiscalPower)} CV et type {formData.category}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xl font-bold text-indigo-700">${currentTax.totalAmount.toFixed(2)}</p>
+                            <p className="text-xl font-bold text-indigo-700">${currentTax.creditAmount.toFixed(2)} <span className="text-[10px] uppercase text-gray-400 font-medium">(Hors Frais)</span></p>
                             <p className="text-xs text-indigo-500 font-mono">~ {currentAmountFC.toLocaleString()} FC</p>
                         </div>
                     </div>

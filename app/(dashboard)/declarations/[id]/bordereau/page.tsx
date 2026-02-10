@@ -102,7 +102,13 @@ export default function BordereauPage() {
     const timeStr = paymentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
 
     // Tax calculation
-    const taxInfo = calculateTax(Number(decl.vehicle.fiscalPower) || 0, decl.vehicle.type || '');
+    // FIX: Pass category and weight to ensure new pricing rules apply correctly
+    const taxInfo = calculateTax(
+        Number(decl.vehicle.fiscalPower) || 0,
+        decl.vehicle.category,
+        decl.vehicle.weight
+    );
+    // User Requirement: Bordereau shows Total WITH Fees
     const displayTotal = taxInfo.totalAmount;
     const displayCredit = taxInfo.creditAmount;
     const timbre = taxInfo.timbre;

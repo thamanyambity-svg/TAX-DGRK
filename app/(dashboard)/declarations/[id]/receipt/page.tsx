@@ -133,7 +133,7 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">Marque/Type:</span>
                                     <span className="uppercase text-[9px] font-medium text-gray-800 truncate">
-                                        utilitaire_medium
+                                        {note.vehicle.marque} / {note.vehicle.category.replace(/_/g, ' ')}
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
@@ -146,11 +146,11 @@ const ReceiptView = ({
                                 {/* Ligne 3 */}
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Usage:</span>
-                                    <span className="font-medium text-gray-800">N/A</span>
+                                    <span className="font-medium text-gray-800">{note.vehicle.type || 'PRIVÉ'}</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Poids:</span>
-                                    <span className="font-medium text-gray-800">1 T</span>
+                                    <span className="font-medium text-gray-800">{note.vehicle.weight || '-'}</span>
                                 </div>
                             </div>
                         </div>
