@@ -33,16 +33,16 @@ export { CONGO_NAMES, generateRandomPhone };
 
 // Helper to generate a consistent logical ID from a sequence number
 // User requested base series: 1579A471
-export const DECL_BASE = 0x1579A471;
-export const NDP_BASE = 0x1579A471;
+export const DECL_BASE = 0x1579A000;
+export const NDP_BASE = 0x1579A000;
 
 /**
- * Generates a high-entropy unique sequence number to prevent collisions.
+ * Generates a unique sequence number within a controlled hex range.
  */
 export function getSecureSequence(): number {
-    // Generate a sequence that, when added to base, stays within a reasonable hex range
-    // Using Date.now() offset for absolute temporal uniqueness
-    return Math.floor((Date.now() % 100000000) / 10);
+    // Generate a 5-digit random number to append to the base
+    // This keeps the result in the 1579AXXX range and ensures hex-only characters
+    return Math.floor(Math.random() * 0xFFFFF);
 }
 
 export function generateDeclarationId(sequence: number): string {
