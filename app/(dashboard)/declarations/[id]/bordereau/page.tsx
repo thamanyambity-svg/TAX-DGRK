@@ -340,22 +340,13 @@ export default function BordereauPage({ params }: { params: { id: string } }) {
                                 <span>Soit {taxInfo.textAmount} USD</span>
                             </div>
 
-                            {/* Barre de tirets matching exact length */}
-                            <div className="mt-4">
-                                <span>------------------------------------------</span>
-                            </div>
-
-                            {/* Matrice de signatures & Mention Opération répartie */}
-                            <div className="mt-1 flex items-end justify-between">
-                                <div className="whitespace-pre">
-                                    <div>      CLIENT       !    GUICHETIER    !</div>
-                                    <div>                   !                  !</div>
-                                    <div>                   !                  !</div>
-                                    <div>                   !                  !</div>
-                                </div>
-                                <div className="pb-1">
-                                    <span className="tracking-[0.05em]">OPERATION EFFECTUEE</span>
-                                </div>
+                            {/* Matrice de signatures ultra-calibrée avec mention intégrée */}
+                            <div className="mt-1 whitespace-pre leading-[1.3] text-gray-800">
+                                <div>------------------------------------</div>
+                                <div>      CLIENT       !    GUICHETIER    !</div>
+                                <div>                   !                  !</div>
+                                <div>                   !                  !</div>
+                                <div>                   !                  !  OPERATION EFFECTUEE</div>
                             </div>
                         </div>
 
