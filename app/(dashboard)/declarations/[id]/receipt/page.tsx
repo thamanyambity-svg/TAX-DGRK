@@ -133,7 +133,36 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">Marque/Type:</span>
                                     <span className="text-[9px] font-medium text-gray-800 truncate">
-                                        {(note.vehicle as any).manualMarqueType || `${note.vehicle.marque} / ${(note.vehicle.category || '').replace(/_/g, ' ')}`}
+                                        {(note.vehicle as any).manualMarqueType || (() => {
+                                            const cat = (note.vehicle.category || '').toLowerCase();
+                                            // List of specific types to display SOLO and lowercase
+                                            const specialTypes = [
+                                                'touristique_heavy',
+                                                'touristique_medium',
+                                                'touristique_light',
+                                                'utilitaire_heavy',
+                                                'utilitaire_medium',
+                                                'utilitaire light'
+                                            ];
+
+                                            // Check if current category matches any special type (ignoring case/underscores for match)
+                                            const isSpecial = specialTypes.some(t => cat.includes(t.replace('_', ' '))) || cat.includes('_');
+
+                                            if (isSpecial) {
+                                                // Display ONLY the category in lowercase, preserving underscores if present or replacing with space if desired.
+                                                // User requested: "utilitaire_medium" strict lowercase.
+                                                return <span className="lowercase">{note.vehicle.category}</span>;
+                                            }
+
+                                            // Default behavior for other types
+                                            return (
+                                                <>
+                                                    <span className="uppercase">{note.vehicle.marque}</span>
+                                                    <span> / </span>
+                                                    <span>{note.vehicle.category}</span>
+                                                </>
+                                            );
+                                        })()}
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
