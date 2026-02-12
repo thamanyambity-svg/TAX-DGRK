@@ -121,8 +121,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     modele: formData.modele.toUpperCase(),
                     type: formData.taxpayerType,
                     // Preserve existing fields if not in form? Ideally we load all.
-                    // For now we overwrite vehicle object.
-                    genre: '', // Simplify
+                    genre: 'N/A', // Force Usage N/A Usage N/A
                     couleur: '',
                     annee: ''
                 },

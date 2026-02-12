@@ -75,6 +75,7 @@ export default function NewDeclarationPage() {
                 weight: formData.weight,
                 marque: (formData as any).marque?.toUpperCase() || '',
                 modele: (formData as any).modele?.toUpperCase() || '',
+                genre: 'N/A', // Force Usage N/A
             },
             tax: {
                 baseRate,

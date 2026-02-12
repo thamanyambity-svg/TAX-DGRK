@@ -185,7 +185,7 @@ export default function ImportPage() {
                         modele: (row.MODELE || '').toUpperCase(),
                         fiscalPower: `${row.PUISSANCE_CV} CV`,
                         category: row.CATEGORIE || 'Vignette Automobile',
-                        genre: row.GENRE || '',
+                        genre: 'N/A', // Force Usage N/A
                         couleur: row.COULEUR || '',
                         annee: (row.ANNEE || '').toString(),
                         weight: row.POIDS || '-',
