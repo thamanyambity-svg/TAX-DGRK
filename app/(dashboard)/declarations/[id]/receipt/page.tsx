@@ -63,7 +63,7 @@ const ReceiptView = ({
                     {/* Title Area */}
                     <div className="text-center flex-1 leading-tight">
                         <h1 className="text-lg font-bold uppercase text-[#333333] tracking-wide">RÉCÉPISSÉ</h1>
-                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026 (v4)</p>
+                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026 (v5)</p>
                     </div>
 
                     {/* Copy Badge */}
