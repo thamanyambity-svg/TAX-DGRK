@@ -12,9 +12,8 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 function deepClean(obj: any): any {
     if (obj === null || typeof obj !== 'object') {
         if (typeof obj === 'string') {
-            const forbidden = ['PERSONNE PHYSIQUE', 'PERSONNE MORALE', 'PHYSOU', 'MORAL'];
-            const upper = obj.toUpperCase();
-            if (forbidden.some(f => upper.includes(f))) {
+            const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i;
+            if (forbiddenRegex.test(obj)) {
                 return 'N/A';
             }
         }
@@ -48,13 +47,14 @@ async function terminateZombies() {
     let affectedCount = 0;
     for (const row of rows) {
         const rowStr = JSON.stringify(row);
-        if (rowStr.includes('Personne Physique') || rowStr.includes('Personne Morale')) {
+        const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i;
+        if (forbiddenRegex.test(rowStr)) {
             console.log(`ZOMBIE DETECTED in ID: ${row.id}. Cleaning...`);
 
             const cleanedRow = deepClean(row);
 
             // Re-stringify to confirm it's gone
-            if (JSON.stringify(cleanedRow).includes('Personne Physique')) {
+            if (forbiddenRegex.test(JSON.stringify(cleanedRow))) {
                 console.error(`ERROR: Cleaning failed for ${row.id}`);
                 continue;
             }

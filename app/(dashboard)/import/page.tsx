@@ -77,7 +77,7 @@ export default function ImportPage() {
                             'MARQUE': ['marque', 'brand'],
                             'MODELE': ['modèle', 'modele', 'model'],
                             'PUISSANCE_CV': ['cv', 'puissance', 'chevaux', 'fiscal', 'pui'],
-                            'CATEGORIE': ['catégorie', 'categorie', 'type', 'genre'],
+                            'CATEGORIE': ['catégorie', 'categorie'],
                             'COULEUR': ['couleur', 'color', 'coul'],
                             'ANNEE': ['année', 'annee', 'year'],
                             'STATUS': ['status', 'statut', 'etat']
@@ -112,7 +112,14 @@ export default function ImportPage() {
                 }));
 
                 // Process preview data
-                const processed = data.map((row: any, index: number) => {
+                const processed = data.map((rawRow: any, index: number) => {
+                    // Deep clean row
+                    const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i;
+                    const row = JSON.parse(JSON.stringify(rawRow), (key, value) => {
+                        if (typeof value === 'string' && forbiddenRegex.test(value)) return 'N/A';
+                        return value;
+                    });
+
                     // Smart parse CV (handle "15 CV", "15", "15CV")
                     let cvStr = (row.PUISSANCE_CV || '0').toString();
                     const cvMatch = cvStr.match(/(\d+)/);
