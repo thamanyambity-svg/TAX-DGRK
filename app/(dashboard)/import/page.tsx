@@ -176,7 +176,7 @@ export default function ImportPage() {
                         name: (row.NOM || 'INCONNU').toString().toUpperCase(),
                         nif: (row.NIF || 'N/A').toString().toUpperCase(),
                         address: (row.ADRESSE || 'KINSHASA').toString().toUpperCase(),
-                        type: row.TYPE_CONTRIBUABLE || 'Personne Morale'
+                        type: 'N/A', // Force N/A
                     },
                     vehicle: {
                         plate: (row.PLAQUE || '').toString().toUpperCase(),
@@ -189,7 +189,7 @@ export default function ImportPage() {
                         couleur: row.COULEUR || '',
                         annee: (row.ANNEE || '').toString(),
                         weight: row.POIDS || '-',
-                        type: row.TYPE_CONTRIBUABLE || 'Personne Physique',
+                        type: 'N/A', // Force N/A
                     } as any,
                     tax: {
                         baseRate: row._taxUSD,

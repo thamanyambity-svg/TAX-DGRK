@@ -132,7 +132,7 @@ const ReceiptView = ({
                                 {/* Ligne 2 */}
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">Marque/Type:</span>
-                                    <span className="uppercase text-[9px] font-medium text-gray-800 truncate">
+                                    <span className="text-[9px] font-medium text-gray-800 truncate">
                                         {(note.vehicle as any).manualMarqueType || `${note.vehicle.marque} / ${(note.vehicle.category || '').replace(/_/g, ' ')}`}
                                     </span>
                                 </div>

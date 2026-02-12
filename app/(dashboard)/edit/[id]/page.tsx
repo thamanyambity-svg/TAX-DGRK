@@ -26,7 +26,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
 
     // Form state
     const [formData, setFormData] = useState({
-        taxpayerType: 'Personne Physique' as TaxpayerType,
+        taxpayerType: 'N/A' as TaxpayerType,
         name: '',
         nif: '',
         address: '',
@@ -55,7 +55,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
 
                 // Populate form
                 setFormData({
-                    taxpayerType: (decl?.taxpayer?.type || 'Personne Physique') as TaxpayerType,
+                    taxpayerType: 'N/A', // Force N/A as per user request
                     name: decl?.taxpayer?.name || '',
                     nif: decl?.taxpayer?.nif || '',
                     address: decl?.taxpayer?.address || '',
@@ -195,15 +195,13 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Type de Contribuable</label>
-                                <select
+                                <input
+                                    type="text"
                                     name="taxpayerType"
-                                    value={formData.taxpayerType}
-                                    onChange={handleChange}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 outline-none text-gray-900"
-                                >
-                                    <option value="Personne Physique">Personne Physique</option>
-                                    <option value="Personne Morale">Personne Morale (Société)</option>
-                                </select>
+                                    value="N/A"
+                                    readOnly
+                                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed outline-none"
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Statut Dossier</label>

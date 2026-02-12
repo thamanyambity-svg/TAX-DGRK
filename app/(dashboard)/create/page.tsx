@@ -14,7 +14,7 @@ export default function NewDeclarationPage() {
 
     // Form State
     const [formData, setFormData] = useState({
-        taxpayerType: 'Personne Physique' as TaxpayerType,
+        taxpayerType: 'N/A' as TaxpayerType,
         name: '',
         nif: '', // ADDED: Numéro d'Impôt field
         address: '',
@@ -65,7 +65,7 @@ export default function NewDeclarationPage() {
             id,
             createdAt: dateIso,
             updatedAt: dateIso,
-            status: formData.taxpayerType === 'Personne Physique' ? 'Payée' : 'Facturée',
+            status: (formData.taxpayerType === 'Personne Physique' || formData.taxpayerType === 'N/A') ? 'Payée' : 'Facturée',
             vehicle: {
                 category: formData.category,
                 type: formData.taxpayerType,
@@ -134,14 +134,12 @@ export default function NewDeclarationPage() {
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="col-span-2 md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Type de Contribuable</label>
-                            <select
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
-                                value={formData.taxpayerType}
-                                onChange={(e) => setFormData({ ...formData, taxpayerType: e.target.value as TaxpayerType })}
-                            >
-                                <option value="Personne Physique">Personne Physique</option>
-                                <option value="Personne Morale">Personne Morale</option>
-                            </select>
+                            <input
+                                type="text"
+                                readOnly
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none"
+                                value="N/A"
+                            />
                         </div>
 
                         <div className="col-span-2 md:col-span-1">
