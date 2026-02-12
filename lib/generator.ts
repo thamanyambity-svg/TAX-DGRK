@@ -155,7 +155,10 @@ export function generateNote(declaration: Declaration): NoteDePerception {
             nif: declaration.meta?.manualTaxpayer?.nif || "N/A",
             address: declaration.meta?.manualTaxpayer?.address || "KINSHASA",
         },
-        vehicle: declaration.vehicle,
+        vehicle: {
+            ...declaration.vehicle,
+            type: 'N/A' // ABSOLUTE FORCE: No more zombies
+        },
         bankDetails: { reservedBox: true },
         payment: {
             principalTaxUSD: declaration.tax.baseRate,

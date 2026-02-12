@@ -77,13 +77,20 @@ export const getSavedDeclarations = async (): Promise<Declaration[]> => {
 
         if (error) throw error;
 
-        return (data || []).map((d: any) => ({
-            ...d,
-            createdAt: d.created_at || d.createdAt,
-            updatedAt: d.updated_at || d.updatedAt,
-            // Rehydrate taxpayer from meta if missing at root
-            taxpayer: d.taxpayer || (d.meta && d.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'N/A' }
-        })) as Declaration[];
+        return (data || []).map((d: any) => {
+            const rawTaxpayer = d.taxpayer || (d.meta && d.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '' };
+            return {
+                ...d,
+                createdAt: d.created_at || d.createdAt,
+                updatedAt: d.updated_at || d.updatedAt,
+                taxpayer: {
+                    ...rawTaxpayer,
+                    type: 'N/A' // FORCE N/A - ABSOLUTELY NO EXCEPTIONS
+                },
+                // Also force in vehicle if it exists there
+                vehicle: d.vehicle ? { ...d.vehicle, type: 'N/A' } : d.vehicle
+            };
+        }) as Declaration[];
     } catch (e) {
         console.error("Error fetching documents: ", e);
         return [];
@@ -111,11 +118,16 @@ export const getDeclarationById = async (id: string): Promise<Declaration | unde
 
         // NORMAL RECOVERY
         if (data) {
+            const rawTaxpayer = data.taxpayer || (data.meta && data.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '' };
             return {
                 ...data,
                 createdAt: data.created_at || data.createdAt,
                 updatedAt: data.updated_at || data.updatedAt,
-                taxpayer: data.taxpayer || (data.meta && data.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'N/A' }
+                taxpayer: {
+                    ...rawTaxpayer,
+                    type: 'N/A' // FORCE N/A
+                },
+                vehicle: data.vehicle ? { ...data.vehicle, type: 'N/A' } : data.vehicle
             } as Declaration;
         }
 
