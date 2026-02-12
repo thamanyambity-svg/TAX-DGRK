@@ -105,7 +105,7 @@ export default function BordereauPage() {
     let displayTotal = 0;
     let displayCredit = 0;
     let timbre = 3.45;
-    let taxes = 0.55;
+    let taxes = 0.00; // Updated: Total bank fee is 3.45 as per user request
     let taxInfo: any = {}; // Initialize empty
 
     // FIX: Check for manual base amount override first
@@ -115,10 +115,10 @@ export default function BordereauPage() {
 
         // Custom Rounding Rule: Bank always rounds UP to nearest integer
         // Examples: 58.70 -> 59, 64.50 -> 65, 68.20 -> 69
-        displayCredit = Math.ceil(rawBase);
+        displayCredit = rawBase; // Use exact value from receipt for summation
 
-        // Bank Fee Logic: Always Credit + 4$
-        displayTotal = displayCredit + 4.00;
+        // Bank Fee Logic: Always Credit + 3.45$ (as per latest request)
+        displayTotal = displayCredit + 3.45;
 
         // Mock taxInfo for manual override to prevent crashes
         taxInfo = {

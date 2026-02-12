@@ -3,7 +3,7 @@ export interface TaxCalculation {
     totalAmount: number;
     creditAmount: number; // Montant crédité au compte (Total - 4$)
     timbre: number; // Toujours 3.45
-    taxe: number; // Toujours 0.55
+    taxe: number; // Toujours 0.00 (Updated from 0.55 as per user request)
     textAmount: string; // "soixante neuf", etc.
     billBreakdown: {
         value: number;
@@ -23,12 +23,12 @@ const parseWeight = (weightStr: string | number | undefined): number => {
 // Helper for number to French words (simplified for specific values)
 const getNumberText = (amount: number): string => {
     const map: Record<string, string> = {
-        "63": "soixante trois",
-        "69": "soixante neuf",
-        "75": "soixante quinze",
-        "62.7": "soixante deux et sept cents",
-        "68.5": "soixante huit et cinq cents", // 64.5 + 4
-        "72.2": "soixante douze et vingt cents", // 68.2 + 4
+        "62.15": "soixante deux et quinze cents", // 58.7 + 3.45
+        "67.95": "soixante sept et quatre-vingt-quinze cents", // 64.5 + 3.45
+        "71.65": "soixante onze et soixante-cinq cents", // 68.2 + 3.45
+        "62.45": "soixante deux et quarante-cinq cents", // 59 + 3.45
+        "68.45": "soixante huit et quarante-cinq cents", // 65 + 3.45
+        "74.45": "soixante quatorze et quarante-cinq cents", // 71 + 3.45
     };
     // Generic fallback or exact match
     return map[amount.toString()] || amount.toFixed(2).replace('.', ' virgule ');
@@ -56,12 +56,12 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
         // We'll apply the price if the type is selected.
 
         const base = 58.70;
-        const total = base + 4.00; // 62.70
+        const total = base + 3.45;
         return {
             totalAmount: total,
             creditAmount: base,
             timbre: 3.45,
-            taxe: 0.55,
+            taxe: 0.00,
             textAmount: getNumberText(total),
             billBreakdown: [
                 { value: 50, count: 1, total: 50 },
@@ -86,12 +86,12 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
             base = 68.20;
         }
 
-        const total = base + 4.00; // 68.50 or 72.20
+        const total = base + 3.45;
         return {
             totalAmount: total,
             creditAmount: base,
             timbre: 3.45,
-            taxe: 0.55,
+            taxe: 0.00,
             textAmount: getNumberText(total),
             billBreakdown: [
                 { value: 50, count: 1, total: 50 },
@@ -108,11 +108,11 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
     // REGLE 1 : 1-10 CV -> 63 USD
     if (cv <= 10) {
         return {
-            totalAmount: 63.00,
+            totalAmount: 59.00 + 3.45,
             creditAmount: 59.00,
             timbre: 3.45,
-            taxe: 0.55,
-            textAmount: "soixante trois",
+            taxe: 0.00,
+            textAmount: "soixante deux et quarante-cinq cents",
             billBreakdown: [
                 { value: 20, count: 2, total: 40 },
                 { value: 10, count: 2, total: 20 },
@@ -125,11 +125,11 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
     // S'applique à TOUS les véhicules dans cette tranche (ex: Pick-up Wingle 12CV)
     if (cv <= 15) {
         return {
-            totalAmount: 69.00,
+            totalAmount: 65.00 + 3.45,
             creditAmount: 65.00,
             timbre: 3.45,
-            taxe: 0.55,
-            textAmount: "soixante neuf",
+            taxe: 0.00,
+            textAmount: "soixante huit et quarante-cinq cents",
             billBreakdown: [
                 { value: 50, count: 1, total: 50 },
                 { value: 10, count: 1, total: 10 },
@@ -142,11 +142,11 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
     // L'utilisateur dit "Plus de 15cv 75$".
     // 75 = 71 (crédit) + 4 (frais)
     return {
-        totalAmount: 75.00,
+        totalAmount: 71.00 + 3.45,
         creditAmount: 71.00,
         timbre: 3.45,
-        taxe: 0.55,
-        textAmount: "soixante quinze",
+        taxe: 0.00,
+        textAmount: "soixante quatorze et quarante-cinq cents",
         billBreakdown: [
             { value: 50, count: 1, total: 50 },
             { value: 20, count: 1, total: 20 },

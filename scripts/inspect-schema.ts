@@ -1,19 +1,21 @@
 
-import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js'
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+const supabaseUrl = 'https://aekmxhcfdqsvlpkycpsn.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFla214aGNmZHFzdmxwa3ljcHNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMTg1OTAsImV4cCI6MjA4NTY5NDU5MH0._zsSPTyD-MaEOrarBg-QuTnqwAsyxRFowY51ZTWloag'
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-async function inspectSchema() {
-    const { data, error } = await supabase.from('declarations').select('*').limit(1);
-    if (error) console.error(error);
-    else console.log('Full Record:', JSON.stringify(data?.[0], null, 2));
+async function inspect() {
+    const { data: rows, error } = await supabase.from('declarations').select('*').limit(1);
+
+    if (error) {
+        console.error("Error fetching rows:", error);
+        return;
+    }
+
+    console.log("Full Schema Keys:", Object.keys(rows[0]));
+    console.log("Full content of first row:", JSON.stringify(rows[0], null, 2));
 }
 
-inspectSchema();
+inspect();
