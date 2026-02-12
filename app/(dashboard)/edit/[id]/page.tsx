@@ -311,6 +311,17 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                 />
                             </div>
                             <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Poids (T)</label>
+                                <input
+                                    type="text"
+                                    name="weight"
+                                    value={formData.weight}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
+                                    placeholder="ex: 5 T"
+                                />
+                            </div>
+                            <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
                                 <select
                                     name="category"
