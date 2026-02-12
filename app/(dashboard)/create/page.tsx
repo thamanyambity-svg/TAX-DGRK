@@ -65,7 +65,7 @@ export default function NewDeclarationPage() {
             id,
             createdAt: dateIso,
             updatedAt: dateIso,
-            status: (formData.taxpayerType === 'Personne Physique' || formData.taxpayerType === 'N/A') ? 'Payée' : 'Facturée',
+            status: 'Payée', // Default to Payée for 'N/A' as per previous unified rule
             vehicle: {
                 category: formData.category,
                 type: formData.taxpayerType,

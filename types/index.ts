@@ -1,5 +1,5 @@
 // Enums extracted from screenshots
-export type TaxpayerType = 'Personne Morale' | 'Personne Physique' | 'N/A';
+export type TaxpayerType = 'N/A';
 
 export type VehicleCategory =
   | 'Vignette Automobile'
