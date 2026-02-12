@@ -4,10 +4,33 @@ import { supabase } from './supabase';
 // Session cache to ensure instant availability after creation (Fixes "Too long loading" error)
 const SESSION_CACHE: Declaration[] = [];
 
+/**
+ * FINAL FIREWALL: Recursively wipes 'Personne Physique' or 'Personne Morale' from any object.
+ */
+const cleanZombies = (obj: any): any => {
+    if (obj === null || typeof obj !== 'object') {
+        if (typeof obj === 'string') {
+            const forbidden = ['PERSONNE PHYSIQUE', 'PERSONNE MORALE'];
+            const upper = obj.toUpperCase();
+            if (forbidden.some(f => upper.includes(f))) return 'N/A';
+        }
+        return obj;
+    }
+    if (Array.isArray(obj)) return obj.map(cleanZombies);
+    const cleaned: any = {};
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            cleaned[key] = cleanZombies(obj[key]);
+        }
+    }
+    return cleaned;
+};
+
 // Async implementation for Supabase
 // Async implementation for Supabase
-export const saveDeclaration = async (decl: Declaration): Promise<{ success: boolean, id?: string, error?: string }> => {
+export const saveDeclaration = async (rawDecl: Declaration): Promise<{ success: boolean, id?: string, error?: string }> => {
     try {
+        const decl = cleanZombies(rawDecl);
         // 1. Cache immediately (optimistic)
         SESSION_CACHE.push(decl);
 
@@ -172,8 +195,9 @@ export const deleteDeclaration = async (id: string): Promise<boolean> => {
     }
 };
 
-export const updateDeclaration = async (id: string, updates: Partial<Declaration>): Promise<{ success: boolean, error?: string }> => {
+export const updateDeclaration = async (id: string, rawUpdates: Partial<Declaration>): Promise<{ success: boolean, error?: string }> => {
     try {
+        const updates = cleanZombies(rawUpdates);
         // 1. Fetch current full state to ensure we have a complete object for Upsert
         // We try cache first, then DB
         let current = SESSION_CACHE.find(d => d.id === id);

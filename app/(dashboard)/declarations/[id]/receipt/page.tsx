@@ -103,11 +103,7 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[180px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
                                     <span className="font-medium text-gray-800 uppercase text-[9px] break-words leading-tight truncate">
-                                        N/A, {(() => {
-                                            if (!note.taxpayer.address) return 'KINSHASA';
-                                            const parts = note.taxpayer.address.split(',');
-                                            return parts.length > 1 ? parts[parts.length - 1].trim() : 'KINSHASA';
-                                        })()}
+                                        {note.taxpayer.address || 'KINSHASA'}
                                     </span>
                                 </div>
                             </div>

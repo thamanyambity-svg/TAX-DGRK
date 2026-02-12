@@ -143,8 +143,19 @@ export function generateNote(declaration: Declaration): NoteDePerception {
     const referenceId = `NDP - 2026-${hexSuffix}`;
 
     const taxpayerName = declaration.meta?.manualTaxpayer?.name ||
+        (declaration.meta as any)?.taxpayerData?.name ||
         (declaration.taxpayer as any)?.name ||
         "CONTRIBUABLE";
+
+    const taxpayerNif = declaration.meta?.manualTaxpayer?.nif ||
+        (declaration.meta as any)?.taxpayerData?.nif ||
+        (declaration.taxpayer as any)?.nif ||
+        "N/A";
+
+    const taxpayerAddress = declaration.meta?.manualTaxpayer?.address ||
+        (declaration.meta as any)?.taxpayerData?.address ||
+        (declaration.taxpayer as any)?.address ||
+        "KINSHASA";
 
 
     const finalNote: NoteDePerception = {
@@ -152,8 +163,8 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         declarationId: declaration.id,
         taxpayer: {
             name: taxpayerName,
-            nif: declaration.meta?.manualTaxpayer?.nif || "N/A",
-            address: declaration.meta?.manualTaxpayer?.address || "KINSHASA",
+            nif: taxpayerNif,
+            address: taxpayerAddress,
         },
         vehicle: {
             ...declaration.vehicle,
