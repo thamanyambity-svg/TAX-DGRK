@@ -8,7 +8,7 @@ const CATEGORIES: VehicleCategory[] = [
     'Immatriculé IT', 'Exonéré'
 ];
 
-const TAXPAYER_TYPES: TaxpayerType[] = ['Personne Physique', 'Personne Morale'];
+const TAXPAYER_TYPES: TaxpayerType[] = ['N/A'];
 
 const CITIES = ['Kinshasa', 'Lubumbashi', 'Goma', 'Matadi', 'Kisangani'];
 const COMMUNES = ['Gombe', 'Kintambo', 'Ngaliema', 'Limete', 'Makala', 'Bandalungwa'];

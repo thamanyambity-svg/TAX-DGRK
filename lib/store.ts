@@ -82,7 +82,7 @@ export const getSavedDeclarations = async (): Promise<Declaration[]> => {
             createdAt: d.created_at || d.createdAt,
             updatedAt: d.updated_at || d.updatedAt,
             // Rehydrate taxpayer from meta if missing at root
-            taxpayer: d.taxpayer || (d.meta && d.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'Personne Physique' }
+            taxpayer: d.taxpayer || (d.meta && d.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'N/A' }
         })) as Declaration[];
     } catch (e) {
         console.error("Error fetching documents: ", e);
@@ -115,7 +115,7 @@ export const getDeclarationById = async (id: string): Promise<Declaration | unde
                 ...data,
                 createdAt: data.created_at || data.createdAt,
                 updatedAt: data.updated_at || data.updatedAt,
-                taxpayer: data.taxpayer || (data.meta && data.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'Personne Physique' }
+                taxpayer: data.taxpayer || (data.meta && data.meta.taxpayerData) || { name: 'Inconnu', nif: '', address: '', type: 'N/A' }
             } as Declaration;
         }
 
