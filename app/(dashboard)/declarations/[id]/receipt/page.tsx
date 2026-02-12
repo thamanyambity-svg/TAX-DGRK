@@ -134,27 +134,12 @@ const ReceiptView = ({
                                     <span className="font-bold text-gray-600">Marque/Type:</span>
                                     <span className="text-[9px] font-medium text-gray-800 truncate">
                                         {(note.vehicle as any).manualMarqueType || (() => {
-                                            const cat = (note.vehicle.category || '').toLowerCase();
-                                            // List of specific types to display SOLO and lowercase
-                                            const specialTypes = [
-                                                'touristique_heavy',
-                                                'touristique_medium',
-                                                'touristique_light',
-                                                'utilitaire_heavy',
-                                                'utilitaire_medium',
-                                                'utilitaire light'
-                                            ];
-
-                                            // Check if current category matches any special type (ignoring case/underscores for match)
-                                            const isSpecial = specialTypes.some(t => cat.includes(t.replace('_', ' '))) || cat.includes('_');
-
-                                            if (isSpecial) {
-                                                // Display ONLY the category in lowercase, preserving underscores if present or replacing with space if desired.
-                                                // User requested: "utilitaire_medium" strict lowercase.
-                                                return <span className="lowercase">{note.vehicle.category}</span>;
+                                            const cat = (note.vehicle.category || '');
+                                            // If it has underscores, force lowercase and show ONLY category
+                                            if (cat.includes('_')) {
+                                                return <span className="lowercase">{cat}</span>;
                                             }
 
-                                            // Default behavior for other types
                                             return (
                                                 <>
                                                     <span className="uppercase">{note.vehicle.marque}</span>
