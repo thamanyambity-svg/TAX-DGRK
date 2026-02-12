@@ -64,14 +64,20 @@ async function terminateZombies() {
                 .update({
                     vehicle: cleanedRow.vehicle,
                     meta: cleanedRow.meta,
-                    taxpayer: cleanedRow.taxpayer
+                    tax: cleanedRow.tax
                 })
                 .eq('id', row.id);
 
             if (updateError) {
                 console.error(`Failed to update ${row.id}:`, updateError.message);
             } else {
-                affectedCount++;
+                // VERIFICATION
+                const { data: verifyData } = await supabase.from('declarations').select('*').eq('id', row.id).single();
+                if (forbiddenRegex.test(JSON.stringify(verifyData))) {
+                    console.error(`❌ VERIFICATION FAILED for ${row.id} - Zombies still present!`);
+                } else {
+                    affectedCount++;
+                }
             }
         }
     }

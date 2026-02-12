@@ -63,7 +63,7 @@ const ReceiptView = ({
                     {/* Title Area */}
                     <div className="text-center flex-1 leading-tight">
                         <h1 className="text-lg font-bold uppercase text-[#333333] tracking-wide">RÉCÉPISSÉ</h1>
-                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026</p>
+                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026 (v4)</p>
                     </div>
 
                     {/* Copy Badge */}
@@ -103,7 +103,7 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[180px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
                                     <span className="font-medium text-gray-800 uppercase text-[9px] break-words leading-tight truncate">
-                                        {note.taxpayer.address || 'KINSHASA'}
+                                        {(note.taxpayer.address || 'KINSHASA').replace(/^N\/A,\s*/i, '')}
                                     </span>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">Puissance:</span>
                                     <span className="font-medium text-gray-800">
-                                        {note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/cv/i, '').trim()} CV` : '- CV'}
+                                        {note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV'}
                                     </span>
                                 </div>
 
