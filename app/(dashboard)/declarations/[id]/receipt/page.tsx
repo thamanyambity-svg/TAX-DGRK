@@ -160,7 +160,7 @@ const ReceiptView = ({
                                 {/* Ligne 3 */}
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Usage:</span>
-                                    <span className="font-medium text-gray-800">{note.vehicle.type || 'PRIVÉ'}</span>
+                                    <span className="font-medium text-gray-800">N/A</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Poids:</span>
