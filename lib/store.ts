@@ -10,9 +10,8 @@ const SESSION_CACHE: Declaration[] = [];
 const cleanZombies = (obj: any): any => {
     if (obj === null || typeof obj !== 'object') {
         if (typeof obj === 'string') {
-            const forbidden = ['PERSONNE PHYSIQUE', 'PERSONNE MORALE'];
-            const upper = obj.toUpperCase();
-            if (forbidden.some(f => upper.includes(f))) return 'N/A';
+            const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i;
+            if (forbiddenRegex.test(obj)) return 'N/A';
         }
         return obj;
     }
