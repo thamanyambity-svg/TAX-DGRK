@@ -60,6 +60,25 @@ export const saveDeclaration = async (rawDecl: Declaration): Promise<{ success: 
             Object.assign(dbPayload, forcedClean);
         }
 
+        // FORCE N/A on vehicle type/genre unconditionally before save
+        if (dbPayload.vehicle) {
+            dbPayload.vehicle.type = 'N/A';
+            dbPayload.vehicle.genre = 'N/A';
+        }
+
+        // FORCE address cleaning in meta
+        const cleanAddr = (s: string) => (s || '').replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '').replace(/^\s*(N\/A|N\/A,|[,/\s-])+/, '').trim() || '';
+        if (dbPayload.meta?.manualTaxpayer) {
+            dbPayload.meta.manualTaxpayer.type = 'N/A';
+            const a = cleanAddr(dbPayload.meta.manualTaxpayer.address);
+            if (a) dbPayload.meta.manualTaxpayer.address = a;
+        }
+        if (dbPayload.meta?.taxpayerData) {
+            dbPayload.meta.taxpayerData.type = 'N/A';
+            const a = cleanAddr(dbPayload.meta.taxpayerData.address);
+            if (a) dbPayload.meta.taxpayerData.address = a;
+        }
+
         // Remove 'taxpayer' from root as column doesn't exist
         delete (dbPayload as any).taxpayer;
 
@@ -79,10 +98,15 @@ export const saveDeclaration = async (rawDecl: Declaration): Promise<{ success: 
         // 3. SECURE LOGGING (Non-blocking)
         try {
             const qrContent = `https://tax-portal-two.vercel.app/verify/${decl.id}`;
+            // CRITICAL: Log the CLEANED payload (not raw decl) to avoid zombie data in logs
+            const cleanedForLog = cleanZombies({
+                ...decl,
+                vehicle: { ...decl.vehicle, type: 'N/A', genre: 'N/A' }
+            });
             const logEntry = {
                 reference_number: decl.id,
                 qr_code_content: qrContent,
-                full_receipt_data: decl,
+                full_receipt_data: cleanedForLog,
                 created_at: new Date().toISOString()
             };
 
