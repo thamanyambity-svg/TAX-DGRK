@@ -39,14 +39,24 @@ export const saveDeclaration = async (rawDecl: Declaration): Promise<{ success: 
         // MISSING: 'taxpayer'.
         // FIX: Start moving taxpayer into 'meta' to persist it, and remove from root.
 
-        const dbPayload = {
+        const dbPayload = cleanZombies({
             ...decl,
             meta: {
                 ...decl.meta,
                 // Ensure we save the taxpayer data inside meta since root column is missing
                 taxpayerData: decl.taxpayer
             }
-        };
+        });
+
+        // FINAL CHECK FOR ZOMBIES
+        const payloadStr = JSON.stringify(dbPayload);
+        if (/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i.test(payloadStr)) {
+            console.error("⛔ CRITICAL: A ZOMBIE TRIED TO BYPASS FILTERS!", dbPayload);
+            // Forced emergency wipe on the string
+            const forcedClean = JSON.parse(payloadStr.replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, 'N/A'));
+            Object.assign(dbPayload, forcedClean);
+        }
+
         // Remove 'taxpayer' from root as column doesn't exist
         delete (dbPayload as any).taxpayer;
 
@@ -110,7 +120,7 @@ export const getSavedDeclarations = async (): Promise<Declaration[]> => {
                     type: 'N/A' // FORCE N/A - ABSOLUTELY NO EXCEPTIONS
                 },
                 // Also force in vehicle if it exists there
-                vehicle: d.vehicle ? { ...d.vehicle, type: 'N/A' } : d.vehicle
+                vehicle: d.vehicle ? { ...d.vehicle, type: 'N/A', genre: 'N/A' } : d.vehicle
             };
         }) as Declaration[];
     } catch (e) {
@@ -149,7 +159,7 @@ export const getDeclarationById = async (id: string): Promise<Declaration | unde
                     ...rawTaxpayer,
                     type: 'N/A' // FORCE N/A
                 },
-                vehicle: data.vehicle ? { ...data.vehicle, type: 'N/A' } : data.vehicle
+                vehicle: data.vehicle ? { ...data.vehicle, type: 'N/A', genre: 'N/A' } : data.vehicle
             } as Declaration;
         }
 
@@ -215,12 +225,12 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
             return { success: false, error: "Document original introuvable." };
         }
 
-        // 2. Merge Updates
-        const merged: Declaration = {
+        // 2. Merge Updates & Clean entire result
+        const merged: Declaration = cleanZombies({
             ...current,
             ...updates,
             updatedAt: new Date().toISOString()
-        };
+        });
 
         // 3. Update Memory Cache
         const idx = SESSION_CACHE.findIndex(d => d.id === id);
@@ -230,15 +240,23 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
             SESSION_CACHE.push(merged);
         }
 
-        // 4. Prepare DB Payload 
-        // Logic sync with saveDeclaration: Move taxpayer to meta
-        const dbPayload = {
+        const dbPayload = cleanZombies({
             ...merged,
             meta: {
                 ...merged.meta,
                 taxpayerData: merged.taxpayer
             }
-        };
+        });
+
+        // FINAL CHECK FOR ZOMBIES
+        const payloadStr = JSON.stringify(dbPayload);
+        if (/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i.test(payloadStr)) {
+            console.error("⛔ CRITICAL: A ZOMBIE TRIED TO BYPASS UPDATE FILTERS!", dbPayload);
+            // Forced emergency wipe on the string
+            const forcedClean = JSON.parse(payloadStr.replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, 'N/A'));
+            Object.assign(dbPayload, forcedClean);
+        }
+
         delete (dbPayload as any).taxpayer;
 
         const { error } = await supabase

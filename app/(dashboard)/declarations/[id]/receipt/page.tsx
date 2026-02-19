@@ -63,7 +63,7 @@ const ReceiptView = ({
                     {/* Title Area */}
                     <div className="text-center flex-1 leading-tight">
                         <h1 className="text-lg font-bold uppercase text-[#333333] tracking-wide">RÉCÉPISSÉ</h1>
-                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026 (v5)</p>
+                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026 (v6 - FORCE N/A)</p>
                     </div>
 
                     {/* Copy Badge */}
@@ -156,7 +156,7 @@ const ReceiptView = ({
                                 {/* Ligne 3 */}
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Usage:</span>
-                                    <span className="font-medium text-gray-800">N/A</span>
+                                    <span className="font-bold text-red-600">N/A (BLOCKED)</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Poids:</span>
@@ -218,7 +218,7 @@ const ReceiptView = ({
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

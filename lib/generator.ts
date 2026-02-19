@@ -168,7 +168,8 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         },
         vehicle: {
             ...declaration.vehicle,
-            type: 'N/A' // ABSOLUTE FORCE: No more zombies
+            type: 'N/A', // ABSOLUTE FORCE: No more zombies
+            genre: 'N/A'
         },
         bankDetails: { reservedBox: true },
         payment: {

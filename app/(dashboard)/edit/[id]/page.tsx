@@ -194,13 +194,13 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Type de Contribuable</label>
-                                <input
-                                    type="text"
-                                    name="taxpayerType"
+                                <select
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed outline-none appearance-none"
                                     value="N/A"
-                                    readOnly
-                                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed outline-none"
-                                />
+                                >
+                                    <option value="N/A">N/A</option>
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Statut Dossier</label>

@@ -114,6 +114,9 @@ export default function NewDeclarationPage() {
 
     return (
         <div className="max-w-3xl mx-auto py-8 px-4">
+            <div className="bg-red-600 text-white p-4 rounded-xl mb-4 font-bold text-center animate-pulse">
+                VERSION 2.0 - PROTECTION ZOMBIE ACTIVÉE
+            </div>
             <div className="flex items-center gap-4 mb-8">
                 <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                     <ArrowLeft className="h-5 w-5 text-gray-500" />
@@ -134,13 +137,15 @@ export default function NewDeclarationPage() {
                     </div>
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Type de Contribuable</label>
-                            <input
-                                type="text"
-                                readOnly
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none"
+                            <label className="block text-sm font-medium text-indigo-600 mb-1">🛡️ Type (Standardisé N/A)</label>
+                            <select
+                                disabled
+                                className="w-full rounded-lg border-indigo-200 border px-3 py-2 text-sm bg-indigo-50 text-indigo-700 cursor-not-allowed outline-none appearance-none font-bold"
                                 value="N/A"
-                            />
+                            >
+                                <option value="N/A">N/A (FIXED)</option>
+                            </select>
+                            <p className="text-[10px] text-indigo-400 mt-1 italic">Sélection bloquée : Aucun zombie autorisé.</p>
                         </div>
 
                         <div className="col-span-2 md:col-span-1">
