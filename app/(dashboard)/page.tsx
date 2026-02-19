@@ -154,76 +154,81 @@ export default function Home() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDeclarations.map((decl) => (
-            <div key={decl.id} className="relative group decl-card">
-              {/* Le Link doit être en block pour prendre toute la place, mais on gère le bouton à part */}
-              <Link href={`/declarations/${decl.id}/receipt`} className="block h-full">
-                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
+            <div
+              key={decl.id}
+              className="relative group decl-card cursor-pointer"
+              onClick={() => {
+                // Navigate to the receipt page when clicking anywhere on the card
+                // unless it was stopped by e.stopPropagation() from buttons
+                window.location.href = `/declarations/${decl.id}/receipt`;
+              }}
+            >
+              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
 
-                  {/* HEADER CARD */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="h-10 w-10 bg-mint-50 rounded-lg flex items-center justify-center text-mint-600">
-                      <FileText className="h-5 w-5" />
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {/* STATUT */}
-                      <span className={cn(
-                        "text-xs font-medium px-2 py-1 rounded-full uppercase",
-                        decl.status === 'Payée' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
-                      )}>
-                        {decl.status}
-                      </span>
-
-                      {/* EDIT BUTTON (Admin Only) */}
-                      <Link
-                        href={`/edit/${decl.id}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                        className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all z-20"
-                        title="Modifier ce dossier"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Link>
-
-                      {/* DELETE BUTTON (Admin Only) */}
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault(); // Empêche l'ouverture du Link
-                          e.stopPropagation();
-                          handleDelete(decl.id);
-                        }}
-                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all z-20"
-                        title="Supprimer ce dossier"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
+                {/* HEADER CARD */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-10 w-10 bg-mint-50 rounded-lg flex items-center justify-center text-mint-600">
+                    <FileText className="h-5 w-5" />
                   </div>
 
-                  {/* CONTENT CARD */}
-                  <div className="mb-3">
-                    <h3 className="font-bold text-gray-900 truncate" title={(decl.meta?.manualTaxpayer as any)?.name}>
-                      {(decl.meta?.manualTaxpayer as any)?.name || 'Contribuable'}
-                    </h3>
-                    <div className="flex gap-2 items-center mt-1">
-                      <span className="text-xs font-mono bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-bold">{decl.vehicle.plate}</span>
-                      <span className="text-xs text-gray-400 font-mono">{decl.id}</span>
-                    </div>
-                  </div>
-
-                  {/* FOOTER CARD */}
-                  <div className="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
-                    <span className="text-sm font-bold text-gray-900">
-                      FC {decl.tax.totalAmountFC.toLocaleString()}
+                  <div className="flex items-center gap-2">
+                    {/* STATUT */}
+                    <span className={cn(
+                      "text-xs font-medium px-2 py-1 rounded-full uppercase",
+                      decl.status === 'Payée' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
+                    )}>
+                      {decl.status}
                     </span>
-                    <div className="flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700">
-                      Voir <ArrowRight className="h-4 w-4 ml-1" />
-                    </div>
-                  </div>
 
+                    {/* EDIT BUTTON (Admin Only) */}
+                    <Link
+                      href={`/edit/${decl.id}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all z-20"
+                      title="Modifier ce dossier"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Link>
+
+                    {/* DELETE BUTTON (Admin Only) */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleDelete(decl.id);
+                      }}
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all z-20"
+                      title="Supprimer ce dossier"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
-              </Link>
+
+                {/* CONTENT CARD */}
+                <div className="mb-3">
+                  <h3 className="font-bold text-gray-900 truncate" title={(decl.meta?.manualTaxpayer as any)?.name}>
+                    {(decl.meta?.manualTaxpayer as any)?.name || 'Contribuable'}
+                  </h3>
+                  <div className="flex gap-2 items-center mt-1">
+                    <span className="text-xs font-mono bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-bold">{decl.vehicle.plate}</span>
+                    <span className="text-xs text-gray-400 font-mono">{decl.id}</span>
+                  </div>
+                </div>
+
+                {/* FOOTER CARD */}
+                <div className="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
+                  <span className="text-sm font-bold text-gray-900">
+                    FC {decl.tax.totalAmountFC.toLocaleString()}
+                  </span>
+                  <div className="flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700">
+                    Voir <ArrowRight className="h-4 w-4 ml-1" />
+                  </div>
+                </div>
+
+              </div>
             </div>
           ))}
         </div>
