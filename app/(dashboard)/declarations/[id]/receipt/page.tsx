@@ -48,7 +48,7 @@ const ReceiptView = ({
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
             {/* EMERGENCY BANNER */}
             <div className="bg-red-700 text-white p-4 text-center font-extrabold text-xl animate-bounce border-b-4 border-black">
-                🛡️ ZONE SÉCURISÉE v6.1 - ZOMBIES ÉLIMINÉS 🛡️<br />
+                🛡️ ZONE SÉCURISÉE v7.0 - PROTECTION ABSOLUE 🛡️<br />
                 <span className="text-sm font-normal">Si vous voyez encore "Personne Physique", faites CTRL+F5 !</span>
             </div>
 
@@ -109,7 +109,7 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[180px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
                                     <span className="font-medium text-gray-800 uppercase text-[9px] break-words leading-tight truncate">
-                                        {(note.taxpayer.address || 'KINSHASA').replace(/^N\/A,\s*/i, '')}
+                                        {(note.taxpayer.address || 'KINSHASA').replace(/^(PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL),?\s*)+/gi, '').replace(/^N\/A,\s*/i, '').trim() || 'KINSHASA'}
                                     </span>
                                 </div>
                             </div>
