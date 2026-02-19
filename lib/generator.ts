@@ -152,10 +152,16 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         (declaration.taxpayer as any)?.nif ||
         "N/A";
 
-    const taxpayerAddress = (declaration.meta?.manualTaxpayer?.address ||
+    const taxpayerAddressRaw = (declaration.meta?.manualTaxpayer?.address ||
         (declaration.meta as any)?.taxpayerData?.address ||
         (declaration.taxpayer as any)?.address ||
-        "KINSHASA").replace(/^(PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL),?\s*)+/gi, '').trim();
+        "KINSHASA");
+
+    const taxpayerAddress = taxpayerAddressRaw
+        .replace(/^(PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL),?\s*)+/gi, '')
+        .replace(/^(N\/A|N\/A,)\s*/gi, '')
+        .replace(/^,\s*/, '')
+        .trim() || 'KINSHASA';
 
 
     const finalNote: NoteDePerception = {

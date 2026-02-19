@@ -13,7 +13,7 @@ const cleanZombies = (obj: any): any => {
             const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
             // Surgically REMOVE the zombie string. Also strip trailing/leading separators and N/A prefixes.
             let cleaned = obj.replace(forbiddenRegex, '').trim();
-            cleaned = cleaned.replace(/^(N\/A|[,/\s-])+/, '').replace(/[,/\s-]+$/, '').trim();
+            cleaned = cleaned.replace(/^\s*(N\/A|[,/\s-])+/, '').replace(/[,/\s-]+$/, '').trim();
             return cleaned || 'N/A';
         }
         return obj;

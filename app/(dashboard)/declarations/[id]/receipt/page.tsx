@@ -109,7 +109,12 @@ const ReceiptView = ({
                                 <div className="grid grid-cols-[180px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
                                     <span className="font-medium text-gray-800 uppercase text-[9px] break-words leading-tight truncate">
-                                        {(note.taxpayer.address || 'KINSHASA').replace(/^(PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL),?\s*)+/gi, '').replace(/^N\/A,\s*/i, '').trim() || 'KINSHASA'}
+                                        {(note.taxpayer.address || 'KINSHASA')
+                                            .replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '')
+                                            .replace(/^\s*(N\/A|N\/A,)\s*/gi, '')
+                                            .replace(/^[,/\s-]+/, '')
+                                            .replace(/[,/\s-]+$/, '')
+                                            .trim() || 'KINSHASA'}
                                     </span>
                                 </div>
                             </div>
