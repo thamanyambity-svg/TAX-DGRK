@@ -182,7 +182,7 @@ export default function ImportPage() {
                     taxpayer: {
                         name: (row.NOM || 'INCONNU').toString().toUpperCase(),
                         nif: (row.NIF || 'N/A').toString().toUpperCase(),
-                        address: (row.ADRESSE || 'KINSHASA').toString().toUpperCase(),
+                        address: (row.ADRESSE || 'KINSHASA').toString().toUpperCase().replace(/PERSONNE\s+(PHYSIQUE|MORALE)/gi, '').trim(),
                         type: 'N/A', // Force N/A
                     },
                     vehicle: {
