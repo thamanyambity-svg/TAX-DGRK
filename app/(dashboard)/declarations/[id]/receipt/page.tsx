@@ -46,11 +46,6 @@ const ReceiptView = ({
 
     return (
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
-            {/* EMERGENCY BANNER */}
-            <div className="bg-red-700 text-white p-4 text-center font-extrabold text-xl animate-bounce border-b-4 border-black">
-                🛡️ ZONE SÉCURISÉE v7.0 - PROTECTION ABSOLUE 🛡️<br />
-                <span className="text-sm font-normal">Si vous voyez encore "Personne Physique", faites CTRL+F5 !</span>
-            </div>
 
             {/* Main Container - ULTRA COMPACT MODE */}
             <div className="p-3 border-2 border-dashed border-gray-300 rounded-lg relative overflow-hidden bg-white">
@@ -167,7 +162,7 @@ const ReceiptView = ({
                                 {/* Ligne 3 */}
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Usage:</span>
-                                    <span className="font-bold text-red-600">N/A (BLOCKED)</span>
+                                    <span className="font-medium text-gray-800">N/A</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Poids:</span>
