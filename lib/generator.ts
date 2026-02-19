@@ -152,10 +152,10 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         (declaration.taxpayer as any)?.nif ||
         "N/A";
 
-    const taxpayerAddress = declaration.meta?.manualTaxpayer?.address ||
+    const taxpayerAddress = (declaration.meta?.manualTaxpayer?.address ||
         (declaration.meta as any)?.taxpayerData?.address ||
         (declaration.taxpayer as any)?.address ||
-        "KINSHASA";
+        "KINSHASA").replace(/^(PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL),?\s*)+/gi, '').trim();
 
 
     const finalNote: NoteDePerception = {
@@ -181,7 +181,7 @@ export function generateNote(declaration: Declaration): NoteDePerception {
 
     // Override with explicit stored data if it exists
     if (declaration.meta && (declaration.meta as any).taxpayerData) {
-        finalNote.taxpayer = (declaration.meta as any).taxpayerData;
+        finalNote.taxpayer = { ...finalNote.taxpayer, ...(declaration.meta as any).taxpayerData };
     }
     if (declaration.meta?.manualTaxpayer) {
         finalNote.taxpayer = {
@@ -189,6 +189,10 @@ export function generateNote(declaration: Declaration): NoteDePerception {
             ...declaration.meta.manualTaxpayer
         };
     }
+
+    // FINAL SOURCE PROTECTION: Ensure no zombie strings survive the copy
+    if ((finalNote.taxpayer as any).type) (finalNote.taxpayer as any).type = 'N/A';
+    if (finalNote.vehicle.type) finalNote.vehicle.type = 'N/A';
 
     return finalNote;
 }
