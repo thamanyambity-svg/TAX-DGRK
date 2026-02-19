@@ -36,9 +36,10 @@ const ReceiptView = ({
         maximumFractionDigits: 2
     });
 
+    const { formatKinshasaDate, formatKinshasaTime } = require('@/lib/utils');
     const creationDate = note.generatedAt ? new Date(note.generatedAt) : new Date();
-    const dateStr = creationDate.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const timeStr = creationDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = formatKinshasaDate(creationDate);
+    const timeStr = formatKinshasaTime(creationDate);
 
     // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
     // User requested format: NDP-2026-1579A471 (No Name)

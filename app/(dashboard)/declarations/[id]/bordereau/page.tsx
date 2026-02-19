@@ -98,8 +98,9 @@ export default function BordereauPage() {
     const paymentDateStr = (decl.meta as any)?.manualPaymentDate || getPaymentDate(decl.createdAt);
     const paymentDate = new Date(paymentDateStr);
 
-    const dateStr = paymentDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' });
-    const timeStr = paymentDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+    const { formatKinshasaDateLong, formatKinshasaTime } = require('@/lib/utils');
+    const dateStr = formatKinshasaDateLong(paymentDate);
+    const timeStr = formatKinshasaTime(paymentDate).replace(':', 'H'); // Bank format usually HHhMM or HH:MM
 
     // Tax calculation
     let displayTotal = 0;
