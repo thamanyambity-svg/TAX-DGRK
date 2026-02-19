@@ -65,27 +65,14 @@ export function getNowOrBusinessHours(): string {
 export function getPaymentDate(creationDateStr: string): string {
     const date = new Date(creationDateStr);
 
-    // Add 2 days (48 hours)
-    date.setUTCDate(date.getUTCDate() + 2);
+    // NEW LOGIC: Declaration (Day D, Hour H) -> Bank (Day D+1, Hour H-2)
+    // This equals to adding 22 hours total.
+    date.setUTCHours(date.getUTCHours() + 22);
 
-    // If result is Sunday, move to Monday
+    // If the resulting date falls on a Sunday, move it to Monday (add 24h)
+    // This keeps the "two hours before" relative time but on a working day.
     if (date.getUTCDay() === 0) {
         date.setUTCDate(date.getUTCDate() + 1);
-    }
-
-    // Ensure it's within business hours for that day
-    // If it's too early or late, adjust to mid-day
-    const hour = date.getUTCHours();
-    const day = date.getUTCDay();
-
-    if (day === 6) { // Saturday (8:30 - 14:00)
-        if (hour < 9 || hour >= 13) {
-            date.setUTCHours(10, 30, 0, 0);
-        }
-    } else { // Mon-Fri (9:00 - 17:30)
-        if (hour < 10 || hour >= 16) {
-            date.setUTCHours(11, 0, 0, 0);
-        }
     }
 
     return date.toISOString();

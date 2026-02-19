@@ -5,49 +5,38 @@ const supabaseUrl = 'https://aekmxhcfdqsvlpkycpsn.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFla214aGNmZHFzdmxwa3ljcHNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMTg1OTAsImV4cCI6MjA4NTY5NDU5MH0._zsSPTyD-MaEOrarBg-QuTnqwAsyxRFowY51ZTWloag'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+const ZOMBIE_REGEX = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
+
 async function unblockAddresses() {
-    console.log("🧹 UNBLOCKING ADDRESSES AND USAGE...");
+    console.log("🔓 UNBLOCKING REAL ADDRESSES (Removing N/A and Zombie prefixes)...");
+    const { data: decls } = await supabase.from('declarations').select('*');
+    if (!decls) return;
 
-    const { data: rows, error } = await supabase.from('declarations').select('*');
-    if (error) {
-        console.error("Error:", error);
-        return;
-    }
+    for (const d of decls) {
+        let needsUpdate = false;
+        const meta = d.meta ? JSON.parse(JSON.stringify(d.meta)) : {};
 
-    let fixedCount = 0;
+        const fields = ['taxpayerData', 'manualTaxpayer'];
+        fields.forEach(f => {
+            if (meta[f] && meta[f].address) {
+                const old = meta[f].address;
+                // Surgical cleaning: Remove zombie pattern and "N/A" prefixes
+                let cleaned = old.replace(ZOMBIE_REGEX, '').trim();
+                cleaned = cleaned.replace(/^(N\/A|[,/\s-])+/, '').trim();
 
-    for (const row of rows) {
-        let changed = false;
-        const newVehicle = { ...row.vehicle };
-        const newMeta = JSON.parse(JSON.stringify(row.meta || {}));
-
-        // 1. Force Usage N/A
-        if (newVehicle.type !== 'N/A') {
-            newVehicle.type = 'N/A';
-            changed = true;
-        }
-
-        // 2. Clean Address prefixes ('N/A, ', 'PERSONNE PHYSIQUE, ', etc.)
-        if (newMeta.manualTaxpayer?.address) {
-            const oldAddr = newMeta.manualTaxpayer.address;
-            const newAddr = oldAddr.replace(/^(N\/A|PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL))(,?\s*)/i, '').trim();
-            if (newAddr !== oldAddr) {
-                newMeta.manualTaxpayer.address = newAddr || 'KINSHASA';
-                changed = true;
+                if (cleaned !== old) {
+                    console.log(`🔓 ID ${d.id}: "${old}" -> "${cleaned}"`);
+                    meta[f].address = cleaned || 'KINSHASA';
+                    needsUpdate = true;
+                }
             }
-        }
+        });
 
-        if (changed) {
-            console.log(`Fixing ${row.id}: ${row.meta?.manualTaxpayer?.address} -> ${newMeta.manualTaxpayer?.address}`);
-            await supabase.from('declarations').update({
-                vehicle: newVehicle,
-                meta: newMeta
-            }).eq('id', row.id);
-            fixedCount++;
+        if (needsUpdate) {
+            await supabase.from('declarations').update({ meta }).eq('id', d.id);
         }
     }
-
-    console.log(`\n✅ DONE! Fixed ${fixedCount} records.`);
+    console.log("✅ ALL ADDRESSES UNBLOCKED.");
 }
 
 unblockAddresses();

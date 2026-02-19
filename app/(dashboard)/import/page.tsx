@@ -116,7 +116,11 @@ export default function ImportPage() {
                     // Deep clean row
                     const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i;
                     const row = JSON.parse(JSON.stringify(rawRow), (key, value) => {
-                        if (typeof value === 'string' && forbiddenRegex.test(value)) return 'N/A';
+                        if (typeof value === 'string') {
+                            const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
+                            // NON-DESTRUCTIVE CLEANING: Remove only the zombie part, keep the real content (like real address)
+                            return value.replace(forbiddenRegex, '').replace(/^[,/\s-]+/, '').trim() || 'N/A';
+                        }
                         return value;
                     });
 

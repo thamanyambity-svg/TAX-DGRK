@@ -10,8 +10,11 @@ const SESSION_CACHE: Declaration[] = [];
 const cleanZombies = (obj: any): any => {
     if (obj === null || typeof obj !== 'object') {
         if (typeof obj === 'string') {
-            const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/i;
-            if (forbiddenRegex.test(obj)) return 'N/A';
+            const forbiddenRegex = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
+            // Surgically REMOVE the zombie string. Also strip trailing/leading separators and N/A prefixes.
+            let cleaned = obj.replace(forbiddenRegex, '').trim();
+            cleaned = cleaned.replace(/^(N\/A|[,/\s-])+/, '').replace(/[,/\s-]+$/, '').trim();
+            return cleaned || 'N/A';
         }
         return obj;
     }
