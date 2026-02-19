@@ -102,14 +102,18 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
             // Re-calculate finalized tax
             const taxInfo = calculateTax(getCV(formData.fiscalPower), formData.category);
 
+            const ZOMBIE_RE = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
+            const cleanAddress = (s: string) =>
+                s.replace(ZOMBIE_RE, '').replace(/^\s*(N\/A|N\/A,|[,\s/-])+/, '').trim() || s.trim();
+
             const updates: Partial<Declaration> = {
                 updatedAt: new Date().toISOString(),
                 status: formData.status as any,
                 taxpayer: {
-                    type: formData.taxpayerType,
+                    type: 'N/A',  // ← TOUJOURS N/A
                     name: formData.name.toUpperCase(),
                     nif: formData.nif.toUpperCase(),
-                    address: formData.address.toUpperCase()
+                    address: cleanAddress(formData.address.toUpperCase())
                 },
                 vehicle: {
                     category: formData.category,
@@ -119,9 +123,8 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     weight: formData.weight,
                     marque: formData.marque.toUpperCase(),
                     modele: formData.modele.toUpperCase(),
-                    type: formData.taxpayerType,
-                    // Preserve existing fields if not in form? Ideally we load all.
-                    genre: 'N/A', // Force Usage N/A Usage N/A
+                    type: 'N/A',  // ← TOUJOURS N/A, jamais taxpayerType
+                    genre: 'N/A', // ← TOUJOURS N/A
                     couleur: '',
                     annee: ''
                 },
@@ -131,11 +134,11 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     totalAmountFC: taxInfo.totalAmount * EXCHANGE_RATE
                 },
                 meta: {
-                    // Update meta manual taxpayer to keep Receipt sync
                     manualTaxpayer: {
                         name: formData.name.toUpperCase(),
                         nif: formData.nif.toUpperCase(),
-                        address: formData.address.toUpperCase(),
+                        address: cleanAddress(formData.address.toUpperCase()),
+                        type: 'N/A',  // ← TOUJOURS N/A
                     }
                 } as any
             };

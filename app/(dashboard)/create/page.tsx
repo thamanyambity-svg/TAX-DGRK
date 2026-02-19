@@ -61,21 +61,26 @@ export default function NewDeclarationPage() {
 
         const dateIso = getNowOrBusinessHours();
 
+        // FIREWALL: Clean address from any zombie data
+        const ZOMBIE_RE = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
+        const cleanAddress = (addr: string) =>
+            addr.replace(ZOMBIE_RE, '').replace(/^\s*(N\/A|N\/A,|[,\s/-])+/, '').trim() || addr.trim();
+
         const newDeclaration: Declaration = {
             id,
             createdAt: dateIso,
             updatedAt: dateIso,
-            status: 'Payée', // Default to Payée for 'N/A' as per previous unified rule
+            status: 'Payée',
             vehicle: {
                 category: formData.category,
-                type: formData.taxpayerType,
+                type: 'N/A',        // ← TOUJOURS N/A, jamais de zombie
                 plate: formData.plate.toUpperCase(),
                 chassis: formData.chassis.toUpperCase(),
                 fiscalPower: formData.fiscalPower,
                 weight: formData.weight,
                 marque: (formData as any).marque?.toUpperCase() || '',
                 modele: (formData as any).modele?.toUpperCase() || '',
-                genre: 'N/A', // Force Usage N/A
+                genre: 'N/A',       // ← TOUJOURS N/A, jamais de zombie
             },
             tax: {
                 baseRate,
@@ -89,7 +94,8 @@ export default function NewDeclarationPage() {
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),
                     nif: formData.nif.toUpperCase(),
-                    address: formData.address.toUpperCase(),
+                    address: cleanAddress(formData.address.toUpperCase()), // ← Nettoyage adresse
+                    type: 'N/A',    // ← TOUJOURS N/A
                 }
             }
         } as any;
