@@ -143,18 +143,6 @@ export default function NewDeclarationPage() {
                     </div>
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-indigo-600 mb-1">🛡️ Type (Standardisé N/A)</label>
-                            <select
-                                disabled
-                                className="w-full rounded-lg border-indigo-200 border px-3 py-2 text-sm bg-indigo-50 text-indigo-700 cursor-not-allowed outline-none appearance-none font-bold"
-                                value="N/A"
-                            >
-                                <option value="N/A">N/A (FIXED)</option>
-                            </select>
-                            <p className="text-[10px] text-indigo-400 mt-1 italic">Sélection bloquée : Aucun zombie autorisé.</p>
-                        </div>
-
-                        <div className="col-span-2 md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
                             <input
                                 type="text"

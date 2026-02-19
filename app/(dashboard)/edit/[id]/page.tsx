@@ -195,17 +195,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">1. Informations Contribuable</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Type de Contribuable</label>
-                                <select
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed outline-none appearance-none"
-                                    value="N/A"
-                                >
-                                    <option value="N/A">N/A</option>
-                                </select>
-                            </div>
-                            <div>
+                            <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Statut Dossier</label>
                                 <select
                                     name="status"
