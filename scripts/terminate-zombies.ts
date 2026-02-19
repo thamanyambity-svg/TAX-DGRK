@@ -36,11 +36,28 @@ function deepClean(obj: any): any {
 async function terminateZombies() {
     console.log("☣️  TOTAL EXTERMINATION INITIATED: Searching for 'Personne Physique/Morale' zombies...");
 
-    const { data: rows, error } = await supabase.from('declarations').select('*');
-    if (error) {
-        console.error("Error fetching rows:", error);
-        return;
+    let allRows: any[] = [];
+    let page = 0;
+    const pageSize = 1000;
+
+    while (true) {
+        const { data: rows, error } = await supabase
+            .from('declarations')
+            .select('*')
+            .range(page * pageSize, (page + 1) * pageSize - 1);
+
+        if (error) {
+            console.error("Error fetching rows:", error);
+            break;
+        }
+
+        if (!rows || rows.length === 0) break;
+
+        allRows = allRows.concat(rows);
+        page++;
     }
+
+    const rows = allRows;
 
     console.log(`Found ${rows.length} records. Analyzing...`);
 

@@ -25,7 +25,7 @@ const realDeclarations = [
             name: 'MIANDA MUKENGE SYNTICHE',
             nif: 'C2241057E',
             address: '28, av. ANC. COMBATTANT, Q/F, C/NGALIEMA, KINSHASA',
-            type: 'Personne Physique' as const
+            type: 'N/A' as const
         },
         vehicle: {
             category: 'Véhicule utilitaire' as const,
@@ -33,7 +33,7 @@ const realDeclarations = [
             chassis: 'ACU30-0083571',
             fiscalPower: '9 CV',
             weight: 'N/A',
-            type: 'Personne Physique' as const,
+            type: 'N/A' as const,
             marque: 'TOYOTA',
             modele: 'Harrier',
             genre: 'JEEP',
@@ -69,7 +69,7 @@ const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
             name: 'STE KIN PLUS SARL',
             nif: 'A1913055M',
             address: '54, AV. DE LA JUSTICE, C/GOMBE, KINSHASA',
-            type: 'Personne Morale' as const
+            type: 'N/A' as const
         },
         vehicle: {
             category: 'Véhicule utilitaire' as const,
@@ -77,7 +77,7 @@ const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
             chassis: `LZZ5BLSD6RN${chassisSuffix}`, // Châssis EXACT
             fiscalPower: '35 CV', // TARIF 75$
             weight: 'N/A',
-            type: 'Personne Morale' as const,
+            type: 'N/A' as const,
             marque: 'SINOTRUK',
             modele: 'HOWO',
             genre: 'CAMION BENNE',
@@ -109,7 +109,7 @@ const KIN_PLUS_WINGLE = Array.from({ length: 10 }).map((_, i) => {
             name: 'STE KIN PLUS SARL',
             nif: 'A1913055M',
             address: '54, AV. DE LA JUSTICE, C/GOMBE, KINSHASA',
-            type: 'Personne Morale' as const
+            type: 'N/A' as const
         },
         vehicle: {
             category: 'Véhicule utilitaire' as const,
@@ -117,7 +117,7 @@ const KIN_PLUS_WINGLE = Array.from({ length: 10 }).map((_, i) => {
             chassis: `LGWDBE176SB${chassisSuffix}`, // Châssis EXACT
             fiscalPower: '12 CV', // TARIF 69$
             weight: 'N/A',
-            type: 'Personne Morale' as const,
+            type: 'N/A' as const,
             marque: 'GREAT WALL',
             modele: 'WINGLE',
             genre: 'PICK-UP',

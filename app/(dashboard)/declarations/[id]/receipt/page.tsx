@@ -46,6 +46,12 @@ const ReceiptView = ({
 
     return (
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
+            {/* EMERGENCY BANNER */}
+            <div className="bg-red-700 text-white p-4 text-center font-extrabold text-xl animate-bounce border-b-4 border-black">
+                🛡️ ZONE SÉCURISÉE v6.1 - ZOMBIES ÉLIMINÉS 🛡️<br />
+                <span className="text-sm font-normal">Si vous voyez encore "Personne Physique", faites CTRL+F5 !</span>
+            </div>
+
             {/* Main Container - ULTRA COMPACT MODE */}
             <div className="p-3 border-2 border-dashed border-gray-300 rounded-lg relative overflow-hidden bg-white">
 

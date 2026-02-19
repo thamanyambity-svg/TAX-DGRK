@@ -7,7 +7,7 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 async function inspectRow() {
-    const id = 'DECL-2026-1588BBB5';
+    const id = 'DECL-2026-15828687';
     console.log(`Inspecting row ${id}...`);
 
     const { data, error } = await supabase

@@ -35,7 +35,7 @@ async function updateExistingAndAddNew() {
     for (let i = 0; i < 30; i++) {
         const name = noms[Math.floor(Math.random() * noms.length)] + " " + i;
         const fiscalPower = (Math.floor(Math.random() * 20) + 5);
-        const type = Math.random() > 0.3 ? 'Personne Physique' : 'Personne Morale';
+        const type = 'N/A';
         const date = getRandomValidDate();
 
         const taxInfo = calculateTax(fiscalPower, 'Véhicule utilitaire');

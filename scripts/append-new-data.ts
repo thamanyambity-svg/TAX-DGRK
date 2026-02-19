@@ -27,7 +27,7 @@ const newDeclarations = [
                 name: 'MUSONGELA NYEMBO PATIENT',
                 nif: 'C2208528X',
                 address: '144, ISOKI, C/KINSHASA', // Ou C/LINGWALA selon quartier
-                type: 'Personne Physique' as const
+                type: 'N/A' as const
             }
         },
         vehicle: {
@@ -36,7 +36,7 @@ const newDeclarations = [
             chassis: 'J210E-0036664',
             fiscalPower: '9 CV', // Tarif 63$ (explicite sur doc)
             weight: 'N/A',
-            type: 'Personne Physique' as const,
+            type: 'N/A' as const,
             marque: 'TOYOTA',
             modele: 'RUSH',
             genre: 'JEEP',
@@ -62,7 +62,7 @@ const newDeclarations = [
                 name: 'NGOZA RAMAZANI GISELE',
                 nif: 'A241XXXX', // Pas de NIF visible explicitement, générique
                 address: 'AV. LOMAMI N° 49 A, Q/LISALA, C/KINTAMBO',
-                type: 'Personne Physique' as const
+                type: 'N/A' as const
             }
         },
         vehicle: {
@@ -71,7 +71,7 @@ const newDeclarations = [
             chassis: 'AGL10-2402451',
             fiscalPower: '14 CV', // Estimation RX270 (souvent >11CV) -> Tarif 69$
             weight: 'N/A',
-            type: 'Personne Physique' as const,
+            type: 'N/A' as const,
             marque: 'LEXUS',
             modele: 'RX270',
             genre: 'JEEP',
