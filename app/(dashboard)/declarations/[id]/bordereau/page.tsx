@@ -371,34 +371,8 @@ export default function BordereauPage() {
                                 <span>Soit {taxInfo.textAmount} USD</span>
                             </div>
 
-                            {/* Matrice de signatures ultra-calibrée avec mention intégrée et TAMPON RÉEL */}
+                            {/* Matrice de signatures */}
                             <div className="mt-2 whitespace-pre leading-[1.3] text-gray-800 relative">
-                                {/* Digital Stamp Recreated in SVG (Pure Code - No External File Needed) */}
-                                <div className="absolute left-[165px] top-[5px] pointer-events-none select-none z-20">
-                                    <svg width="200" height="90" viewBox="0 0 200 90" className="opacity-[0.85] rotate-[-2.5deg]" style={{ mixBlendMode: 'multiply' }}>
-                                        {/* Outer Rounded Frame */}
-                                        <rect x="2" y="2" width="196" height="86" rx="8" fill="white" fillOpacity="0" stroke="#00468B" strokeWidth="3" />
-                                        <rect x="6" y="6" width="188" height="78" rx="5" fill="none" stroke="#00468B" strokeWidth="1" />
-
-                                        {/* Content */}
-                                        <text x="15" y="24" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="11" fill="#00468B">Payé le : ....................</text>
-
-                                        <text x="100" y="54" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="28" fill="#00468B" textAnchor="middle" style={{ letterSpacing: '1px' }}>CAISSE VI</text>
-
-                                        <text x="100" y="76" fontFamily="Arial, sans-serif" fontWeight="900" fontSize="13" fill="#00468B" textAnchor="middle" style={{ letterSpacing: '0.5px' }}>SOLIDAIRE BANQUE S.A.</text>
-
-                                        {/* Subtle Noise/Texture Overlay (Optional but makes it look real) */}
-                                        <filter id="noise">
-                                            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
-                                            <feColorMatrix type="saturate" values="0" />
-                                            <feComponentTransfer>
-                                                <feFuncA type="linear" slope="0.1" />
-                                            </feComponentTransfer>
-                                            <feComposite operator="in" in2="SourceGraphic" />
-                                        </filter>
-                                        <rect x="0" y="0" width="200" height="90" filter="url(#noise)" opacity="0.4" pointerEvents="none" />
-                                    </svg>
-                                </div>
 
                                 <div>------------------------------------</div>
                                 <div>      CLIENT       !    GUICHETIER    !</div>
