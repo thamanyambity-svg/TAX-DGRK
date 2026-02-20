@@ -1,5 +1,5 @@
 'use client';
-
+// force-redeploy: 2026-02-20T13:49
 export const dynamic = 'force-dynamic';
 
 import { CheckCircle, Clock, Truck, User, CreditCard, FileText } from 'lucide-react';
