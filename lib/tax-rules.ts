@@ -1,10 +1,12 @@
 
 export interface TaxCalculation {
-    totalAmount: number;
-    creditAmount: number; // Montant crédité au compte (Total - 4$)
-    timbre: number; // Toujours 3.45
-    taxe: number; // Toujours 0.00 (Updated from 0.55 as per user request)
-    textAmount: string; // "soixante neuf", etc.
+    totalAmount: number;     // Montant total bordereau = Math.ceil(base) + 4
+    creditAmount: number;    // Montant brut de la taxe (affiché sur le récépissé, ex: 64.50)
+    roundedBase: number;     // Montant arrondi par la banque (ex: 65)
+    bankFee: number;         // Frais bancaires fixes = 4.00 USD
+    timbre: number;          // Pour affichage bordereau = 3.45
+    taxe: number;            // Pour affichage bordereau = 0.55 (3.45 + 0.55 = 4.00)
+    textAmount: string;      // "soixante neuf USD", etc.
     billBreakdown: {
         value: number;
         count: number;
@@ -20,137 +22,91 @@ const parseWeight = (weightStr: string | number | undefined): number => {
     return match ? parseFloat(match[1]) : 0;
 };
 
-// Helper for number to French words (simplified for specific values)
-const getNumberText = (amount: number): string => {
-    const map: Record<string, string> = {
-        "62.15": "soixante deux et quinze cents", // 58.7 + 3.45
-        "67.95": "soixante sept et quatre-vingt-quinze cents", // 64.5 + 3.45
-        "71.65": "soixante onze et soixante-cinq cents", // 68.2 + 3.45
-        "62.45": "soixante deux et quarante-cinq cents", // 59 + 3.45
-        "68.45": "soixante huit et quarante-cinq cents", // 65 + 3.45
-        "74.45": "soixante quatorze et quarante-cinq cents", // 71 + 3.45
+// Règle banque : arrondi vers le haut à l'entier supérieur (ceiling)
+// 64.50 -> 65, 68.20 -> 69, 58.70 -> 59, 70.10 -> 71
+const bankRound = (amount: number): number => Math.ceil(amount);
+
+// Frais bancaires fixes
+const BANK_FEE = 4.00;
+const TIMBRE = 3.45;
+const TAXE = 0.55; // 3.45 + 0.55 = 4.00
+
+// Helper for number to French words
+const getNumberText = (totalInt: number): string => {
+    const map: Record<number, string> = {
+        63: "soixante-trois USD",
+        69: "soixante-neuf USD",
+        72: "soixante-douze USD",
+        73: "soixante-treize USD",
+        75: "soixante-quinze USD",
     };
-    // Generic fallback or exact match
-    return map[amount.toString()] || amount.toFixed(2).replace('.', ' virgule ');
+    return map[totalInt] || `${totalInt} USD`;
 };
 
 export const calculateTax = (fiscalPower: number, vehicleType: string, weightInput?: string | number): TaxCalculation => {
-    // Normalisation
     const cv = fiscalPower || 0;
-    const type = (vehicleType || '').toLowerCase(); // Note: 'touristique_light' is in our types now
+    const type = (vehicleType || '').toLowerCase();
     const weight = parseWeight(weightInput);
 
-    const isHeavy = type.includes('camion') || type.includes('bus') || type.includes('tracteur') || type.includes('remorque') || type.includes('utilitaire');
+    const buildResult = (base: number): TaxCalculation => {
+        const rounded = bankRound(base);       // ex: 64.50 -> 65
+        const total = rounded + BANK_FEE;      // ex: 65 + 4 = 69
+        const totalInt = Math.round(total);
 
-    // --- NEW RULES (Specific Types) ---
+        // Génerer un breakdown réaliste en billets
+        let breakdown: { value: number; count: number; total: number }[] = [];
+        let remaining = rounded;
 
-    // 1. TOURISTIQUE LIGHT (0-10 CV -> $58.70 Base)
-    if (type === 'touristique_light' || type === 'touristique_ligtht') {
-        // Condition: 0 to 10 CV (Assumed from prompt context, though typically type overrides)
-        // Prompt said "touristique_ligtht, pour un montant de $58.70 pour les moteur de 0 a 10 cv"
-        // If > 10 CV, what? Fallback to standard? Or force 58.70?
-        // Prompt implies this CATEGORY has this rule. If user selects it, apply it.
-        // We'll enforce the price for this category regardless of CV to be safe, or check CV?
-        // "pour les moteur de 0 a 10 cv" -> implies constraint.
-        // If CV > 10, maybe it shouldn't be "touristique_light"? 
-        // We'll apply the price if the type is selected.
-
-        const base = 58.70;
-        const total = base + 3.45;
-        return {
-            totalAmount: total,
-            creditAmount: base,
-            timbre: 3.45,
-            taxe: 0.00,
-            textAmount: getNumberText(total),
-            billBreakdown: [
-                { value: 50, count: 1, total: 50 },
-                { value: 10, count: 1, total: 10 },
-                { value: 1, count: 2, total: 2 },
-                // 0.70 remainder handling in breakdown is tricky with integer bills.
-                // We'll simplify breakdown or mock it, as it's for display.
-                // 58.70 is not integer. The breakdown usually sums to Total.
-                // 62.70. 
-                // We will return a pragmatic breakdown or leave it empty if not strictly used/validated.
-                { value: 0.7, count: 1, total: 0.7 }
-            ]
-        };
-    }
-
-    // 2. UTILITAIRE HEAVY
-    if (type === 'utilitaire_heavy') {
-        // Criteria 1: 0 - 10T -> $64.50
-        // Criteria 2: > 10T -> $68.20
-        let base = 64.50;
-        if (weight > 10) {
-            base = 68.20;
+        for (const bill of [50, 20, 10, 5, 2, 1]) {
+            if (remaining <= 0) break;
+            const count = Math.floor(remaining / bill);
+            if (count > 0) {
+                breakdown.push({ value: bill, count, total: count * bill });
+                remaining = Math.round((remaining - count * bill) * 100) / 100;
+            }
         }
+        // Ajouter le billet pour les frais bancaires
+        breakdown.push({ value: BANK_FEE, count: 1, total: BANK_FEE });
 
-        const total = base + 3.45;
         return {
             totalAmount: total,
-            creditAmount: base,
-            timbre: 3.45,
-            taxe: 0.00,
-            textAmount: getNumberText(total),
-            billBreakdown: [
-                { value: 50, count: 1, total: 50 },
-                { value: 10, count: 1, total: 10 },
-                { value: 5, count: 1, total: 5 }, // 65
-                // Approximate breakdown
-                { value: 1, count: Math.floor(total - 65), total: Math.floor(total - 65) }
-            ]
+            creditAmount: base,     // Valeur brute affichée sur le récépissé
+            roundedBase: rounded,   // Valeur arrondie affichée sur le bordereau (crédit compte)
+            bankFee: BANK_FEE,
+            timbre: TIMBRE,
+            taxe: TAXE,
+            textAmount: getNumberText(totalInt),
+            billBreakdown: breakdown,
         };
-    }
-
-    // --- EXISTING RULES (Standard) ---
-
-    // REGLE 1 : 1-10 CV -> 63 USD
-    if (cv <= 10) {
-        return {
-            totalAmount: 59.00 + 3.45,
-            creditAmount: 59.00,
-            timbre: 3.45,
-            taxe: 0.00,
-            textAmount: "soixante deux et quarante-cinq cents",
-            billBreakdown: [
-                { value: 20, count: 2, total: 40 },
-                { value: 10, count: 2, total: 20 },
-                { value: 1, count: 3, total: 3 }
-            ]
-        };
-    }
-
-    // REGLE 2 : 11-15 CV -> 69 USD
-    // S'applique à TOUS les véhicules dans cette tranche (ex: Pick-up Wingle 12CV)
-    if (cv <= 15) {
-        return {
-            totalAmount: 65.00 + 3.45,
-            creditAmount: 65.00,
-            timbre: 3.45,
-            taxe: 0.00,
-            textAmount: "soixante huit et quarante-cinq cents",
-            billBreakdown: [
-                { value: 50, count: 1, total: 50 },
-                { value: 10, count: 1, total: 10 },
-                { value: 1, count: 9, total: 9 }
-            ]
-        };
-    }
-
-    // REGLE 3 : > 15 CV -> 75 USD
-    // L'utilisateur dit "Plus de 15cv 75$".
-    // 75 = 71 (crédit) + 4 (frais)
-    return {
-        totalAmount: 71.00 + 3.45,
-        creditAmount: 71.00,
-        timbre: 3.45,
-        taxe: 0.00,
-        textAmount: "soixante quatorze et quarante-cinq cents",
-        billBreakdown: [
-            { value: 50, count: 1, total: 50 },
-            { value: 20, count: 1, total: 20 },
-            { value: 5, count: 1, total: 5 }
-        ]
     };
+
+    // --- 1. TOURISTIQUE LIGHT (0-10 CV) -> base 58.70 -> arrondi 59 -> total 63 ---
+    if (type === 'touristique_light' || type === 'touristique_ligtht') {
+        return buildResult(58.70);
+    }
+
+    // --- 2. UTILITAIRE HEAVY ---
+    if (type === 'utilitaire_heavy') {
+        // 0-10T -> 64.50 -> arrondi 65 -> total 69
+        // >10T  -> 68.20 -> arrondi 69 -> total 73
+        if (weight > 10) {
+            return buildResult(68.20);
+        }
+        return buildResult(64.50);
+    }
+
+    // --- RÈGLES STANDARD PAR PUISSANCE FISCALE ---
+
+    // 1-10 CV -> base 58.70 -> arrondi 59 -> total 63
+    if (cv <= 10) {
+        return buildResult(58.70);
+    }
+
+    // 11-15 CV -> base 64.50 -> arrondi 65 -> total 69
+    if (cv <= 15) {
+        return buildResult(64.50);
+    }
+
+    // > 15 CV -> base 70.10 -> arrondi 71 -> total 75
+    return buildResult(70.10);
 };

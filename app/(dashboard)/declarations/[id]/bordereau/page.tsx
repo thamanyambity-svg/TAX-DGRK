@@ -109,36 +109,39 @@ export default function BordereauPage() {
     let taxes = 0.00; // Updated: Total bank fee is 3.45 as per user request
     let taxInfo: any = {}; // Initialize empty
 
-    // FIX: Check for manual base amount override first
+    // RÈGLE BANQUE: arrondi vers le haut (ceiling) + 4 USD frais fixes
+    // Récépissé affiche le montant brut (ex: 64.50 USD)
+    // Bordereau affiche: Math.ceil(base) + 4 USD (ex: 65 + 4 = 69 USD)
+
     if ((decl.meta as any)?.manualBaseAmount) {
-        // User manually set the "Base Price" (Credit)
+        // Prix de base saisi manuellement (ex: 64.50, 68.20...)
         const rawBase = parseFloat((decl.meta as any).manualBaseAmount);
+        const roundedBase = Math.ceil(rawBase); // 64.50 -> 65, 68.20 -> 69
 
-        // Custom Rounding Rule: Bank always rounds UP to nearest integer
-        // Examples: 58.70 -> 59, 64.50 -> 65, 68.20 -> 69
-        displayCredit = rawBase; // Use exact value from receipt for summation
+        displayCredit = roundedBase;            // Montant crédité au compte banque
+        displayTotal = roundedBase + 4.00;      // Total bordereau = arrondi + 4 USD frais
+        timbre = 3.45;
+        taxes = 0.55; // 3.45 + 0.55 = 4.00
 
-        // Bank Fee Logic: Always Credit + 3.45$ (as per latest request)
-        displayTotal = displayCredit + 3.45;
-
-        // Mock taxInfo for manual override to prevent crashes
+        // Build taxInfo for bill breakdown
         taxInfo = {
-            textAmount: `${Math.floor(displayTotal)}`, // Simplified text representation, integer usually
+            textAmount: `${displayTotal.toFixed(2).replace('.', ',')} USD`,
             billBreakdown: [
-                { value: displayTotal, count: 1, total: displayTotal }
+                { value: roundedBase, count: 1, total: roundedBase },
+                { value: 4.00, count: 1, total: 4.00 }
             ]
         };
     } else {
-        // Standard Auto-Calculation
+        // Calcul automatique standard
         taxInfo = calculateTax(
             Number(decl.vehicle.fiscalPower) || 0,
             decl.vehicle.category,
             decl.vehicle.weight
         );
-        displayTotal = taxInfo.totalAmount;
-        displayCredit = taxInfo.creditAmount;
-        timbre = taxInfo.timbre;
-        taxes = taxInfo.taxe;
+        displayTotal = taxInfo.totalAmount;          // Math.ceil(base) + 4
+        displayCredit = taxInfo.roundedBase ?? taxInfo.creditAmount; // Montant arrondi
+        timbre = taxInfo.timbre;                     // 3.45
+        taxes = taxInfo.taxe;                        // 0.55
     }
 
     // --- AUTOMATION: REMETTANT & MOTIF ---
