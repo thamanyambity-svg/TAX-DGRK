@@ -8,8 +8,10 @@ import { getDeclarationById } from '@/lib/store';
 import { Declaration } from '@/types';
 import { ArrowLeft, Printer, Download } from 'lucide-react';
 import { calculateTax } from '@/lib/tax-rules';
-import { generateNote } from '@/lib/generator';
+import { generateNote, DECL_BASE, CONGO_NAMES, generateRandomPhone } from '@/lib/generator';
 import { numberToWords } from '@/lib/number-to-words';
+import { getPaymentDate } from '@/lib/business-calendar';
+import { formatKinshasaDateLong, formatKinshasaTime } from '@/lib/utils';
 
 export default function BordereauPage() {
     const params = useParams();
@@ -85,7 +87,6 @@ export default function BordereauPage() {
     if (!decl) return <div className="p-10 text-center font-mono text-sm">Chargement...</div>;
 
     // Calculs pour le bordereau - Correction HEX
-    const { DECL_BASE } = require('@/lib/generator');
     const idSuffix = id.split('-').pop() || '';
     const declarationVal = parseInt(idSuffix, 16);
     const sequence = !isNaN(declarationVal) ? declarationVal - DECL_BASE : 0;
@@ -94,12 +95,11 @@ export default function BordereauPage() {
     const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
 
     // --- 48H DIFFERENCE LOGIC ---
-    const { getPaymentDate } = require('@/lib/business-calendar');
     // Use manual override if available in meta, otherwise calculate standard 48h
     const paymentDateStr = (decl.meta as any)?.manualPaymentDate || getPaymentDate(decl.createdAt);
     const paymentDate = new Date(paymentDateStr);
 
-    const { formatKinshasaDateLong, formatKinshasaTime } = require('@/lib/utils');
+    // --- 48H DIFFERENCE LOGIC ---
     const dateStr = formatKinshasaDateLong(paymentDate);
     const timeStr = formatKinshasaTime(paymentDate).replace(':', 'H'); // Bank format usually HHhMM or HH:MM
 
@@ -146,7 +146,6 @@ export default function BordereauPage() {
     }
 
     // --- AUTOMATION: REMETTANT & MOTIF ---
-    const { CONGO_NAMES, generateRandomPhone } = require('@/lib/generator');
 
     // 2. Récupérer l'ID NDP pour le motif
     const note = generateNote(decl);
