@@ -370,9 +370,9 @@ export default function BordereauPage() {
                                 <span className="inline-block w-[140px] text-right">{dateStr}</span>
                             </div>
 
-                            {/* Montant en lettres */}
+                            {/* Montant en lettres - Ver: 1.0.1 */}
                             <div className="mt-2 text-gray-800">
-                                <span>Soit montant {taxInfo.textAmount.toUpperCase()} USD</span>
+                                <span>SOIT MONTANT {taxInfo.textAmount.toUpperCase()} USD</span>
                             </div>
 
                             {/* Matrice de signatures */}
