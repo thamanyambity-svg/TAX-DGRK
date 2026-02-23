@@ -173,7 +173,8 @@ export default function BordereauPage() {
     const motifDisplay = `${ownerFullName} /${noteSuffix}`;
 
     return (
-        <div className="min-h-screen bg-gray-100 py-8 text-black">
+        <div className="min-h-screen bg-gray-100 py-8 text-black" data-version="2026-02-23-14-50">
+            {/* VERSION_TAG: 2026_02_23_14_50 */}
             {/* Toolbar */}
             <div className="no-print max-w-[210mm] mx-auto mb-6 px-4 flex justify-between items-center">
                 <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-black bg-white px-4 py-2 rounded shadow-sm text-sm">
