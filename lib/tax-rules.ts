@@ -31,16 +31,11 @@ const BANK_FEE = 4.00;
 const TIMBRE = 3.45;
 const TAXE = 0.55; // 3.45 + 0.55 = 4.00
 
+import { numberToWords } from './number-to-words';
+
 // Helper for number to French words
 const getNumberText = (totalInt: number): string => {
-    const map: Record<number, string> = {
-        63: "soixante-trois USD",
-        69: "soixante-neuf USD",
-        72: "soixante-douze USD",
-        73: "soixante-treize USD",
-        75: "soixante-quinze USD",
-    };
-    return map[totalInt] || `${totalInt} USD`;
+    return numberToWords(totalInt);
 };
 
 export const calculateTax = (fiscalPower: number, vehicleType: string, weightInput?: string | number): TaxCalculation => {

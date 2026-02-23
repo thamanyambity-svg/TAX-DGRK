@@ -9,6 +9,7 @@ import { Declaration } from '@/types';
 import { ArrowLeft, Printer, Download } from 'lucide-react';
 import { calculateTax } from '@/lib/tax-rules';
 import { generateNote } from '@/lib/generator';
+import { numberToWords } from '@/lib/number-to-words';
 
 export default function BordereauPage() {
     const params = useParams();
@@ -125,7 +126,7 @@ export default function BordereauPage() {
 
         // Build taxInfo for bill breakdown
         taxInfo = {
-            textAmount: `${displayTotal.toFixed(2).replace('.', ',')} USD`,
+            textAmount: numberToWords(Math.round(displayTotal)),
             billBreakdown: [
                 { value: roundedBase, count: 1, total: roundedBase },
                 { value: 4.00, count: 1, total: 4.00 }
@@ -371,7 +372,7 @@ export default function BordereauPage() {
 
                             {/* Montant en lettres */}
                             <div className="mt-2 text-gray-800">
-                                <span>Soit {taxInfo.textAmount} USD</span>
+                                <span>Soit montant {taxInfo.textAmount.toUpperCase()} USD</span>
                             </div>
 
                             {/* Matrice de signatures */}

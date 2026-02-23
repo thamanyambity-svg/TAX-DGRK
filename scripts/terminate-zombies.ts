@@ -103,4 +103,4 @@ async function terminateZombies() {
     console.log("All records are now forced to 'N/A'.");
 }
 
-terminateZombies();
+terminateZombies
