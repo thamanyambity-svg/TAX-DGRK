@@ -89,7 +89,7 @@ export function generateDeclaration(sequence: number): Declaration {
 
     // Consistent with Create Page: stored baseRate is Raw Price (creditAmount)
     const baseRate = taxInfo.creditAmount;
-    const EXCHANGE_RATE = 2271.1668;
+    const EXCHANGE_RATE = 2355;
     const totalAmount = (taxInfo.totalAmount) * EXCHANGE_RATE; // Pay Total in FC
 
     const declaration: Declaration = {

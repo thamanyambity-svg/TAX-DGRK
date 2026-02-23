@@ -16,7 +16,7 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Taux
-const EXCHANGE_RATE = 2271.1668;
+const EXCHANGE_RATE = 2355;
 
 const newDeclarations = [
     // 5. TOYOTA RUSH - MUSONGELA NYEMBO PATIENT (Feuille Verte)

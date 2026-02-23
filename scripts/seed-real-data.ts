@@ -43,7 +43,7 @@ const realDeclarations = [
         tax: {
             baseRate: 63.00,
             currency: 'USD' as const,
-            totalAmountFC: 143083.50, // 63 * 2271.16
+            totalAmountFC: 148365, // 63 * 2355
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,
@@ -87,7 +87,7 @@ const KIN_PLUS_HOWO = Array.from({ length: 10 }).map((_, i) => {
         tax: {
             baseRate: 75.00,
             currency: 'USD' as const,
-            totalAmountFC: 170337.00, // 75 * 2271.16
+            totalAmountFC: 176625, // 75 * 2355
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,
@@ -127,7 +127,7 @@ const KIN_PLUS_WINGLE = Array.from({ length: 10 }).map((_, i) => {
         tax: {
             baseRate: 69.00,
             currency: 'USD' as const,
-            totalAmountFC: 156710.51,
+            totalAmountFC: 162495, // 69 * 2355
             exchangeRate: EXCHANGE_RATE
         },
         status: 'Payée' as const,

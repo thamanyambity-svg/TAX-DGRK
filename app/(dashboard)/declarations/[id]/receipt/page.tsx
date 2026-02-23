@@ -10,6 +10,8 @@ import { NoteDePerception } from '@/types';
 import QRCode from 'react-qr-code';
 import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-react';
 
+import { numberToWords } from '@/lib/number-to-words';
+
 // --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
 const ReceiptView = ({
     type,
@@ -27,14 +29,18 @@ const ReceiptView = ({
 
     // Dynamic Pricing Logic based on Fiscal Power
     const { calculateTax } = require('@/lib/tax-rules');
+    // Force rate to 2355 as per user requirement
     const principalUSD = note.payment.principalTaxUSD;
-    const totalFC = note.payment.totalAmountFC;
+    const RATE_FC = 2355;
+    const displayAmountFC_Num = principalUSD * RATE_FC;
 
     const displayAmountUSD = principalUSD;
-    const displayAmountFC = totalFC.toLocaleString('fr-FR', {
+    const displayAmountFC = displayAmountFC_Num.toLocaleString('fr-FR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
+
+    const textAmountFC = numberToWords(Math.round(displayAmountFC_Num)).toUpperCase();
 
     const { formatKinshasaDate, formatKinshasaTime } = require('@/lib/utils');
     const creationDate = note.generatedAt ? new Date(note.generatedAt) : new Date();
@@ -188,7 +194,10 @@ const ReceiptView = ({
                                         <span className="text-base font-extrabold text-[#D32F2F] tracking-tight whitespace-nowrap">FC {displayAmountFC}</span>
                                     </div>
                                     <p className="text-[7px] text-gray-500 italic font-medium leading-none">
-                                        (Payable en Francs Congolais au taux du jour)
+                                        (Payable en Francs Congolais au taux de {RATE_FC} FC/USD)
+                                    </p>
+                                    <p className="mt-1 text-[8px] font-bold text-gray-700">
+                                        SOIT MONTANT {textAmountFC} FRANCS CONGOLAIS
                                     </p>
                                 </div>
                             </div>
@@ -396,9 +405,8 @@ export default function ReceiptPage() {
             const newPaymentDate = new Date(editPaymentDate).toISOString();
             const newBaseAmount = parseFloat(editBaseAmount);
 
-            // Calculate new FC Amount (using implied rate or stored one)
-            // Existing logic often used ~2271 or 2355. Let's use the one from the tax object if possible or default
-            const exchangeRate = 2271.1668;
+            // Calculate new FC Amount using the professional rate 2355
+            const exchangeRate = 2355;
             const newTotalFC = newBaseAmount * exchangeRate;
 
             const updates = {
