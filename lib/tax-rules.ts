@@ -80,6 +80,11 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
         return buildResult(58.70);
     }
 
+    // --- 2. TOURISTIQUE MEDIUM ---
+    if (type === 'touristique_medium') {
+        return buildResult(64.50);
+    }
+
     // --- 2. UTILITAIRE HEAVY ---
     if (type === 'utilitaire_heavy') {
         // 0-10T -> 64.50 -> arrondi 65 -> total 69

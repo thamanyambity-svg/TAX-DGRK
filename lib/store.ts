@@ -155,6 +155,7 @@ export const getSavedDeclarations = async (): Promise<Declaration[]> => {
         return [];
     }
 };
+export const getDeclarations = getSavedDeclarations;
 
 export const getDeclarationById = async (id: string): Promise<Declaration | undefined> => {
     // 1. Check Session Cache (Instant)

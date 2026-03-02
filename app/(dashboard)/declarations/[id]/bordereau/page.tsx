@@ -372,7 +372,7 @@ export default function BordereauPage() {
 
                             {/* Montant en lettres - Ver: 1.0.1 */}
                             <div className="mt-2 text-gray-800">
-                                <span>SOIT MONTANT {taxInfo.textAmount.toUpperCase()} USD</span>
+                                <span>soit montant {numberToWords(Math.round(displayCredit)).toLowerCase()} usd</span>
                             </div>
 
                             {/* Matrice de signatures */}

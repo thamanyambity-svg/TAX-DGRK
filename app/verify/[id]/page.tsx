@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { CheckCircle, Clock, Truck, User, CreditCard, FileText } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { generateDeclaration, generateNote, DECL_BASE } from '@/lib/generator';
 import { use, useState, useEffect } from 'react';
 import { getDeclarationById } from '@/lib/store';
@@ -62,8 +63,9 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
         return () => { isMounted = false; };
     }, [id]);
 
-    // Force Payée Status as per user request
-    const isPayee = true;
+    // Dynamic Status Logic
+    const status = note.status || 'Attente de paiement';
+    const isPayee = status === 'Payé';
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
@@ -72,8 +74,13 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                 {/* Header Section */}
                 <div className="flex flex-col items-center pt-8 pb-6">
                     <h1 className="text-lg font-bold text-gray-900 mb-3">Facture {note.id}</h1>
-                    <span className="bg-green-50 text-green-600 px-6 py-1.5 rounded-full text-sm font-semibold">
-                        Payé
+                    <span className={cn(
+                        "px-6 py-1.5 rounded-full text-sm font-semibold",
+                        isPayee
+                            ? "bg-green-50 text-green-600 border border-green-100"
+                            : "bg-amber-50 text-amber-600 border border-amber-100"
+                    )}>
+                        {status}
                     </span>
                 </div>
 

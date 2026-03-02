@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, ArrowRight, RefreshCw, Trash2, Pencil } from 'lucide-react';
+import { FileText, ArrowRight, RefreshCw, Trash2, Pencil, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
@@ -29,8 +29,8 @@ export default function Home() {
   };
 
   const handleDelete = async (id: string) => {
-    // CONFIRMATION AVANT SUPPRESSION
-    if (confirm("ATTENTION ADMIN : Êtes-vous sûr de vouloir SUPPRIMER définitivement ce dossier ? Cette action est irréversible.")) {
+    // confirmation avant suppression
+    if (confirm("attention admin : êtes-vous sûr de vouloir supprimer définitivement ce dossier ? cette action est irréversible.")) {
       const { deleteDeclaration } = await import('@/lib/store');
       const success = await deleteDeclaration(id);
       if (success) {
@@ -117,7 +117,7 @@ export default function Home() {
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 className="text-lg font-semibold text-gray-900">
-          Déclarations Récentes <span className="text-gray-400 text-sm font-normal">({filteredDeclarations.length})</span>
+          Aperçu Récent <span className="text-gray-400 text-sm font-normal">({filteredDeclarations.length} total)</span>
         </h2>
 
         <div className="flex gap-3 w-full md:w-auto">
@@ -147,92 +147,148 @@ export default function Home() {
         </div>
       </div>
 
-      {filteredDeclarations.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100">
-          <p className="text-gray-400">Aucune déclaration trouvée pour ces critères.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDeclarations.map((decl) => (
-            <div
-              key={decl.id}
-              className="relative group decl-card cursor-pointer"
-              onClick={() => {
-                // Navigate to the receipt page when clicking anywhere on the card
-                // unless it was stopped by e.stopPropagation() from buttons
-                window.location.href = `/declarations/${decl.id}/receipt`;
-              }}
-            >
-              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
+      {(() => {
+        const renderItems: any[] = [];
+        const groupsByNif = new Map<string, { nif: string; name: string; declarations: Declaration[] }>();
 
-                {/* HEADER CARD */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="h-10 w-10 bg-mint-50 rounded-lg flex items-center justify-center text-mint-600">
-                    <FileText className="h-5 w-5" />
-                  </div>
+        filteredDeclarations.forEach(decl => {
+          const taxnif = decl.meta?.manualTaxpayer?.nif || (decl.meta as any)?.taxpayerData?.nif || 'N/A';
+          if (taxnif === 'N/A' || taxnif === '') {
+            renderItems.push({ type: 'single', declaration: decl });
+          } else {
+            if (!groupsByNif.has(taxnif)) {
+              groupsByNif.set(taxnif, {
+                nif: taxnif,
+                name: decl.meta?.manualTaxpayer?.name || (decl.meta as any)?.taxpayerData?.name || 'Contribuable',
+                declarations: []
+              });
+            }
+            groupsByNif.get(taxnif)!.declarations.push(decl);
+          }
+        });
 
-                  <div className="flex items-center gap-2">
-                    {/* STATUT */}
-                    <span className={cn(
-                      "text-xs font-medium px-2 py-1 rounded-full uppercase",
-                      decl.status === 'Payée' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
-                    )}>
-                      {decl.status}
-                    </span>
+        groupsByNif.forEach(group => {
+          if (group.declarations.length === 1) {
+            renderItems.push({ type: 'single', declaration: group.declarations[0] });
+          } else {
+            renderItems.push({ type: 'dossier', group });
+          }
+        });
 
-                    {/* EDIT BUTTON (Admin Only) */}
-                    <Link
-                      href={`/edit/${decl.id}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                      className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all z-20"
-                      title="Modifier ce dossier"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Link>
+        renderItems.sort((a, b) => {
+          const aId = a.type === 'single' ? a.declaration.id : a.group.declarations[0].id;
+          const bId = b.type === 'single' ? b.declaration.id : b.group.declarations[0].id;
+          return bId.localeCompare(aId);
+        });
 
-                    {/* DELETE BUTTON (Admin Only) */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        handleDelete(decl.id);
-                      }}
-                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all z-20"
-                      title="Supprimer ce dossier"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* CONTENT CARD */}
-                <div className="mb-3">
-                  <h3 className="font-bold text-gray-900 truncate" title={(decl.meta?.manualTaxpayer as any)?.name}>
-                    {(decl.meta?.manualTaxpayer as any)?.name || 'Contribuable'}
-                  </h3>
-                  <div className="flex gap-2 items-center mt-1">
-                    <span className="text-xs font-mono bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-bold">{decl.vehicle.plate}</span>
-                    <span className="text-xs text-gray-400 font-mono">{decl.id}</span>
-                  </div>
-                </div>
-
-                {/* FOOTER CARD */}
-                <div className="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
-                  <span className="text-sm font-bold text-gray-900">
-                    FC {decl.tax.totalAmountFC.toLocaleString()}
-                  </span>
-                  <div className="flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700">
-                    Voir <ArrowRight className="h-4 w-4 ml-1" />
-                  </div>
-                </div>
-
-              </div>
+        if (renderItems.length === 0) {
+          return (
+            <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100">
+              <p className="text-gray-400">Aucun dossier trouvé pour ces critères.</p>
             </div>
-          ))}
-        </div>
-      )}
+          );
+        }
+
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {renderItems.map((item, idx) => {
+              if (item.type === 'dossier') {
+                const group = item.group;
+                const totalAmountFC = group.declarations.reduce((sum: number, d: Declaration) => sum + (d.tax.totalAmountFC || 0), 0);
+                return (
+                  <Link href={`/societes/${group.nif}`} key={`dossier-${group.nif}-${idx}`} className="relative group decl-card cursor-pointer block">
+                    <div className="bg-white p-6 rounded-xl border border-indigo-200 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all h-full flex flex-col bg-gradient-to-br from-white to-indigo-50/30">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="h-10 w-10 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600">
+                          <Briefcase className="h-5 w-5" />
+                        </div>
+                        <span className="text-xs font-bold px-2 py-1 rounded-full bg-indigo-100 text-indigo-700">
+                          {group.declarations.length} Véhicules
+                        </span>
+                      </div>
+                      <div className="mb-3">
+                        <h3 className="font-bold text-gray-900 truncate" title={group.name}>{group.name}</h3>
+                        <div className="flex gap-2 items-center mt-1">
+                          <span className="text-xs font-mono bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-bold">NIF: {group.nif}</span>
+                        </div>
+                      </div>
+                      <div className="mt-auto pt-4 border-t border-indigo-100/50 flex justify-between items-center">
+                        <span className="text-sm font-bold text-gray-900">FC {totalAmountFC.toLocaleString()}</span>
+                        <div className="flex items-center text-sm font-medium text-indigo-600 group-hover:text-indigo-800">
+                          Ouvrir le dossier <ArrowRight className="h-4 w-4 ml-1" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              }
+
+              const decl = item.declaration;
+              return (
+                <div
+                  key={decl.id}
+                  className="relative group decl-card cursor-pointer"
+                  onClick={() => {
+                    window.location.href = `/declarations/${decl.id}/receipt`;
+                  }}
+                >
+                  <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="h-10 w-10 bg-mint-50 rounded-lg flex items-center justify-center text-mint-600">
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={cn(
+                          "text-xs font-medium px-2 py-1 rounded-full",
+                          decl.status === 'Payée' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
+                        )}>
+                          {decl.status}
+                        </span>
+                        <Link
+                          href={`/edit/${decl.id}`}
+                          onClick={(e) => { e.stopPropagation(); }}
+                          className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all z-20"
+                          title="Modifier ce dossier"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Link>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleDelete(decl.id);
+                          }}
+                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all z-20"
+                          title="Supprimer ce dossier"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <h3 className="font-bold text-gray-900 truncate" title={(decl.meta?.manualTaxpayer as any)?.name}>
+                        {(decl.meta?.manualTaxpayer as any)?.name || 'Contribuable'}
+                      </h3>
+                      <div className="flex gap-2 items-center mt-1">
+                        <span className="text-xs font-mono bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded font-bold">{decl.vehicle.plate}</span>
+                        <span className="text-xs text-gray-400 font-mono">{decl.id}</span>
+                      </div>
+                    </div>
+                    <div className="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
+                      <span className="text-sm font-bold text-gray-900">
+                        FC {decl.tax.totalAmountFC.toLocaleString()}
+                      </span>
+                      <div className="flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700">
+                        Voir <ArrowRight className="h-4 w-4 ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
     </div>
   );
 }

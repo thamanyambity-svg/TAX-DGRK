@@ -7,6 +7,7 @@ export type VehicleCategory =
   | 'Véhicule utilitaire'
   | 'Véhicule touristique'
   | 'touristique_light'
+  | 'touristique_medium'
   | 'utilitaire_heavy'
   | 'Véhicule tracteur'
   | 'Véhicule remorque'

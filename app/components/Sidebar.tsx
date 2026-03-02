@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
     { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
     { name: 'Déclarations', href: '/declarations', icon: FileText },
+    { name: 'Dossiers Entreprises', href: '/societes', icon: Briefcase },
     { name: 'Paramètres', href: '/settings', icon: Settings },
 ];
 
@@ -18,7 +19,7 @@ export function Sidebar() {
         <div className="flex flex-col w-64 border-r border-gray-200 h-screen bg-white fixed left-0 top-0 print:hidden">
             <div className="p-6 border-b border-gray-100">
                 <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-700 to-blurple-500">
-                    TaxPortal
+                    tax-portal
                 </h1>
             </div>
 
@@ -28,7 +29,7 @@ export function Sidebar() {
                     return (
                         <Link
                             key={item.name}
-                            href="#"
+                            href={item.href}
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors",
                                 isActive

@@ -56,3 +56,37 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
         alert('Erreur lors de la génération du PDF. Utilisez l\'impression navigateur si le problème persiste.');
     }
 };
+
+export const getElementAsPDFBlob = async (elementId: string): Promise<Blob | null> => {
+    const element = document.getElementById(elementId);
+    if (!element) return null;
+
+    try {
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+
+        const imgWidth = 210;
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+        return pdf.output('blob');
+    } catch (error) {
+        console.error('Error generating PDF Blob:', error);
+        return null;
+    }
+};
