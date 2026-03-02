@@ -4,7 +4,7 @@ import { getDeclarations } from '@/lib/store';
 import { ArrowLeft, Building, Car, FileText, Download, Printer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import BulkDownloadButton from '@/app/components/BulkDownloadButton';
+import BulkDownloadButton from '@/app/components/bulk-download-button';
 import { Declaration } from '@/types';
 
 export const metadata: Metadata = {
