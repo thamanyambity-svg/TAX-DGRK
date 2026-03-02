@@ -4,7 +4,7 @@ import { Bell, ChevronRight, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export function Header() {
+export function AppHeader() {
     const pathname = usePathname();
     const pathSegments = pathname.split('/').filter(Boolean);
 
