@@ -167,6 +167,7 @@ export function generateNote(declaration: Declaration): NoteDePerception {
     const finalNote: NoteDePerception = {
         id: referenceId,
         declarationId: declaration.id,
+        status: declaration.status,
         taxpayer: {
             name: taxpayerName,
             nif: taxpayerNif,

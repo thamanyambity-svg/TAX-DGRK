@@ -62,6 +62,7 @@ export interface Declaration {
 export interface NoteDePerception {
   id: string; // e.g. "NDP-2026-1579A471"
   declarationId: string;
+  status?: string;
   taxpayer: {
     name: string; // "JOSUAH KITONA"
     nif: string; // "KN19371612"
