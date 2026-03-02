@@ -1,5 +1,5 @@
 'use client';
-// force-redeploy: 2026-02-20T13:49
+// force-redeploy: 2026-03-02T21:30
 export const dynamic = 'force-dynamic';
 
 import { CheckCircle, Clock, Truck, User, CreditCard, FileText } from 'lucide-react';
@@ -38,6 +38,9 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                 const manualDecl = await getDeclarationById(id);
                 if (isMounted && manualDecl) {
                     const manualNote = generateNote(manualDecl);
+                    // Force the actual status from the declaration
+                    manualNote.status = manualDecl.status;
+
                     if ((manualDecl.meta as any).manualTaxpayer) {
                         manualNote.taxpayer = (manualDecl.meta as any).manualTaxpayer;
                     }
