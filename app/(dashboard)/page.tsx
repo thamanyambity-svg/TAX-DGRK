@@ -87,7 +87,7 @@ export default function Home() {
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-violet-700 to-blurple-500 rounded-2xl p-8 text-white flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Bonjour, Josuah</h1>
+          <h1 className="text-3xl font-bold mb-2">Bonjour, Josuah <span className="text-violet-200 text-sm font-normal">V3.0 - BRALIMA</span></h1>
           <p className="text-violet-100">Bienvenue sur votre portail fiscal numérique.</p>
         </div>
         <div className="flex gap-3">
