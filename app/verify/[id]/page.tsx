@@ -65,7 +65,7 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
 
     // Dynamic Status Logic
     const status = note.status || 'Attente de paiement';
-    const isPayee = status === 'Payé';
+    const isPayee = status === 'Payé' || status === 'Payée';
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
