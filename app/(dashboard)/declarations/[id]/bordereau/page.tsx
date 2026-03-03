@@ -94,14 +94,11 @@ export default function BordereauPage() {
 
     const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
 
-    // --- 48H DIFFERENCE LOGIC ---
-    // Use manual override if available in meta, otherwise calculate standard 48h
-    const paymentDateStr = (decl.meta as any)?.manualPaymentDate || getPaymentDate(decl.createdAt);
-    const paymentDate = new Date(paymentDateStr);
-
-    // --- 48H DIFFERENCE LOGIC ---
-    const dateStr = formatKinshasaDateLong(paymentDate);
-    const timeStr = formatKinshasaTime(paymentDate).replace(':', 'H'); // Bank format usually HHhMM or HH:MM
+    // --- BORDEREAU DATE: use updatedAt (actual bank deposit time) ---
+    // updatedAt is set explicitly to the bank opening hours when declarations are registered
+    const bordereauDate = new Date(decl.updatedAt || decl.createdAt);
+    const dateStr = formatKinshasaDateLong(bordereauDate);
+    const timeStr = formatKinshasaTime(bordereauDate).replace(':', 'H');
 
     // Tax calculation
     let displayTotal = 0;
