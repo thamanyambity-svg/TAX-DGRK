@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { getDeclarations } from '@/lib/store';
 import { Declaration } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
     title: 'Dossiers Entreprises | Tax Portal',
     description: 'Gestion des déclarations par entreprise',

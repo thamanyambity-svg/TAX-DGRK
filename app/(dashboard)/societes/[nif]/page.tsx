@@ -7,18 +7,21 @@ import Link from 'next/link';
 import BulkDownloadButton from '@/app/components/bulk-download-button';
 import { Declaration } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
     title: 'Dossier Société | Tax Portal',
     description: 'Détails du dossier société',
 };
 
-export default async function DossierSpecifiquePage({ params }: { params: { nif: string } }) {
+export default async function DossierSpecifiquePage({ params }: { params: Promise<{ nif: string }> }) {
+    const { nif } = await params;
     const rawDecls = await getDeclarations();
 
     // Filter declarations for this exact NIF
     const companyDecls = rawDecls.filter(decl => {
         const taxnif = decl.meta?.manualTaxpayer?.nif || (decl.meta as any)?.taxpayerData?.nif || 'N/A';
-        return taxnif === params.nif;
+        return taxnif === nif;
     });
 
     if (companyDecls.length === 0) {
@@ -63,7 +66,7 @@ export default async function DossierSpecifiquePage({ params }: { params: { nif:
                                 <div className="flex items-center gap-3 mt-2 text-sm text-gray-500">
                                     <span className="flex items-center gap-1.5 font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">
                                         <FileText className="w-4 h-4" />
-                                        NIF: {params.nif}
+                                        NIF: {nif}
                                     </span>
                                     <span className="flex items-center gap-1.5">
                                         <Building className="w-4 h-4" />

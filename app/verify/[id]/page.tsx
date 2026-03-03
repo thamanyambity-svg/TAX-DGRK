@@ -52,9 +52,14 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                         setCreatedAt(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' })
                             + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Kinshasa' }));
 
-                        // Due date = 1 year after creation
+                        // Due date: 8 days for pending, 1 year for paid
                         const due = new Date(manualDecl.createdAt);
-                        due.setFullYear(due.getFullYear() + 1);
+                        const isPending = (manualDecl.status as string) === 'Attente de paiement';
+                        if (isPending) {
+                            due.setDate(due.getDate() + 8);
+                        } else {
+                            due.setFullYear(due.getFullYear() + 1);
+                        }
                         setDueDate(due.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' }));
                     }
                 }
