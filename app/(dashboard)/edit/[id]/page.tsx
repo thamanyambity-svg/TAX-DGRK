@@ -70,7 +70,14 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     marque: decl?.vehicle?.marque || '',
                     modele: decl?.vehicle?.modele || '',
                     status: decl?.status || 'En attente',
-                    paymentDate: ((decl.meta as any)?.manualPaymentDate || decl?.updatedAt || decl?.createdAt || '').split('T')[0] // priority to manual date
+                    paymentDate: (() => {
+                        const dateStr = (decl.meta as any)?.manualPaymentDate || decl?.updatedAt || decl?.createdAt;
+                        if (!dateStr) return '';
+                        const d = new Date(dateStr);
+                        const kDate = new Date(d.toLocaleString('en-US', { timeZone: 'Africa/Kinshasa' }));
+                        const pad = (n: number) => String(n).padStart(2, '0');
+                        return `${kDate.getFullYear()}-${pad(kDate.getMonth() + 1)}-${pad(kDate.getDate())}`; // Date only for edit page
+                    })()
                 });
             } catch (err) {
                 console.error(err);
@@ -109,7 +116,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                 s.replace(ZOMBIE_RE, '').replace(/^\s*(N\/A|N\/A,|[,\s/-])+/, '').trim() || s.trim();
 
             const updates: Partial<Declaration> = {
-                updatedAt: formData.paymentDate ? new Date(formData.paymentDate).toISOString() : new Date().toISOString(),
+                updatedAt: formData.paymentDate ? new Date(`${formData.paymentDate}T10:00:00+01:00`).toISOString() : new Date().toISOString(),
                 status: formData.status as any,
                 taxpayer: {
                     type: 'N/A',  // ← TOUJOURS N/A
@@ -142,7 +149,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                         address: cleanAddress(formData.address.toUpperCase()),
                         type: 'N/A',  // ← TOUJOURS N/A
                     },
-                    manualPaymentDate: formData.paymentDate ? new Date(formData.paymentDate).toISOString() : undefined
+                    manualPaymentDate: formData.paymentDate ? new Date(`${formData.paymentDate}T10:00:00+01:00`).toISOString() : undefined
                 } as any
             };
 

@@ -330,18 +330,22 @@ export default function ReceiptPage() {
                         // 1. Receipt Date (created_at)
                         const rDate = manualDecl.createdAt ? new Date(manualDecl.createdAt) : new Date();
                         // Format for datetime-local: YYYY-MM-DDTHH:mm
-                        const toLocalIso = (d: Date) => {
-                            const offset = d.getTimezoneOffset() * 60000;
-                            return new Date(d.getTime() - offset).toISOString().slice(0, 16);
+                        // Format for datetime-local: YYYY-MM-DDTHH:mm (Strictly Kinshasa Time)
+                        const toKinshasaLocal = (dateInput: Date | string) => {
+                            const d = new Date(dateInput);
+                            // Shift to UTC then add 1 hour for Kinshasa
+                            const kinshasaDate = new Date(d.toLocaleString('en-US', { timeZone: 'Africa/Kinshasa' }));
+                            const pad = (n: number) => String(n).padStart(2, '0');
+                            return `${kinshasaDate.getFullYear()}-${pad(kinshasaDate.getMonth() + 1)}-${pad(kinshasaDate.getDate())}T${pad(kinshasaDate.getHours())}:${pad(kinshasaDate.getMinutes())}`;
                         };
-                        setEditReceiptDate(toLocalIso(rDate));
+                        setEditReceiptDate(toKinshasaLocal(rDate));
 
                         // 2. Payment Date (meta.manualPaymentDate OR calculated)
                         let pDateStr = (manualDecl.meta as any)?.manualPaymentDate;
                         if (!pDateStr) {
                             pDateStr = getPaymentDate(manualDecl.createdAt);
                         }
-                        setEditPaymentDate(toLocalIso(new Date(pDateStr)));
+                        setEditPaymentDate(toKinshasaLocal(new Date(pDateStr)));
 
                         // 3. Base Amount (Manual or Existing)
                         const currentBase = (manualDecl.meta as any)?.manualBaseAmount || manualDecl.tax?.baseRate || 0;
@@ -398,9 +402,15 @@ export default function ReceiptPage() {
         try {
             const { updateDeclaration } = await import('@/lib/store');
 
-            // Convert inputs back to ISO strings
-            const newReceiptDate = new Date(editReceiptDate).toISOString();
-            const newPaymentDate = new Date(editPaymentDate).toISOString();
+            // Treat the input string as absolute Kinshasa Time (UTC+1)
+            const parseKinshasa = (localStr: string) => {
+                if (!localStr) return new Date().toISOString();
+                // Append +01:00 to force Kinshasa interpretation
+                return new Date(`${localStr}:00+01:00`).toISOString();
+            };
+
+            const newReceiptDate = parseKinshasa(editReceiptDate);
+            const newPaymentDate = parseKinshasa(editPaymentDate);
             const newBaseAmount = parseFloat(editBaseAmount);
 
             // Calculate new FC Amount using the professional rate 2355
