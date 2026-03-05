@@ -17,8 +17,8 @@ export default function Home() {
       if (data) {
         // Sort by bank date (updatedAt) descending
         const sorted = [...data].sort((a, b) => {
-          const dateA = new Date(a.updatedAt || a.createdAt).getTime();
-          const dateB = new Date(b.updatedAt || b.createdAt).getTime();
+          const dateA = new Date((a.meta as any)?.manualPaymentDate || a.updatedAt || a.createdAt).getTime();
+          const dateB = new Date((b.meta as any)?.manualPaymentDate || b.updatedAt || b.createdAt).getTime();
           return dateB - dateA;
         });
         setDeclarations(sorted);
@@ -180,8 +180,9 @@ export default function Home() {
         });
 
         renderItems.sort((a, b) => {
-          const dateA = new Date((a.type === 'single' ? a.declaration : a.group.declarations[0]).updatedAt || (a.type === 'single' ? a.declaration : a.group.declarations[0]).createdAt).getTime();
-          const dateB = new Date((b.type === 'single' ? b.declaration : b.group.declarations[0]).updatedAt || (b.type === 'single' ? b.declaration : b.group.declarations[0]).createdAt).getTime();
+          const fetchDate = (d: Declaration) => new Date((d.meta as any)?.manualPaymentDate || d.updatedAt || d.createdAt).getTime();
+          const dateA = a.type === 'single' ? fetchDate(a.declaration) : fetchDate(a.group.declarations[0]);
+          const dateB = b.type === 'single' ? fetchDate(b.declaration) : fetchDate(b.group.declarations[0]);
           return dateB - dateA;
         });
 
