@@ -95,7 +95,9 @@ export default function BordereauPage() {
     const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
 
     // --- BORDEREAU DATE: use manualPaymentDate if set, otherwise updatedAt/createdAt ---
-    const rawBordereauDate = (decl.meta as any)?.manualPaymentDate || decl.updatedAt || decl.createdAt;
+    // Extract manualPaymentDate directly from meta for maximum reliability
+    const manualDate = decl.meta && (decl.meta as any).manualPaymentDate;
+    const rawBordereauDate = manualDate || decl.updatedAt || decl.createdAt;
     const bordereauDate = new Date(rawBordereauDate);
     const dateStr = formatKinshasaDateLong(bordereauDate);
     const timeStr = formatKinshasaTime(bordereauDate).replace(':', 'H');
