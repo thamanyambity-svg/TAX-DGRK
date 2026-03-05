@@ -28,8 +28,12 @@ export default async function DossierSpecifiquePage({ params }: { params: Promis
         notFound();
     }
 
-    // Sort by Date (newest first) or sequence (since our generator makes them sequential)
-    companyDecls.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    // Sort by Bank Date (updatedAt) newest first
+    companyDecls.sort((a, b) => {
+        const dateA = new Date(a.updatedAt || a.createdAt).getTime();
+        const dateB = new Date(b.updatedAt || b.createdAt).getTime();
+        return dateB - dateA;
+    });
 
     // Get Company Info from the first record (they should all be the same)
     const firstDecl = companyDecls[0];

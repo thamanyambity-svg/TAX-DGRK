@@ -39,7 +39,8 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
         weight: '',
         marque: '',
         modele: '',
-        status: 'En attente' // Can edit status
+        status: 'En attente', // Can edit status
+        paymentDate: '' // Field for updatedAt
     });
 
     // Fetch existing data
@@ -68,7 +69,8 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     weight: decl?.vehicle?.weight || '',
                     marque: decl?.vehicle?.marque || '',
                     modele: decl?.vehicle?.modele || '',
-                    status: decl?.status || 'En attente'
+                    status: decl?.status || 'En attente',
+                    paymentDate: (decl?.updatedAt || decl?.createdAt || '').split('T')[0] // simplified for date input
                 });
             } catch (err) {
                 console.error(err);
@@ -107,7 +109,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                 s.replace(ZOMBIE_RE, '').replace(/^\s*(N\/A|N\/A,|[,\s/-])+/, '').trim() || s.trim();
 
             const updates: Partial<Declaration> = {
-                updatedAt: new Date().toISOString(),
+                updatedAt: formData.paymentDate ? new Date(formData.paymentDate).toISOString() : new Date().toISOString(),
                 status: formData.status as any,
                 taxpayer: {
                     type: 'N/A',  // ← TOUJOURS N/A
@@ -195,7 +197,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">1. Informations Contribuable</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="md:col-span-2">
+                            <div className="md:col-span-1">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Statut Dossier</label>
                                 <select
                                     name="status"
@@ -208,7 +210,17 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     <option value="Annulée">Annulée</option>
                                 </select>
                             </div>
-                            <div className="md:col-spam-2">
+                            <div className="md:col-span-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Date du versement (Bordereau)</label>
+                                <input
+                                    type="date"
+                                    name="paymentDate"
+                                    value={formData.paymentDate}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 text-gray-900 font-mono"
+                                />
+                            </div>
+                            <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom / Raison Sociale</label>
                                 <input
                                     type="text"

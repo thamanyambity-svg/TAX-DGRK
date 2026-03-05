@@ -15,8 +15,12 @@ export default function Home() {
       const { getSavedDeclarations } = await import('@/lib/store');
       const data = await getSavedDeclarations(); // Always returns data instantly now
       if (data) {
-        // Sort mostly by ID string descending as a proxy for recency if date is same
-        const sorted = [...data].sort((a, b) => b.id.localeCompare(a.id));
+        // Sort by bank date (updatedAt) descending
+        const sorted = [...data].sort((a, b) => {
+          const dateA = new Date(a.updatedAt || a.createdAt).getTime();
+          const dateB = new Date(b.updatedAt || b.createdAt).getTime();
+          return dateB - dateA;
+        });
         setDeclarations(sorted);
       }
     }
@@ -176,9 +180,9 @@ export default function Home() {
         });
 
         renderItems.sort((a, b) => {
-          const aId = a.type === 'single' ? a.declaration.id : a.group.declarations[0].id;
-          const bId = b.type === 'single' ? b.declaration.id : b.group.declarations[0].id;
-          return bId.localeCompare(aId);
+          const dateA = new Date((a.type === 'single' ? a.declaration : a.group.declarations[0]).updatedAt || (a.type === 'single' ? a.declaration : a.group.declarations[0]).createdAt).getTime();
+          const dateB = new Date((b.type === 'single' ? b.declaration : b.group.declarations[0]).updatedAt || (b.type === 'single' ? b.declaration : b.group.declarations[0]).createdAt).getTime();
+          return dateB - dateA;
         });
 
         if (renderItems.length === 0) {
