@@ -141,7 +141,8 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                         nif: formData.nif.toUpperCase(),
                         address: cleanAddress(formData.address.toUpperCase()),
                         type: 'N/A',  // ← TOUJOURS N/A
-                    }
+                    },
+                    manualPaymentDate: formData.paymentDate ? new Date(formData.paymentDate).toISOString() : undefined
                 } as any
             };
 

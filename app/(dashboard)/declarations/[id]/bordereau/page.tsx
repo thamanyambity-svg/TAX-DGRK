@@ -94,9 +94,9 @@ export default function BordereauPage() {
 
     const creationDate = decl.createdAt ? new Date(decl.createdAt) : new Date();
 
-    // --- BORDEREAU DATE: use updatedAt (actual bank deposit time) ---
-    // updatedAt is set explicitly to the bank opening hours when declarations are registered
-    const bordereauDate = new Date(decl.updatedAt || decl.createdAt);
+    // --- BORDEREAU DATE: use manualPaymentDate if set, otherwise updatedAt/createdAt ---
+    const rawBordereauDate = (decl.meta as any)?.manualPaymentDate || decl.updatedAt || decl.createdAt;
+    const bordereauDate = new Date(rawBordereauDate);
     const dateStr = formatKinshasaDateLong(bordereauDate);
     const timeStr = formatKinshasaTime(bordereauDate).replace(':', 'H');
 
