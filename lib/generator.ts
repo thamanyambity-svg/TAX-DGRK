@@ -183,7 +183,7 @@ export function generateNote(declaration: Declaration): NoteDePerception {
             principalTaxUSD: declaration.tax.baseRate,
             totalAmountFC: declaration.tax.totalAmountFC,
         },
-        generatedAt: declaration.createdAt,
+        generatedAt: (declaration.meta as any)?.manualPaymentDate || declaration.createdAt,
     };
 
     // Override with explicit stored data if it exists

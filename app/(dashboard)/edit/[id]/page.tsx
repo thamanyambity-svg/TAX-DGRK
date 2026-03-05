@@ -70,7 +70,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     marque: decl?.vehicle?.marque || '',
                     modele: decl?.vehicle?.modele || '',
                     status: decl?.status || 'En attente',
-                    paymentDate: (decl?.updatedAt || decl?.createdAt || '').split('T')[0] // simplified for date input
+                    paymentDate: ((decl.meta as any)?.manualPaymentDate || decl?.updatedAt || decl?.createdAt || '').split('T')[0] // priority to manual date
                 });
             } catch (err) {
                 console.error(err);

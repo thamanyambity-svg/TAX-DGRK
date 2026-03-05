@@ -254,11 +254,15 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
         }
 
         // 2. Merge Updates & Clean entire result
-        const merged: Declaration = cleanZombies({
+        const merged: any = cleanZombies({
             ...current,
             ...updates,
-            updatedAt: new Date().toISOString()
         });
+
+        // Force updatedAt to now if not explicitly provided in updates
+        if (!updates.updatedAt) {
+            merged.updatedAt = new Date().toISOString();
+        }
 
         // 3. Update Memory Cache
         const idx = SESSION_CACHE.findIndex(d => d.id === id);
