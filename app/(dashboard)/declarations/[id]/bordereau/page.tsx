@@ -283,19 +283,19 @@ export default function BordereauPage() {
             {showAdminDates && (
                 <div className="max-w-[210mm] mx-auto mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md shadow-inner mb-6 flex flex-wrap items-end gap-4 animate-in fade-in slide-in-from-top-2 no-print">
                     <div className="flex flex-col gap-1">
-                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Création</label>
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date & Heure Récépissé</label>
                         <input
                             type="datetime-local"
-                            className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
                             value={editReceiptDate}
                             onChange={(e) => setEditReceiptDate(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col gap-1">
-                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Paiement</label>
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date & Heure Bordereau</label>
                         <input
                             type="datetime-local"
-                            className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
                             value={editPaymentDate}
                             onChange={(e) => setEditPaymentDate(e.target.value)}
                         />
@@ -303,10 +303,10 @@ export default function BordereauPage() {
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($)</label>
                         <div className="relative">
-                            <span className="absolute left-2 top-1 text-blue-800 font-bold text-xs z-10">$</span>
+                            <span className="absolute left-2 top-1.5 text-blue-800 font-bold text-xs z-10">$</span>
                             <select
-                                className="pl-5 pr-2 py-1 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
-                                value={editBaseAmount}
+                                className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
+                                value={parseFloat(editBaseAmount).toFixed(2)}
                                 onChange={(e) => setEditBaseAmount(e.target.value)}
                             >
                                 <option value="">-- Sélectionner --</option>
@@ -321,7 +321,7 @@ export default function BordereauPage() {
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque / Type</label>
                         <select
-                            className="px-2 py-1 w-44 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            className="px-2 py-1.5 w-44 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
                             value={editMarqueType}
                             onChange={(e) => {
                                 const val = e.target.value;
@@ -346,14 +346,15 @@ export default function BordereauPage() {
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-bold hover:bg-blue-700 disabled:opacity-50 shadow-sm"
                     >
                         {isSavingDates ? (
-                            <span className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" />
+                            <span className="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full" />
                         ) : (
                             <Save className="h-3.5 w-3.5" />
                         )}
                         Sauvegarder
                     </button>
-                    <div className="text-[8px] text-blue-600/70 max-w-[150px] leading-tight ml-auto italic">
-                        Met à jour le récépissé et le bordereau simultanément.
+                    <div className="text-[10px] text-blue-600/70 max-w-xs leading-tight ml-auto italic text-right">
+                        Effet immédiat après validation.<br />
+                        Toutes les rubriques sont synchronisées.
                     </div>
                 </div>
             )}
