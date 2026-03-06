@@ -274,6 +274,8 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
 
         const dbPayload = cleanZombies({
             ...merged,
+            created_at: merged.createdAt,
+            updated_at: merged.updatedAt,
             meta: {
                 ...merged.meta,
                 taxpayerData: merged.taxpayer
@@ -290,6 +292,8 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
         }
 
         delete (dbPayload as any).taxpayer;
+        delete (dbPayload as any).createdAt;
+        delete (dbPayload as any).updatedAt;
 
         const { error } = await supabase
             .from('declarations')
