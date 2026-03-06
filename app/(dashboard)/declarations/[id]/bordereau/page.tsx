@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { getDeclarationById } from '@/lib/store';
 import { Declaration } from '@/types';
-import { ArrowLeft, Printer, Download } from 'lucide-react';
+import { ArrowLeft, Printer, Download, CalendarClock, Save } from 'lucide-react';
 import { calculateTax } from '@/lib/tax-rules';
 import { generateNote, DECL_BASE, CONGO_NAMES, generateRandomPhone } from '@/lib/generator';
 import { numberToWords } from '@/lib/number-to-words';
@@ -39,6 +39,14 @@ export default function BordereauPage() {
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const componentRef = useRef<HTMLDivElement>(null);
 
+    // --- ADMIN DATE CONTROL STATE ---
+    const [showAdminDates, setShowAdminDates] = useState(false);
+    const [editReceiptDate, setEditReceiptDate] = useState('');
+    const [editPaymentDate, setEditPaymentDate] = useState('');
+    const [editBaseAmount, setEditBaseAmount] = useState('');
+    const [editMarqueType, setEditMarqueType] = useState('');
+    const [isSavingDates, setIsSavingDates] = useState(false);
+
     useEffect(() => {
         // Charger les styles d'impression
         const link = document.createElement('link');
@@ -56,9 +64,74 @@ export default function BordereauPage() {
     useEffect(() => {
         if (!id) return;
         getDeclarationById(id).then(d => {
-            if (d) setDecl(d);
+            if (d) {
+                setDecl(d);
+
+                // Initialize Admin Fields
+                const rDate = d.createdAt ? new Date(d.createdAt) : new Date();
+                const toKinshasaLocal = (dateInput: Date | string) => {
+                    const date = new Date(dateInput);
+                    const kDate = new Date(date.toLocaleString('en-US', { timeZone: 'Africa/Kinshasa' }));
+                    const pad = (n: number) => String(n).padStart(2, '0');
+                    return `${kDate.getFullYear()}-${pad(kDate.getMonth() + 1)}-${pad(kDate.getDate())}T${pad(kDate.getHours())}:${pad(kDate.getMinutes())}`;
+                };
+                setEditReceiptDate(toKinshasaLocal(rDate));
+
+                const pDateStr = (d.meta as any)?.manualPaymentDate || getPaymentDate(d.createdAt);
+                setEditPaymentDate(toKinshasaLocal(new Date(pDateStr)));
+
+                const currentBase = (d.meta as any)?.manualBaseAmount || d.tax?.baseRate || 0;
+                setEditBaseAmount(currentBase.toString());
+
+                setEditMarqueType((d.meta as any)?.manualMarqueType || '');
+            }
         });
     }, [id]);
+
+    const handleSaveDates = async () => {
+        if (!decl || !id) return;
+        setIsSavingDates(true);
+        try {
+            const { updateDeclaration } = await import('@/lib/store');
+            const parseKinshasa = (localStr: string) => {
+                if (!localStr) return new Date().toISOString();
+                return new Date(`${localStr}:00+01:00`).toISOString();
+            };
+
+            const newReceiptDate = parseKinshasa(editReceiptDate);
+            const newPaymentDate = parseKinshasa(editPaymentDate);
+            const newBaseAmount = parseFloat(editBaseAmount);
+            const exchangeRate = 2355;
+            const newTotalFC = newBaseAmount * exchangeRate;
+
+            const updates = {
+                createdAt: newReceiptDate,
+                tax: {
+                    ...decl.tax,
+                    baseRate: newBaseAmount,
+                    totalAmountFC: newTotalFC
+                },
+                meta: {
+                    ...decl.meta,
+                    manualPaymentDate: newPaymentDate,
+                    manualBaseAmount: newBaseAmount,
+                    manualMarqueType: editMarqueType
+                }
+            };
+
+            const result = await updateDeclaration(id, updates);
+            if (result.success) {
+                window.location.reload();
+            } else {
+                alert("Erreur: " + result.error);
+            }
+        } catch (e) {
+            console.error("Save failed", e);
+            alert("Erreur système lors de la sauvegarde.");
+        } finally {
+            setIsSavingDates(false);
+        }
+    };
 
     const handleDownloadPDF = async () => {
         if (isGeneratingPDF) return;
@@ -175,9 +248,18 @@ export default function BordereauPage() {
             {/* VERSION_TAG: 2026_02_23_14_50 */}
             {/* Toolbar */}
             <div className="no-print max-w-[210mm] mx-auto mb-6 px-4 flex justify-between items-center">
-                <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-black bg-white px-4 py-2 rounded shadow-sm text-sm">
-                    <ArrowLeft className="h-4 w-4 mr-2" /> Retour
-                </button>
+                <div className="flex gap-2 items-center">
+                    <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-black bg-white px-4 py-2 rounded shadow-sm text-sm">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Retour
+                    </button>
+                    <button
+                        onClick={() => setShowAdminDates(!showAdminDates)}
+                        className={`flex items-center gap-1.5 px-3 py-2 rounded text-xs font-medium transition-colors ${showAdminDates ? 'bg-blue-100 text-blue-700' : 'bg-white text-gray-500 shadow-sm border border-transparent hover:bg-gray-50'}`}
+                    >
+                        <CalendarClock className="h-3.5 w-3.5" />
+                        {showAdminDates ? 'Masquer Admin' : 'Admin Dates'}
+                    </button>
+                </div>
                 <div className="flex gap-2">
                     <button
                         onClick={handleDownloadPDF}
@@ -196,6 +278,85 @@ export default function BordereauPage() {
                     </button>
                 </div>
             </div>
+
+            {/* ADMIN DATE PANEL */}
+            {showAdminDates && (
+                <div className="max-w-[210mm] mx-auto mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md shadow-inner mb-6 flex flex-wrap items-end gap-4 animate-in fade-in slide-in-from-top-2 no-print">
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Création</label>
+                        <input
+                            type="datetime-local"
+                            className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            value={editReceiptDate}
+                            onChange={(e) => setEditReceiptDate(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date Paiement</label>
+                        <input
+                            type="datetime-local"
+                            className="px-2 py-1 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            value={editPaymentDate}
+                            onChange={(e) => setEditPaymentDate(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($)</label>
+                        <div className="relative">
+                            <span className="absolute left-2 top-1 text-blue-800 font-bold text-xs z-10">$</span>
+                            <select
+                                className="pl-5 pr-2 py-1 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
+                                value={editBaseAmount}
+                                onChange={(e) => setEditBaseAmount(e.target.value)}
+                            >
+                                <option value="">-- Sélectionner --</option>
+                                <option value="58.70">58.70</option>
+                                <option value="63.10">63.10</option>
+                                <option value="64.50">64.50</option>
+                                <option value="68.20">68.20</option>
+                                <option value="70.10">70.10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque / Type</label>
+                        <select
+                            className="px-2 py-1 w-44 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                            value={editMarqueType}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                setEditMarqueType(val);
+                                if (val === 'touristique_medium') setEditBaseAmount('63.10');
+                                else if (val === 'touristique_light') setEditBaseAmount('58.70');
+                                else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
+                                else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
+                                else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');
+                            }}
+                        >
+                            <option value="">-- Sélectionner --</option>
+                            <option value="touristique_heavy">Touristique Heavy</option>
+                            <option value="touristique_medium">Touristique Medium</option>
+                            <option value="utilitaire_heavy">Utilitaire Heavy</option>
+                            <option value="utilitaire_medium">Utilitaire Medium</option>
+                        </select>
+                    </div>
+                    <button
+                        onClick={handleSaveDates}
+                        disabled={isSavingDates}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-bold hover:bg-blue-700 disabled:opacity-50 shadow-sm"
+                    >
+                        {isSavingDates ? (
+                            <span className="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full" />
+                        ) : (
+                            <Save className="h-3.5 w-3.5" />
+                        )}
+                        Sauvegarder
+                    </button>
+                    <div className="text-[8px] text-blue-600/70 max-w-[150px] leading-tight ml-auto italic">
+                        Met à jour le récépissé et le bordereau simultanément.
+                    </div>
+                </div>
+            )}
 
             {/* Zone d'impression - ID root pour CSS */}
             <div

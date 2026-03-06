@@ -577,7 +577,16 @@ export default function ReceiptPage() {
                         <select
                             className="px-2 py-1 w-full md:w-48 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
                             value={editMarqueType}
-                            onChange={(e) => setEditMarqueType(e.target.value)}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                setEditMarqueType(val);
+                                // AUTOMATIC PRICE SELECTION
+                                if (val === 'touristique_medium') setEditBaseAmount('63.10');
+                                else if (val === 'touristique_light') setEditBaseAmount('58.70');
+                                else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
+                                else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
+                                else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');
+                            }}
                         >
                             <option value="">-- Sélectionner --</option>
                             <option value="touristique_heavy">Touristique Heavy</option>

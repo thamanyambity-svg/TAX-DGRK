@@ -82,7 +82,7 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
 
     // --- 2. TOURISTIQUE MEDIUM ---
     if (type === 'touristique_medium') {
-        return buildResult(64.50);
+        return buildResult(63.10);
     }
 
     // --- 2. UTILITAIRE HEAVY ---

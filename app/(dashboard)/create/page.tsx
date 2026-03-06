@@ -212,6 +212,7 @@ export default function NewDeclarationPage() {
                                 <option value="Véhicule utilitaire">Véhicule utilitaire (Standard)</option>
                                 <option value="Véhicule touristique">Véhicule touristique (Standard)</option>
                                 <option value="touristique_light">Touristique Light (0-10 CV)</option>
+                                <option value="touristique_medium">Touristique Medium ($63.10)</option>
                                 <option value="utilitaire_heavy">Utilitaire Heavy (Poids lourd)</option>
                                 <option value="Transport public">Transport public</option>
                             </select>
