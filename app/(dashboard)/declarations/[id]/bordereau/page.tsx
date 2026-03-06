@@ -68,7 +68,8 @@ export default function BordereauPage() {
                 setDecl(d);
 
                 // Initialize Admin Fields
-                const rDate = d.createdAt ? new Date(d.createdAt) : new Date();
+                const rDateStr = (d.meta as any)?.manualReceiptDate || d.createdAt;
+                const rDate = rDateStr ? new Date(rDateStr) : new Date();
                 const toKinshasaLocal = (dateInput: Date | string) => {
                     const date = new Date(dateInput);
                     const kDate = new Date(date.toLocaleString('en-US', { timeZone: 'Africa/Kinshasa' }));
@@ -105,7 +106,6 @@ export default function BordereauPage() {
             const newTotalFC = newBaseAmount * exchangeRate;
 
             const updates = {
-                createdAt: newReceiptDate,
                 tax: {
                     ...decl.tax,
                     baseRate: newBaseAmount,
@@ -113,6 +113,7 @@ export default function BordereauPage() {
                 },
                 meta: {
                     ...decl.meta,
+                    manualReceiptDate: newReceiptDate,
                     manualPaymentDate: newPaymentDate,
                     manualBaseAmount: newBaseAmount,
                     manualMarqueType: editMarqueType

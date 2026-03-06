@@ -327,8 +327,9 @@ export default function ReceiptPage() {
                         setNote(manualNote);
 
                         // Initialize inputs
-                        // 1. Receipt Date (created_at)
-                        const rDate = manualDecl.createdAt ? new Date(manualDecl.createdAt) : new Date();
+                        // 1. Receipt Date (meta.manualReceiptDate OR createdAt)
+                        const rDateStr = (manualDecl.meta as any)?.manualReceiptDate || manualDecl.createdAt;
+                        const rDate = rDateStr ? new Date(rDateStr) : new Date();
                         // Format for datetime-local: YYYY-MM-DDTHH:mm
                         // Format for datetime-local: YYYY-MM-DDTHH:mm (Strictly Kinshasa Time)
                         const toKinshasaLocal = (dateInput: Date | string) => {
@@ -418,7 +419,6 @@ export default function ReceiptPage() {
             const newTotalFC = newBaseAmount * exchangeRate;
 
             const updates = {
-                createdAt: newReceiptDate,
                 tax: {
                     ...decl.tax,
                     baseRate: newBaseAmount, // Update core tax for Receipt
@@ -426,6 +426,7 @@ export default function ReceiptPage() {
                 },
                 meta: {
                     ...decl.meta,
+                    manualReceiptDate: newReceiptDate,
                     manualPaymentDate: newPaymentDate,
                     manualBaseAmount: newBaseAmount,
                     manualMarqueType: editMarqueType // Save override
