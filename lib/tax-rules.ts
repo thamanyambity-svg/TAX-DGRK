@@ -80,6 +80,11 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
         return buildResult(58.20);
     }
 
+    // --- 1b. TOURISTIQUE UPDATED (User Request) -> base 58.70 -> arrondi 59 -> total 63 ---
+    if (type === 'touristique_updated') {
+        return buildResult(58.70);
+    }
+
     // --- 2. TOURISTIQUE MEDIUM ---
     if (type === 'touristique_medium') {
         return buildResult(63.10);
@@ -98,6 +103,7 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
     // --- RÈGLES STANDARD PAR PUISSANCE FISCALE ---
 
     // 1-10 CV -> base 58.20 -> arrondi 59 -> total 63
+    // Case 58.70 handled via category 'touristique_updated'
     if (cv <= 10) {
         return buildResult(58.20);
     }
