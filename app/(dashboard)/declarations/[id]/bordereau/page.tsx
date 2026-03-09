@@ -311,7 +311,7 @@ export default function BordereauPage() {
                                 onChange={(e) => setEditBaseAmount(e.target.value)}
                             >
                                 <option value="">-- Sélectionner --</option>
-                                <option value="58.70">58.70</option>
+                                <option value="58.20">58.20</option>
                                 <option value="63.10">63.10</option>
                                 <option value="64.50">64.50</option>
                                 <option value="68.20">68.20</option>
@@ -328,7 +328,7 @@ export default function BordereauPage() {
                                 const val = e.target.value;
                                 setEditMarqueType(val);
                                 if (val === 'touristique_medium') setEditBaseAmount('63.10');
-                                else if (val === 'touristique_light') setEditBaseAmount('58.70');
+                                else if (val === 'touristique_light') setEditBaseAmount('58.20');
                                 else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
                                 else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
                                 else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');

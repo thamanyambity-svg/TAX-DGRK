@@ -23,7 +23,7 @@ const parseWeight = (weightStr: string | number | undefined): number => {
 };
 
 // Règle banque : arrondi vers le haut à l'entier supérieur (ceiling)
-// 64.50 -> 65, 68.20 -> 69, 58.70 -> 59, 70.10 -> 71
+// 64.50 -> 65, 68.20 -> 69, 58.20 -> 59, 70.10 -> 71
 const bankRound = (amount: number): number => Math.ceil(amount);
 
 // Frais bancaires fixes
@@ -75,9 +75,9 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
         };
     };
 
-    // --- 1. TOURISTIQUE LIGHT (0-10 CV) -> base 58.70 -> arrondi 59 -> total 63 ---
+    // --- 1. TOURISTIQUE LIGHT (0-10 CV) -> base 58.20 -> arrondi 59 -> total 63 ---
     if (type === 'touristique_light' || type === 'touristique_ligtht') {
-        return buildResult(58.70);
+        return buildResult(58.20);
     }
 
     // --- 2. TOURISTIQUE MEDIUM ---
@@ -97,9 +97,9 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
 
     // --- RÈGLES STANDARD PAR PUISSANCE FISCALE ---
 
-    // 1-10 CV -> base 58.70 -> arrondi 59 -> total 63
+    // 1-10 CV -> base 58.20 -> arrondi 59 -> total 63
     if (cv <= 10) {
-        return buildResult(58.70);
+        return buildResult(58.20);
     }
 
     // 11-15 CV -> base 64.50 -> arrondi 65 -> total 69

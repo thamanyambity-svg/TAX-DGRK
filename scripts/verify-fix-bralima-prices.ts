@@ -20,7 +20,7 @@ function getCorrectBaseRate(category: string, fiscalPower: string | number | und
 
     if (cv > 15) return 70.10;
     if (cv > 10) return 64.50;  // 11-15 CV
-    if (cv > 0) return 58.70;  // 1-10 CV
+    if (cv > 0) return 58.20;  // 1-10 CV
 
     // CV unknown / 0 — skip correction
     return null;
