@@ -13,7 +13,8 @@ export type VehicleCategory =
   | 'Véhicule remorque'
   | 'Transport public'
   | 'Immatriculé IT'
-  | 'Exonéré';
+  | 'Exonéré'
+  | 'Bateau';
 
 export type DeclarationStatus = 'Payée' | 'En attente' | 'Facturée';
 

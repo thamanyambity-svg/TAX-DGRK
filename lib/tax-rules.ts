@@ -100,6 +100,12 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
         return buildResult(64.50);
     }
 
+    // --- 3. BATEAU (Manual Base Rate passed as weight) ---
+    if (type === 'bateau') {
+        const manualBase = weight || 0;
+        return buildResult(manualBase);
+    }
+
     // --- RÈGLES STANDARD PAR PUISSANCE FISCALE ---
 
     // 1-10 CV -> base 58.20 -> arrondi 59 -> total 63

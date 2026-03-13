@@ -242,7 +242,8 @@ export default function BordereauPage() {
     // User requested format for Bordereau: NAME /1579A471 (ID Suffix)
     const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
     const noteSuffix = note.id.split('-').pop() || '';
-    const motifDisplay = `${ownerFullName} /${noteSuffix}`;
+    // Format: NAME / Suffix (BATEAU if boat)
+    const motifDisplay = `${ownerFullName} /${noteSuffix}${decl.vehicle.category === 'Bateau' ? ' (BATEAU)' : ''}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 text-black" data-version="2026-02-23-14-50">
@@ -448,6 +449,9 @@ export default function BordereauPage() {
                             <div>Nom du remettant ..: {remettantDisplay.toUpperCase()}</div>
                             <div className="ml-[185px]">310 - REP DEM CONGO</div>
                             <div className="mt-1">Motif             : {motifDisplay.toUpperCase()}</div>
+                            {decl.vehicle.category === 'Bateau' && (
+                                <div className="mt-1">Embarcation       : {decl.vehicle.chassis.toUpperCase()}</div>
+                            )}
                         </div>
 
                         {/* MONTANTS */}

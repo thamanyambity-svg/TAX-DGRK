@@ -103,6 +103,13 @@ export default function Home() {
             Nouvelle Déclaration
           </Link>
           <Link
+            href="/create-boat"
+            className="flex items-center gap-2 bg-mint-500 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:bg-mint-600 border border-transparent"
+          >
+            <Briefcase className="h-5 w-5" />
+            Déclaration Bateaux
+          </Link>
+          <Link
             href="/import"
             className="flex items-center gap-2 bg-white/10 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:bg-white/20 transition-all border border-white/20"
           >
