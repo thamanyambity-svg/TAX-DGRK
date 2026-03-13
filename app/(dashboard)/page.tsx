@@ -39,7 +39,7 @@ export default function Home() {
       const success = await deleteDeclaration(id);
       if (success) {
         // Mise à jour locale immédiate
-        setDeclarations(prev => prev.filter(d => d.id !== id));
+        setDeclarations((prev: Declaration[]) => prev.filter((d: Declaration) => d.id !== id));
       } else {
         alert("Erreur lors de la suppression. Vérifiez la console.");
       }
@@ -50,7 +50,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'yesterday', 'week', 'month'
 
-  const filteredDeclarations = declarations.filter(decl => {
+  const filteredDeclarations = declarations.filter((decl: Declaration) => {
     // 1. Text Search
     const searchLower = searchTerm.toLowerCase();
     const matchesText =
@@ -91,7 +91,7 @@ export default function Home() {
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-violet-700 to-blurple-500 rounded-2xl p-8 text-white flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Bonjour, Josuah <span className="text-violet-200 text-sm font-normal">V3.0 - BRALIMA</span></h1>
+          <h1 className="text-3xl font-bold mb-2">Bonjour, Josuah <span className="text-violet-200 text-sm font-normal">V3.1 - BATEAUX</span></h1>
           <p className="text-violet-100">Bienvenue sur votre portail fiscal numérique.</p>
         </div>
         <div className="flex gap-3">
@@ -135,7 +135,7 @@ export default function Home() {
           {/* DATE FILTER */}
           <select
             value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
+            onChange={(e: any) => setDateFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-violet-500 outline-none cursor-pointer"
           >
             <option value="all">📅 Toutes les dates</option>
@@ -152,7 +152,7 @@ export default function Home() {
               placeholder="Rechercher (ID, Nom, Plaque)..."
               className="pl-4 pr-10 py-2 border border-gray-200 rounded-lg text-sm w-full md:w-64 focus:ring-2 focus:ring-violet-500 outline-none"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>

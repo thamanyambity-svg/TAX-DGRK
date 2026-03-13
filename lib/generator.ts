@@ -65,6 +65,7 @@ function getFromList<T>(list: T[], seed: number): T {
 
 // Helper for deterministic dates based on sequence
 import { generateValidDate } from './business-calendar';
+import { calculateTax } from './tax-rules';
 
 function getStableDate(sequence: number, offsetDays = 0): string {
     // Generate a valid date based on the sequence
@@ -82,7 +83,6 @@ export function generateDeclaration(sequence: number): Declaration {
     const chassis = `JNX${sequence}00${2026 + sequence}XYZ`; // Pseudo-VIN
 
     // Tax calculation logic (Updated sync with tax-rules.ts)
-    const { calculateTax } = require('./tax-rules');
     const cvValue = 10 + (sequence % 20); // Generator range
     const weightStr = `${1 + (sequence % 15)} tonnes`; // Generate logical weight
     const taxInfo = calculateTax(cvValue, category, weightStr);

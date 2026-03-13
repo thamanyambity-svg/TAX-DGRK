@@ -7,6 +7,7 @@ import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
 import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
+import { calculateTax } from '@/lib/tax-rules';
 
 export default function CreateBoatPage() {
     const router = useRouter();
@@ -28,8 +29,6 @@ export default function CreateBoatPage() {
     });
 
     // --- DYNAMIC TAX CALCULATION ---
-    const { calculateTax } = require('@/lib/tax-rules');
-
     const currentTax = calculateTax(0, 'bateau', parseFloat(formData.baseAmount) || 0);
     const EXCHANGE_RATE = 2355;
     const currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE;
@@ -133,7 +132,7 @@ export default function CreateBoatPage() {
                                 placeholder="Ex: A1234567K"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none uppercase font-mono bg-yellow-50/50 border-yellow-200 text-gray-900"
                                 value={formData.nif}
-                                onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, nif: e.target.value })}
                             />
                         </div>
 
@@ -145,7 +144,7 @@ export default function CreateBoatPage() {
                                 placeholder="Ex: BRALIMA SARL"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
                                 value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, name: e.target.value })}
                             />
                         </div>
 
@@ -157,7 +156,7 @@ export default function CreateBoatPage() {
                                 placeholder="Ex: 12 Av. du Drapeau, Kinshasa"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
                                 value={formData.address}
-                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, address: e.target.value })}
                             />
                         </div>
                     </div>
@@ -178,7 +177,7 @@ export default function CreateBoatPage() {
                                 placeholder="Ex: MV-LIBERTE / PIROGUE-01"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none uppercase font-mono text-gray-900"
                                 value={formData.chassis}
-                                onChange={(e) => setFormData({ ...formData, chassis: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, chassis: e.target.value })}
                             />
                         </div>
 
@@ -189,7 +188,7 @@ export default function CreateBoatPage() {
                                 placeholder="Ex: KIN-1234"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none uppercase text-gray-900"
                                 value={formData.plate}
-                                onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, plate: e.target.value })}
                             />
                         </div>
 
@@ -200,7 +199,7 @@ export default function CreateBoatPage() {
                                 placeholder="Ex: Baleinière, Canot, Pirogue"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
                                 value={formData.typeEmbarcation}
-                                onChange={(e) => setFormData({ ...formData, typeEmbarcation: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, typeEmbarcation: e.target.value })}
                             />
                         </div>
 
@@ -215,7 +214,7 @@ export default function CreateBoatPage() {
                                     placeholder="0.00"
                                     className="w-full pl-8 pr-4 py-3 rounded-lg border-emerald-200 border text-lg font-bold focus:ring-2 focus:ring-emerald-500 outline-none text-emerald-900 bg-white"
                                     value={formData.baseAmount}
-                                    onChange={(e) => setFormData({ ...formData, baseAmount: e.target.value })}
+                                    onChange={(e: any) => setFormData({ ...formData, baseAmount: e.target.value })}
                                 />
                             </div>
                             <div className="mt-3 flex justify-between items-end">

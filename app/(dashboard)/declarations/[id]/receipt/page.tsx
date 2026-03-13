@@ -11,6 +11,8 @@ import QRCode from 'react-qr-code';
 import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-react';
 
 import { numberToWords } from '@/lib/number-to-words';
+import { calculateTax } from '@/lib/tax-rules';
+import { formatKinshasaDate, formatKinshasaTime } from '@/lib/utils';
 
 // --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
 const ReceiptView = ({
@@ -28,7 +30,7 @@ const ReceiptView = ({
     };
 
     // Dynamic Pricing Logic based on Fiscal Power
-    const { calculateTax } = require('@/lib/tax-rules');
+    // Force rate to 2355 as per user requirement
     // Force rate to 2355 as per user requirement
     const principalUSD = note.payment.principalTaxUSD;
     const RATE_FC = 2355;
@@ -42,7 +44,6 @@ const ReceiptView = ({
 
     const textAmountFC = numberToWords(Math.round(displayAmountFC_Num)).toUpperCase();
 
-    const { formatKinshasaDate, formatKinshasaTime } = require('@/lib/utils');
     const creationDate = note.generatedAt ? new Date(note.generatedAt) : new Date();
     const dateStr = formatKinshasaDate(creationDate);
     const timeStr = formatKinshasaTime(creationDate);
@@ -300,7 +301,7 @@ export default function ReceiptPage() {
 
     useEffect(() => {
         let isMounted = true;
-        let timeoutId: NodeJS.Timeout;
+        let timeoutId: any;
 
         async function fetchManualData() {
             if (!id || id === 'undefined') {

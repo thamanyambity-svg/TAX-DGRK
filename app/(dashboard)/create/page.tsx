@@ -7,6 +7,7 @@ import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
 import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
+import { calculateTax } from '@/lib/tax-rules';
 
 export default function NewDeclarationPage() {
     const router = useRouter();
@@ -30,7 +31,6 @@ export default function NewDeclarationPage() {
     });
 
     // --- DYNAMIC TAX CALCULATION ---
-    const { calculateTax } = require('@/lib/tax-rules');
 
     // Helper to get CV number safely
     const getCV = (powerStr: string) => {
@@ -148,7 +148,7 @@ export default function NewDeclarationPage() {
                                 type="text"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.city}
-                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, city: e.target.value })}
                             />
                         </div>
 
@@ -163,7 +163,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: A1234567K"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase tracking-wide font-mono bg-yellow-50/50 border-yellow-200 text-gray-900"
                                 value={formData.nif}
-                                onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, nif: e.target.value })}
                             />
                             <p className="text-[10px] text-gray-400 mt-1">Le NIF est obligatoire pour la validité du récépissé.</p>
                         </div>
@@ -176,7 +176,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: Josuah Kitona"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, name: e.target.value })}
                             />
                         </div>
 
@@ -188,7 +188,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: 12 Av. de la Libération, Gombe"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.address}
-                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, address: e.target.value })}
                             />
                         </div>
                     </div>
@@ -206,7 +206,7 @@ export default function NewDeclarationPage() {
                             <select
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.category}
-                                onChange={(e) => setFormData({ ...formData, category: e.target.value as VehicleCategory })}
+                                onChange={(e: any) => setFormData({ ...formData, category: e.target.value as VehicleCategory })}
                             >
                                 <option value="Vignette Automobile">Vignette Automobile</option>
                                 <option value="Véhicule utilitaire">Véhicule utilitaire (Standard)</option>
@@ -226,7 +226,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: TOYOTA"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase text-gray-900"
                                 value={formData.marque}
-                                onChange={(e) => setFormData({ ...formData, marque: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, marque: e.target.value })}
                             />
                         </div>
                         <div className="col-span-2 md:col-span-1">
@@ -236,7 +236,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: PRADO"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase text-gray-900"
                                 value={formData.modele}
-                                onChange={(e) => setFormData({ ...formData, modele: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, modele: e.target.value })}
                             />
                         </div>
 
@@ -248,7 +248,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: 1234AB01"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase font-mono text-gray-900"
                                 value={formData.plate}
-                                onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, plate: e.target.value })}
                             />
                         </div>
 
@@ -260,7 +260,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: JNX..."
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase font-mono text-gray-900"
                                 value={formData.chassis}
-                                onChange={(e) => setFormData({ ...formData, chassis: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, chassis: e.target.value })}
                             />
                         </div>
 
@@ -271,7 +271,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: 11 CV"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.fiscalPower}
-                                onChange={(e) => setFormData({ ...formData, fiscalPower: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, fiscalPower: e.target.value })}
                             />
                         </div>
 
@@ -282,7 +282,7 @@ export default function NewDeclarationPage() {
                                 placeholder="Ex: 1.5 tonnes"
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
                                 value={formData.weight}
-                                onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                                onChange={(e: any) => setFormData({ ...formData, weight: e.target.value })}
                             />
                         </div>
                     </div>
