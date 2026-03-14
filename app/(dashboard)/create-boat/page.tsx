@@ -26,6 +26,8 @@ export default function CreateBoatPage() {
         chassis: '', 
         baseAmount: '', 
         typeEmbarcation: '',
+        fiscalPower: '',
+        weight: '',
     });
 
     // --- DYNAMIC TAX CALCULATION ---
@@ -60,8 +62,8 @@ export default function CreateBoatPage() {
                 type: formData.typeEmbarcation || 'N/A',
                 plate: formData.plate.toUpperCase(),
                 chassis: formData.chassis.toUpperCase(),
-                fiscalPower: '0 CV',
-                weight: formData.baseAmount, 
+                fiscalPower: formData.fiscalPower ? `${formData.fiscalPower} CV` : '0 CV',
+                weight: formData.weight || '0', 
                 marque: 'BATEAU',
                 modele: formData.typeEmbarcation?.toUpperCase() || '',
                 genre: 'N/A',
@@ -77,7 +79,7 @@ export default function CreateBoatPage() {
                 ndpId: noteId,
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),
-                    nif: formData.nif.toUpperCase(),
+                    nif: 'N/A',
                     address: cleanAddress(formData.address.toUpperCase()),
                     type: 'N/A',
                 },
@@ -124,17 +126,6 @@ export default function CreateBoatPage() {
                         <h2 className="font-semibold text-gray-900">Information Contribuable</h2>
                     </div>
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Numéro d'Impôt / NIF <span className="text-red-500">*</span></label>
-                            <input
-                                type="text"
-                                required
-                                placeholder="Ex: A1234567K"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none uppercase font-mono bg-yellow-50/50 border-yellow-200 text-gray-900"
-                                value={formData.nif}
-                                onChange={(e: any) => setFormData({ ...formData, nif: e.target.value })}
-                            />
-                        </div>
 
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Nom Complet / Raison Sociale</label>
@@ -200,6 +191,28 @@ export default function CreateBoatPage() {
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
                                 value={formData.typeEmbarcation}
                                 onChange={(e: any) => setFormData({ ...formData, typeEmbarcation: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Puissance Fiscale (CV)</label>
+                            <input
+                                type="number"
+                                placeholder="Ex: 5"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
+                                value={formData.fiscalPower}
+                                onChange={(e: any) => setFormData({ ...formData, fiscalPower: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Poids / Jauge (Tonnes)</label>
+                            <input
+                                type="number"
+                                placeholder="Ex: 10"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
+                                value={formData.weight}
+                                onChange={(e: any) => setFormData({ ...formData, weight: e.target.value })}
                             />
                         </div>
 
