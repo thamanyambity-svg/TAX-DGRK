@@ -1,8 +1,8 @@
 'use client';
-// force-redeploy: 2026-03-14T14:45
+// force-redeploy: 2026-03-14T15:05
 export const dynamic = 'force-dynamic';
 
-import { CheckCircle2, Clock, Truck, User, CreditCard, FileText, Wallet, Calendar, ShieldCheck, Check } from 'lucide-react';
+import { CheckCircle2, Truck, User, FileText, Wallet, Calendar, ShieldCheck, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { generateDeclaration, generateNote, DECL_BASE } from '@/lib/generator';
 import { use, useState, useEffect } from 'react';
@@ -42,6 +42,11 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                     if ((manualDecl.meta as any).manualTaxpayer) {
                         manualNote.taxpayer = (manualDecl.meta as any).manualTaxpayer;
                     }
+                    if ((manualDecl.meta as any).manualBaseAmount) {
+                        manualNote.payment.principalTaxUSD = parseFloat((manualDecl.meta as any).manualBaseAmount);
+                        manualNote.payment.totalAmountFC = manualNote.payment.principalTaxUSD * 2355;
+                    }
+
                     setNote(manualNote);
 
                     if (manualDecl.createdAt) {
@@ -63,109 +68,121 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
     }, [id]);
 
     return (
-        <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center p-4 font-sans text-slate-900 pb-20">
+        <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center p-4 font-sans text-slate-900 pb-10">
             {/* Top Logos Bar */}
-            <div className="w-full max-w-sm flex justify-center items-center mb-6 mt-4">
-                <img src="/header-logos.png" alt="DGRK IRMS" className="w-full h-auto" />
+            <div className="w-full max-w-sm flex justify-center items-center mb-6 mt-4 opacity-90">
+                <img src="/header-logos.png" alt="DGRK IRMS" className="w-[200px] h-auto" />
             </div>
 
-            <div className="w-full max-w-[380px] bg-white rounded-[2rem] shadow-xl overflow-hidden flex flex-col items-center py-8">
+            {/* Main Info Box */}
+            <div className="w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col items-center py-10 px-6">
                 
-                {/* Header Section */}
-                <div className="flex flex-col items-center text-center px-6 mb-4">
-                    <h1 className="text-xl font-bold text-[#1E293B] mb-1">Vérification de Facture</h1>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Direction Générale des Recettes de Kinshasa</p>
+                {/* Header Title */}
+                <div className="flex flex-col items-center text-center mb-8">
+                    <h1 className="text-2xl font-black text-[#1E293B] mb-1 tracking-tight">Vérification de Facture</h1>
+                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-none">Direction Générale des Recettes de Kinshasa</p>
                 </div>
 
-                <div className="mb-6">
-                    <img src="/check-success.png" alt="Success" className="w-20 h-20" />
-                </div>
-
-                <div className="w-full px-8 flex flex-col items-center mb-6">
-                    <h2 className="text-lg font-bold text-[#1E293B] mb-2 tracking-tight">Facture {note.id}</h2>
-                    <span className="bg-[#ECFDF5] text-[#10B981] px-4 py-1 rounded-full text-[12px] font-bold shadow-sm">
-                        Payé
-                    </span>
-                </div>
-
-                {/* Details Card */}
-                <div className="w-full px-6 mb-6">
-                    <div className="bg-[#F8FAFC] border border-slate-100 rounded-2xl p-4">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Truck className="h-4 w-4 text-blue-600" />
-                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Détails du véhicule</span>
+                {/* Status Indicator */}
+                <div className="flex flex-col items-center mb-8">
+                    <div className="relative mb-6">
+                        <div className="bg-emerald-500 rounded-full p-2">
+                             <Check className="w-10 h-10 text-white stroke-[3px]" />
                         </div>
-                        
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm">
-                                <span className="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Plaque</span>
-                                <span className="text-base font-bold text-[#1E293B]">{note.vehicle?.plate || '---'}</span>
-                            </div>
-                            <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm overflow-hidden">
-                                <span className="text-[9px] font-bold text-slate-400 uppercase mb-1 block">Châssis</span>
-                                <span className="text-[11px] font-bold text-[#1E293B] truncate block" title={note.vehicle?.chassis}>
-                                    {note.vehicle?.chassis || '---'}
-                                </span>
-                            </div>
+                        <div className="absolute -inset-2 bg-emerald-500/10 rounded-full -z-10 animate-pulse"></div>
+                    </div>
+                    <h2 className="text-xl font-extrabold text-[#1E293B] mb-3 tracking-tighter">Facture {note.id}</h2>
+                    <div className="bg-emerald-50/80 text-emerald-600 px-6 py-1.5 rounded-full text-xs font-bold border border-emerald-100/50 shadow-sm">
+                        Payé
+                    </div>
+                </div>
+
+                {/* Vehicle Section */}
+                <div className="w-full mb-8">
+                    <div className="flex items-center gap-2 mb-4 ml-1">
+                        <Truck className="h-4 w-4 text-blue-800" />
+                        <span className="text-[11px] font-black text-blue-900/40 uppercase tracking-[0.15em]">Détails du véhicule</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 shadow-sm transition-all hover:border-blue-200">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase mb-1.5 block tracking-wide">Plaque</span>
+                            <span className="text-lg font-black text-[#1E293B] tracking-tight">{note.vehicle?.plate || '---'}</span>
+                        </div>
+                        <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 shadow-sm transition-all hover:border-blue-200 overflow-hidden">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase mb-1.5 block tracking-wide">Châssis</span>
+                            <span className="text-xs font-black text-[#1E293B] truncate block" title={note.vehicle?.chassis}>
+                                {note.vehicle?.chassis || '---'}
+                            </span>
                         </div>
                     </div>
                 </div>
 
                 {/* Info List */}
-                <div className="w-full px-6 space-y-4 mb-6">
-                    <div className="flex justify-between items-center py-1 border-b border-slate-50">
-                        <div className="flex items-center gap-3">
-                            <User className="h-4 w-4 text-slate-300" />
-                            <span className="text-[11px] font-medium text-slate-500">Contribuable:</span>
+                <div className="w-full space-y-5 px-1 mb-8">
+                    <div className="flex justify-between items-center group">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                <User className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
+                            </div>
+                            <span className="text-xs font-medium text-slate-500">Contribuable:</span>
                         </div>
-                        <span className="text-[12px] font-bold text-slate-800 text-right max-w-[180px] truncate">{note.taxpayer.name}</span>
+                        <span className="text-sm font-bold text-slate-800 text-right truncate max-w-[160px] pl-2">{note.taxpayer.name}</span>
                     </div>
 
-                    <div className="flex justify-between items-center py-1 border-b border-slate-50">
-                        <div className="flex items-center gap-3">
-                            <FileText className="h-4 w-4 text-slate-300" />
-                            <span className="text-[11px] font-medium text-slate-500">Type d'impôt:</span>
+                    <div className="flex justify-between items-center group">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                <FileText className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
+                            </div>
+                            <span className="text-xs font-medium text-slate-500">Type d'impôt:</span>
                         </div>
-                        <span className="text-[11px] font-bold text-slate-800 uppercase">VEHICLE</span>
+                        <span className="text-xs font-black text-slate-900 uppercase italic">VEHICLE</span>
                     </div>
 
-                    <div className="flex justify-between items-center py-1 border-b border-slate-50">
-                        <div className="flex items-center gap-3">
-                            <Wallet className="h-4 w-4 text-slate-300" />
-                            <span className="text-[11px] font-medium text-slate-500">Montant dû:</span>
+                    <div className="flex justify-between items-center group">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                <Wallet className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
+                            </div>
+                            <span className="text-xs font-medium text-slate-500">Montant dû:</span>
                         </div>
-                        <span className="text-[13px] font-bold text-slate-900">
-                            FC {note.payment.totalAmountFC.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        <span className="text-base font-black text-[#1E293B]">
+                            FC {note.payment.totalAmountFC.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}
                         </span>
                     </div>
 
-                    <div className="flex justify-between items-center py-1">
-                        <div className="flex items-center gap-3">
-                            <Calendar className="h-4 w-4 text-slate-300" />
-                            <span className="text-[11px] font-medium text-slate-500">Date de création:</span>
+                    <div className="flex justify-between items-center group">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
+                                <Calendar className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
+                            </div>
+                            <span className="text-xs font-medium text-slate-500">Date de création:</span>
                         </div>
-                        <span className="text-[11px] font-bold text-slate-800">{createdAt || '—'}</span>
+                        <span className="text-xs font-bold text-slate-800">{createdAt || '—'}</span>
                     </div>
                 </div>
 
-                {/* Certification */}
-                <div className="w-full px-6">
-                    <div className="bg-[#EFF6FF] rounded-2xl p-4 border border-blue-100 flex gap-3">
-                        <ShieldCheck className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <div className="flex flex-col gap-1">
-                            <h3 className="text-blue-900 font-bold text-[13px]">Authentification Certifiée</h3>
-                            <p className="text-blue-600/80 text-[10px] leading-tight font-medium">
+                {/* Certification Alert Box */}
+                <div className="w-full">
+                    <div className="bg-[#EFF6FF]/70 rounded-[1.5rem] p-5 border border-blue-100/50 flex gap-4 backdrop-blur-sm">
+                        <div className="bg-white rounded-full p-2 h-fit border border-blue-100 shadow-sm">
+                            <CheckCircle2 className="h-5 w-5 text-blue-600 stroke-[2.5px]" />
+                        </div>
+                        <div className="flex flex-col gap-1.5 pt-0.5">
+                            <h3 className="text-blue-900 font-black text-sm tracking-tight">Authentification Certifiée</h3>
+                            <p className="text-blue-700/70 text-[10px] leading-relaxed font-semibold">
                                 Ce document est authentique et a été émis par la Direction Générale des Recettes de Kinshasa (DGRK).
                             </p>
-                            <span className="text-[10px] font-bold text-blue-400 uppercase mt-1">ID: {note.id}</span>
+                            <span className="text-[10px] font-black text-blue-400/60 uppercase mt-0.5 tracking-tighter">ID: {note.id}</span>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <footer className="mt-8 flex flex-col items-center">
-                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest opacity-60">© 2026 DGRK - Système IRMS</p>
+            <footer className="mt-8 mb-4">
+                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] opacity-40">© 2026 DGRK - Système IRMS</p>
             </footer>
         </div>
     );
