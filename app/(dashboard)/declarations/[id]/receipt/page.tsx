@@ -479,7 +479,7 @@ export default function ReceiptPage() {
         );
     }
 
-    const verifyUrl = `https://tax-portal-two.vercel.app/verify/${id}`;
+    const verifyUrl = `https://irms-dgrk-tax.vercel.app/verify/${id}`;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-10 print:bg-white print:p-0 font-sans text-gray-900">
