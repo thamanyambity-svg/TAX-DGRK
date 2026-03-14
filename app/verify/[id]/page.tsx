@@ -156,7 +156,7 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                             <span className="text-xs font-medium text-slate-500">Type d'impôt:</span>
                         </div>
                         <span className="text-xs font-black text-slate-900 uppercase italic">
-                            {note.type === 'BOAT' || note.category?.includes('Bateau') ? 'BATEAUX' : 'VEHICLE'}
+                            {note.vehicle?.category === 'Bateau' ? 'BATEAUX' : 'VEHICLE'}
                         </span>
                     </div>
 
