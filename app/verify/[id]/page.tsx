@@ -2,11 +2,12 @@
 // force-redeploy: 2026-03-02T21:30
 export const dynamic = 'force-dynamic';
 
-import { CheckCircle, Clock, Truck, User, CreditCard, FileText } from 'lucide-react';
+import { CheckCircle2, Clock, Truck, User, CreditCard, FileText, Wallet, Calendar, ShieldCheck, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { generateDeclaration, generateNote, DECL_BASE } from '@/lib/generator';
 import { use, useState, useEffect } from 'react';
 import { getDeclarationById } from '@/lib/store';
+import Image from 'next/image';
 
 export default function VerifyPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -51,16 +52,6 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                         const d = new Date(manualDecl.createdAt);
                         setCreatedAt(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' })
                             + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Kinshasa' }));
-
-                        // Due date: 8 days for pending, 1 year for paid
-                        const due = new Date(manualDecl.createdAt);
-                        const isPending = (manualDecl.status as string) === 'Attente de paiement';
-                        if (isPending) {
-                            due.setDate(due.getDate() + 8);
-                        } else {
-                            due.setFullYear(due.getFullYear() + 1);
-                        }
-                        setDueDate(due.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' }));
                     }
                 }
             } catch (e) {
@@ -71,128 +62,146 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
         return () => { isMounted = false; };
     }, [id]);
 
-    // Dynamic Status Logic
     const status = note.status || 'Attente de paiement';
     const isPayee = status === 'Payé' || status === 'Payée';
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
-            <div className="w-full max-w-md bg-white rounded-3xl shadow-sm overflow-hidden pb-8">
+        <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center p-4 font-sans text-slate-900">
+            {/* Top Logos Bar */}
+            <div className="w-full max-w-md flex justify-around items-center mb-8 mt-4 bg-white/50 py-3 rounded-2xl border border-white">
+                <div className="h-10 w-24 relative opacity-80 grayscale hover:grayscale-0 transition-all">
+                    <img src="/dgrk-logo.jpg" alt="DGRK" className="h-full object-contain" />
+                </div>
+                <div className="h-0.5 w-8 bg-slate-200 rotate-90"></div>
+                <div className="flex items-center gap-1.5 opacity-90">
+                    <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
+                        <span className="text-white font-bold text-[10px]">IRMS</span>
+                    </div>
+                    <span className="text-xs font-bold tracking-tight text-slate-700">IRMS</span>
+                </div>
+            </div>
 
+            <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden border border-slate-100 flex flex-col items-center pt-10 pb-10">
+                
                 {/* Header Section */}
-                <div className="flex flex-col items-center pt-8 pb-6">
-                    <h1 className="text-lg font-bold text-gray-900 mb-3">Facture {note.id}</h1>
+                <div className="flex flex-col items-center text-center px-6 mb-8">
+                    <div className="mb-4 relative">
+                        <div className="absolute inset-0 bg-green-500/10 blur-xl rounded-full"></div>
+                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center border-4 border-[#F0FAF5] relative">
+                            <Check className="h-10 w-10 text-[#22C55E]" strokeWidth={3} />
+                        </div>
+                    </div>
+                    <h1 className="text-xl font-extrabold text-[#1E293B] mb-1">Vérification de Facture</h1>
+                    <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">Direction Générale des Recettes de Kinshasa</p>
+                </div>
+
+                <div className="w-full px-8 flex flex-col items-center mb-8">
+                    <h2 className="text-lg font-bold text-[#1E293B] mb-2">Facture {note.id}</h2>
                     <span className={cn(
-                        "px-6 py-1.5 rounded-full text-sm font-semibold",
+                        "px-4 py-1.5 rounded-full text-xs font-bold",
                         isPayee
-                            ? "bg-green-50 text-green-600 border border-green-100"
-                            : "bg-amber-50 text-amber-600 border border-amber-100"
+                            ? "bg-[#F0FAF5] text-[#22C55E]"
+                            : "bg-[#FFF9EA] text-[#F59E0B]"
                     )}>
-                        {status}
+                        {isPayee ? 'Payé' : status}
                     </span>
                 </div>
 
-                {/* Vehicle Section */}
-                <div className="px-6 mb-8">
-                    <div className="flex items-center gap-2 text-indigo-900 font-bold mb-3 text-xs tracking-wide uppercase">
-                        <Truck className="h-4 w-4" />
-                        DÉTAILS DU VÉHICULE
+                {/* Vehicle Details Cards */}
+                <div className="w-full px-8 mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Truck className="h-4 w-4 text-indigo-600" />
+                        <span className="text-[11px] font-bold text-indigo-900/60 uppercase tracking-widest">Détails du véhicule</span>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        {/* Plaque */}
-                        <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
-                            <span className="block text-gray-400 text-xs mb-1">Plaque</span>
-                            <span className="block text-gray-900 font-bold text-lg">
-                                {note.vehicle?.plate || '-------'}
-                            </span>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-[#FFFFFF] border border-slate-100 rounded-2xl p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tighter mb-1 block">Plaque</span>
+                            <span className="text-lg font-black text-[#1E293B] tracking-tight">{note.vehicle?.plate || '---'}</span>
                         </div>
-
-                        {/* Chassis */}
-                        <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
-                            <span className="block text-gray-400 text-xs mb-1">Châssis</span>
-                            <span className="block text-gray-900 font-bold text-sm truncate" title={note.vehicle?.chassis}>
-                                {note.vehicle?.chassis || '—'}
+                        <div className="bg-[#FFFFFF] border border-slate-100 rounded-2xl p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tighter mb-1 block">Châssis</span>
+                            <span className="text-sm font-bold text-[#1E293B] truncate block" title={note.vehicle?.chassis}>
+                                {note.vehicle?.chassis ? note.vehicle.chassis.slice(-10) : '---'}
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {/* Divider */}
-                <div className="border-t border-gray-100 mx-6 mb-6"></div>
-
-                {/* Info List */}
-                <div className="px-6 space-y-5 text-sm">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2 text-gray-400">
-                            <User className="h-4 w-4" />
-                            <span>Contribuable:</span>
+                {/* List Items */}
+                <div className="w-full px-8 space-y-4 mb-2">
+                    <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <User className="h-4 w-4 text-slate-400" />
                         </div>
-                        <span className="text-gray-900 font-medium">
-                            {note.taxpayer.name}
-                        </span>
+                        <div className="flex flex-col flex-1 border-b border-slate-50 pb-3">
+                            <span className="text-[11px] font-bold text-slate-400 mb-0.5">Contribuable:</span>
+                            <span className="text-sm font-bold text-slate-700 leading-tight capitalize">{note.taxpayer.name}</span>
+                        </div>
                     </div>
 
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2 text-gray-400">
-                            <FileText className="h-4 w-4" />
-                            <span>Type d'impôt:</span>
+                    <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <FileText className="h-4 w-4 text-slate-400" />
                         </div>
-                        <span className="text-gray-900 font-medium uppercase">
-                            VÉHICULE
-                        </span>
+                        <div className="flex flex-col flex-1 border-b border-slate-50 pb-3">
+                            <span className="text-[11px] font-bold text-slate-400 mb-0.5">Type d'impôt:</span>
+                            <span className="text-sm font-bold text-slate-700 leading-tight uppercase">VEHICLE</span>
+                        </div>
                     </div>
 
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2 text-gray-400">
-                            <CreditCard className="h-4 w-4" />
-                            <span>Montant dû:</span>
+                    <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Wallet className="h-4 w-4 text-slate-400" />
                         </div>
-                        <span className="text-gray-900 font-bold text-lg">
-                            FC {note.payment.totalAmountFC.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
+                        <div className="flex flex-col flex-1 border-b border-slate-50 pb-3">
+                            <span className="text-[11px] font-bold text-slate-400 mb-0.5">Montant dû:</span>
+                            <span className="text-base font-black text-slate-800 tracking-tight">
+                                FC {note.payment.totalAmountFC.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
+                        </div>
                     </div>
 
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2 text-gray-400">
-                            <Clock className="h-4 w-4" />
-                            <span>Date de création:</span>
+                    <div className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <Calendar className="h-4 w-4 text-slate-400" />
                         </div>
-                        <span className="text-gray-900 font-medium">
-                            {createdAt || '—'}
-                        </span>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2 text-gray-400">
-                            <Clock className="h-4 w-4" />
-                            <span>Date d'échéance:</span>
+                        <div className="flex flex-col flex-1 pb-3">
+                            <span className="text-[11px] font-bold text-slate-400 mb-0.5">Date de création:</span>
+                            <span className="text-sm font-bold text-slate-700 leading-tight">{createdAt || '—'}</span>
                         </div>
-                        <span className="font-medium text-gray-900">
-                            {dueDate || '—'}
-                        </span>
                     </div>
                 </div>
 
-                {/* Certification Footer */}
-                <div className="mt-8 px-6">
-                    <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100">
-                        <div className="flex items-start gap-3">
-                            <CheckCircle className="h-6 w-6 text-blue-600 flex-shrink-0 mt-0.5" />
-                            <div>
-                                <h3 className="text-blue-900 font-bold text-sm mb-1">Authentification Certifiée</h3>
-                                <p className="text-blue-700/80 text-xs leading-relaxed mb-2">
+                {/* Certification Badge Section */}
+                <div className="w-full px-6 mt-6">
+                    <div className="bg-[#F0F7FF] rounded-[1.5rem] p-5 relative overflow-hidden group border border-blue-50">
+                        <div className="absolute top-[-20px] right-[-20px] opacity-10 group-hover:scale-110 transition-transform duration-700">
+                             <ShieldCheck className="h-32 w-32 text-blue-900" />
+                        </div>
+                        <div className="flex items-start gap-4 relative z-10">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-blue-900 font-extrabold text-sm mb-1">Authentification Certifiée</h3>
+                                <p className="text-blue-700/70 text-[10px] leading-relaxed font-semibold">
                                     Ce document est authentique et a été émis par la Direction Générale des Recettes de Kinshasa (DGRK).
                                 </p>
-                                <p className="text-blue-400 text-[10px] font-mono uppercase">
-                                    ID: {note.id}
-                                </p>
+                                <div className="mt-3 flex items-center justify-between">
+                                    <span className="text-[10px] font-bold text-blue-400/80 uppercase tracking-tighter">ID: {note.id}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
             </div>
+
+            <footer className="mt-10 mb-8 flex flex-col items-center">
+                 <p className="text-[11px] font-bold text-slate-400/60 uppercase tracking-widest">© 2026 DGRK - Système IRMS</p>
+                 <div className="h-1 w-12 bg-slate-200 mt-4 rounded-full"></div>
+            </footer>
         </div>
     );
 }
