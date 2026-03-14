@@ -11,8 +11,6 @@ import QRCode from 'react-qr-code';
 import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-react';
 
 import { numberToWords } from '@/lib/number-to-words';
-import { calculateTax } from '@/lib/tax-rules';
-import { formatKinshasaDate, formatKinshasaTime } from '@/lib/utils';
 
 // --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
 const ReceiptView = ({
@@ -30,7 +28,7 @@ const ReceiptView = ({
     };
 
     // Dynamic Pricing Logic based on Fiscal Power
-    // Force rate to 2355 as per user requirement
+    const { calculateTax } = require('@/lib/tax-rules');
     // Force rate to 2355 as per user requirement
     const principalUSD = note.payment.principalTaxUSD;
     const RATE_FC = 2355;
@@ -44,6 +42,7 @@ const ReceiptView = ({
 
     const textAmountFC = numberToWords(Math.round(displayAmountFC_Num)).toUpperCase();
 
+    const { formatKinshasaDate, formatKinshasaTime } = require('@/lib/utils');
     const creationDate = note.generatedAt ? new Date(note.generatedAt) : new Date();
     const dateStr = formatKinshasaDate(creationDate);
     const timeStr = formatKinshasaTime(creationDate);
@@ -72,9 +71,7 @@ const ReceiptView = ({
                     {/* Title Area */}
                     <div className="text-center flex-1 leading-tight">
                         <h1 className="text-lg font-bold uppercase text-[#333333] tracking-wide">RÉCÉPISSÉ</h1>
-                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">
-                            {note.vehicle.category === 'Bateau' ? 'Déclaration Bateaux & Embarcations' : 'Vignette Automobile'} | Exercice 2026
-                        </p>
+                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">Vignette Automobile | Exercice 2026</p>
                     </div>
 
                     {/* Copy Badge */}
@@ -113,7 +110,7 @@ const ReceiptView = ({
                                 </div>
                                 <div className="grid grid-cols-[180px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
-                                    <span className="font-medium text-gray-800 uppercase text-[9px] break-words leading-tight">
+                                    <span className="font-medium text-gray-800 uppercase text-[9px] break-words leading-tight truncate">
                                         {(note.taxpayer.address || 'KINSHASA')
                                             .replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '')
                                             .replace(/^\s*(N\/A|N\/A,)\s*/gi, '')
@@ -133,7 +130,9 @@ const ReceiptView = ({
                             <div className="px-2 py-1 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[9px]">
                                 {/* Ligne 1 */}
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600">{note.vehicle.category === 'Bateau' ? 'Embarcation:' : 'Chassis:'}</span>
+                                    <span className="font-bold text-gray-600">
+                                        {note.vehicle.category === 'Bateau' ? 'Embarcation:' : 'Chassis:'}
+                                    </span>
                                     <span className="uppercase font-bold text-gray-800 tracking-tight truncate">{note.vehicle.chassis}</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5">
@@ -143,12 +142,15 @@ const ReceiptView = ({
 
                                 {/* Ligne 2 */}
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
-                                    <span className="font-bold text-gray-600">{note.vehicle.category === 'Bateau' ? 'Type:' : 'Marque/Type:'}</span>
+                                    <span className="font-bold text-gray-600">Marque/Type:</span>
                                     <span className="text-[9px] font-medium text-gray-800 truncate">
                                         {(note.vehicle as any).manualMarqueType || (() => {
                                             const cat = (note.vehicle.category || '');
-                                            if (cat.includes('_')) return <span className="lowercase">{cat}</span>;
-                                            if (cat === 'Bateau') return <span className="uppercase">{note.vehicle.type || 'EMBARCATION'}</span>;
+                                            // If it has underscores, force lowercase and show ONLY category
+                                            if (cat.includes('_')) {
+                                                return <span className="lowercase">{cat}</span>;
+                                            }
+
                                             return (
                                                 <>
                                                     <span className="uppercase">{note.vehicle.marque}</span>
@@ -160,20 +162,20 @@ const ReceiptView = ({
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
-                                    <span className="font-bold text-gray-600">Poids:</span>
-                                    <span className="font-medium text-gray-800 uppercase">{note.vehicle.weight || '-'}</span>
+                                    <span className="font-bold text-gray-600">Puissance:</span>
+                                    <span className="font-medium text-gray-800">
+                                        {note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV'}
+                                    </span>
                                 </div>
-                                
+
                                 {/* Ligne 3 */}
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Usage:</span>
                                     <span className="font-medium text-gray-800">N/A</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
-                                    <span className="font-bold text-gray-600">{note.vehicle.category === 'Bateau' ? 'Puissance:' : 'Puissance:'}</span>
-                                    <span className="font-medium text-gray-800 uppercase">
-                                        {note.vehicle.fiscalPower || '-'}
-                                    </span>
+                                    <span className="font-bold text-gray-600">Poids:</span>
+                                    <span className="font-medium text-gray-800">{note.vehicle.weight || '-'}</span>
                                 </div>
                             </div>
                         </div>
@@ -294,7 +296,7 @@ export default function ReceiptPage() {
 
     useEffect(() => {
         let isMounted = true;
-        let timeoutId: any;
+        let timeoutId: NodeJS.Timeout;
 
         async function fetchManualData() {
             if (!id || id === 'undefined') {
@@ -559,66 +561,47 @@ export default function ReceiptPage() {
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($)</label>
                         <div className="relative">
                             <span className="absolute left-2 top-1.5 text-blue-800 font-bold text-xs z-10">$</span>
-                            {note.vehicle.category === 'Bateau' ? (
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
-                                    value={editBaseAmount}
-                                    onChange={(e) => setEditBaseAmount(e.target.value)}
-                                />
-                            ) : (
-                                <select
-                                    className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
-                                    value={parseFloat(editBaseAmount).toFixed(2)}
-                                    onChange={(e) => setEditBaseAmount(e.target.value)}
-                                >
-                                    <option value="">-- Sélectionner --</option>
-                                    <option value="58.20">58.20</option>
-                                    <option value="58.70">58.70</option>
-                                    <option value="63.10">63.10</option>
-                                    <option value="64.50">64.50</option>
-                                    <option value="68.20">68.20</option>
-                                    <option value="70.10">70.10</option>
-                                </select>
-                            )}
+                            <select
+                                className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
+                                value={parseFloat(editBaseAmount).toFixed(2)}
+                                onChange={(e) => setEditBaseAmount(e.target.value)}
+                            >
+                                <option value="">-- Sélectionner --</option>
+                                <option value="58.20">58.20</option>
+                                <option value="58.70">58.70</option>
+                                <option value="63.10">63.10</option>
+                                <option value="64.50">64.50</option>
+                                <option value="68.20">68.20</option>
+                                <option value="70.10">70.10</option>
+                            </select>
                         </div>
                     </div>
                     <div className="flex flex-col gap-1 w-full md:w-auto">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque / Type (Override)</label>
-                        {note.vehicle.category === 'Bateau' ? (
-                            <input
-                                type="text"
-                                className="px-2 py-1.5 w-full md:w-48 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
-                                value={editMarqueType}
-                                onChange={(e) => setEditMarqueType(e.target.value)}
-                                placeholder="Ex: Baleinière"
-                            />
-                        ) : (
-                            <select
-                                className="px-2 py-1.5 w-full md:w-48 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
-                                value={editMarqueType}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setEditMarqueType(val);
-                                    // AUTOMATIC PRICE SELECTION
-                                    if (val === 'touristique_medium') setEditBaseAmount('63.10');
-                                    else if (val === 'touristique_updated') setEditBaseAmount('58.70');
-                                    else if (val === 'touristique_light') setEditBaseAmount('58.20');
-                                    else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
-                                    else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
-                                    else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');
-                                }}
-                            >
-                                <option value="">-- Sélectionner --</option>
-                                <option value="touristique_heavy">Touristique Heavy</option>
-                                <option value="touristique_medium">Touristique Medium</option>
-                                <option value="touristique_updated">Touristique ($58.70)</option>
-                                <option value="touristique_light">Touristique Light</option>
-                                <option value="utilitaire_heavy">Utilitaire Heavy</option>
-                                <option value="utilitaire_medium">Utilitaire Medium</option>
-                            </select>
-                        )}
+                        <select
+                            className="px-2 py-1.5 w-full md:w-48 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
+                            value={editMarqueType}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                setEditMarqueType(val);
+                                // AUTOMATIC PRICE SELECTION
+                                if (val === 'touristique_medium') setEditBaseAmount('63.10');
+                                else if (val === 'touristique_updated') setEditBaseAmount('58.70');
+                                else if (val === 'touristique_light') setEditBaseAmount('58.20');
+                                else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
+                                else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
+                                else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');
+                            }}
+                        >
+                            <option value="">-- Sélectionner --</option>
+                            <option value="touristique_heavy">Touristique Heavy</option>
+                            <option value="touristique_medium">Touristique Medium</option>
+                            <option value="touristique_updated">Touristique ($58.70)</option>
+                            <option value="touristique_light">Touristique Light</option>
+                            <option value="utilitaire_heavy">Utilitaire Heavy</option>
+                            <option value="utilitaire_medium">Utilitaire Medium</option>
+                            <option value="Bateau">Bateau</option>
+                        </select>
                     </div>
                     <button
                         onClick={handleSaveDates}
