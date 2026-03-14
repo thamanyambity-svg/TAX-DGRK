@@ -147,15 +147,8 @@ const ReceiptView = ({
                                     <span className="text-[9px] font-medium text-gray-800 truncate">
                                         {(note.vehicle as any).manualMarqueType || (() => {
                                             const cat = (note.vehicle.category || '');
-                                            // If it has underscores, force lowercase and show ONLY category
-                                            if (cat.includes('_')) {
-                                                return <span className="lowercase">{cat}</span>;
-                                            }
-
-                                            if (cat === 'Bateau') {
-                                                return <span className="uppercase">{note.vehicle.type || 'EMBARCATION'}</span>;
-                                            }
-
+                                            if (cat.includes('_')) return <span className="lowercase">{cat}</span>;
+                                            if (cat === 'Bateau') return <span className="uppercase">{note.vehicle.type || 'EMBARCATION'}</span>;
                                             return (
                                                 <>
                                                     <span className="uppercase">{note.vehicle.marque}</span>
@@ -167,20 +160,20 @@ const ReceiptView = ({
                                     </span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
-                                    <span className="font-bold text-gray-600">{note.vehicle.category === 'Bateau' ? 'Immatric.:' : 'Puissance:'}</span>
-                                    <span className="font-medium text-gray-800">
-                                        {note.vehicle.category === 'Bateau' ? (note.vehicle.plate || 'N/A') : (note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV')}
-                                    </span>
+                                    <span className="font-bold text-gray-600">Poids:</span>
+                                    <span className="font-medium text-gray-800 uppercase">{note.vehicle.weight || '-'}</span>
                                 </div>
-
+                                
                                 {/* Ligne 3 */}
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Usage:</span>
                                     <span className="font-medium text-gray-800">N/A</span>
                                 </div>
                                 <div className="grid grid-cols-[90px_1fr] pt-0.5">
-                                    <span className="font-bold text-gray-600">Poids:</span>
-                                    <span className="font-medium text-gray-800">{note.vehicle.weight || '-'}</span>
+                                    <span className="font-bold text-gray-600">{note.vehicle.category === 'Bateau' ? 'Puissance:' : 'Puissance:'}</span>
+                                    <span className="font-medium text-gray-800 uppercase">
+                                        {note.vehicle.fiscalPower || '-'}
+                                    </span>
                                 </div>
                             </div>
                         </div>

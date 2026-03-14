@@ -62,8 +62,8 @@ export default function CreateBoatPage() {
                 type: formData.typeEmbarcation || 'N/A',
                 plate: formData.plate.toUpperCase(),
                 chassis: formData.chassis.toUpperCase(),
-                fiscalPower: formData.fiscalPower ? `${formData.fiscalPower} CV` : '0 CV',
-                weight: formData.weight || '0', 
+                fiscalPower: formData.fiscalPower?.toUpperCase() || '0 CV',
+                weight: formData.weight?.toUpperCase() || '0', 
                 marque: 'BATEAU',
                 modele: formData.typeEmbarcation?.toUpperCase() || '',
                 genre: 'N/A',
@@ -172,18 +172,7 @@ export default function CreateBoatPage() {
                             />
                         </div>
 
-                        <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Immatriculation (Optionnel)</label>
-                            <input
-                                type="text"
-                                placeholder="Ex: KIN-1234"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none uppercase text-gray-900"
-                                value={formData.plate}
-                                onChange={(e: any) => setFormData({ ...formData, plate: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="col-span-2 md:col-span-1">
+                        <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Type d'Embarcation</label>
                             <input
                                 type="text"
@@ -191,6 +180,28 @@ export default function CreateBoatPage() {
                                 className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
                                 value={formData.typeEmbarcation}
                                 onChange={(e: any) => setFormData({ ...formData, typeEmbarcation: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Puissance Fiscale (CV)</label>
+                            <input
+                                type="text"
+                                placeholder="Ex: 5 CV / 150 HP"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
+                                value={formData.fiscalPower}
+                                onChange={(e: any) => setFormData({ ...formData, fiscalPower: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Poids / Jauge</label>
+                            <input
+                                type="text"
+                                placeholder="Ex: 10 T / 200 KG"
+                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
+                                value={formData.weight}
+                                onChange={(e: any) => setFormData({ ...formData, weight: e.target.value })}
                             />
                         </div>
 
