@@ -69,13 +69,24 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
 
     return (
         <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center p-4 font-sans text-slate-900 pb-10">
-            {/* Header Logos Section (Match Image 1) */}
+            {/* Header Logos Section (Match Image 1 Pixel-perfect) */}
             <div className="w-full max-w-[400px] flex justify-center mb-6 mt-4">
-                <div className="bg-white px-8 py-3 rounded-2xl shadow-sm flex items-center justify-center border border-slate-100/50">
+                <div className="bg-white px-6 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-4 border border-slate-100/50">
+                    {/* DGRK Logo (The real one with the crest/bird) */}
                     <img 
-                        src="/header-logos.png" 
-                        alt="DGRK IRMS Official" 
-                        className="h-12 w-auto object-contain"
+                        src="/logo-dgrk-form.jpg" 
+                        alt="DGRK" 
+                        className="h-10 w-auto object-contain"
+                    />
+                    
+                    {/* Vertical Separator */}
+                    <div className="h-8 w-[1px] bg-slate-200"></div>
+                    
+                    {/* IRMS Logo (Generated with correct open circle) */}
+                    <img 
+                        src="/irms-logo-open.png" 
+                        alt="IRMS" 
+                        className="h-10 w-auto object-contain"
                     />
                 </div>
             </div>
@@ -143,7 +154,9 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                             </div>
                             <span className="text-xs font-medium text-slate-500">Type d'impôt:</span>
                         </div>
-                        <span className="text-xs font-black text-slate-900 uppercase italic">VEHICLE</span>
+                        <span className="text-xs font-black text-slate-900 uppercase italic">
+                            {note.type === 'BOAT' || note.category?.includes('Bateau') ? 'BATEAUX' : 'VEHICLE'}
+                        </span>
                     </div>
 
                     <div className="flex justify-between items-center group">
@@ -169,18 +182,18 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                     </div>
                 </div>
 
-                {/* Certification Alert Box */}
+                {/* Certification Alert Box (Match Image 1) */}
                 <div className="w-full">
-                    <div className="bg-[#EFF6FF]/70 rounded-[1.5rem] p-5 border border-blue-100/50 flex gap-4 backdrop-blur-sm">
-                        <div className="bg-white rounded-full p-2 h-fit border border-blue-100 shadow-sm">
-                            <CheckCircle2 className="h-5 w-5 text-blue-600 stroke-[2.5px]" />
+                    <div className="bg-[#EFF6FF] rounded-[1.8rem] p-5 flex gap-4 items-center">
+                        <div className="bg-white rounded-full p-2 h-10 w-10 flex items-center justify-center shadow-sm shrink-0 border border-blue-50">
+                            <CheckCircle2 className="h-6 w-6 text-blue-600 stroke-[2.5px]" />
                         </div>
-                        <div className="flex flex-col gap-1.5 pt-0.5">
-                            <h3 className="text-blue-900 font-black text-sm tracking-tight">Authentification Certifiée</h3>
-                            <p className="text-blue-700/70 text-[10px] leading-relaxed font-semibold">
+                        <div className="flex flex-col gap-0.5">
+                            <h3 className="text-[#1E40AF] font-black text-sm tracking-tight leading-tight">Authentification Certifiée</h3>
+                            <p className="text-blue-600/60 text-[10px] leading-tight font-bold">
                                 Ce document est authentique et a été émis par la Direction Générale des Recettes de Kinshasa (DGRK).
                             </p>
-                            <span className="text-[10px] font-black text-blue-400/60 uppercase mt-0.5 tracking-tighter">ID: {note.id}</span>
+                            <span className="text-[9px] font-black text-blue-300 uppercase mt-1 tracking-tight">ID: {note.id}</span>
                         </div>
                     </div>
                 </div>
