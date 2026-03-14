@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Briefcase, Anchor, User } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
@@ -21,7 +21,7 @@ export default function CreateBoatPage() {
         address: '',
         city: 'Kinshasa',
 
-        category: 'Bateau' as VehicleCategory,
+        category: 'Bateau' as any,
         plate: '', 
         chassis: '', 
         baseAmount: '', 
@@ -165,7 +165,7 @@ export default function CreateBoatPage() {
                 {/* Section 2: Embarcation */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                     <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-                        <Anchor className="h-5 w-5 text-mint-600" />
+                        <Anchor className="h-5 w-5 text-emerald-600" />
                         <h2 className="font-semibold text-gray-900">Information de l'Embarcation</h2>
                     </div>
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -235,7 +235,7 @@ export default function CreateBoatPage() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 bg-emerald-500 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:bg-emerald-600 border border-transparent disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                         {isSubmitting ? 'Génération en cours...' : 'Enregistrer la Déclaration'}
                         {!isSubmitting && <Save className="h-5 w-5" />}

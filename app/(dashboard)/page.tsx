@@ -2,9 +2,10 @@
 
 import { FileText, ArrowRight, RefreshCw, Trash2, Pencil, Briefcase } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Declaration } from '@/types';
+import { cn } from '@/lib/utils';
 
 export default function Home() {
   const [declarations, setDeclarations] = useState<Declaration[]>([]);
@@ -104,7 +105,7 @@ export default function Home() {
           </Link>
           <Link
             href="/create-boat"
-            className="flex items-center gap-2 bg-mint-500 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:bg-mint-600 border border-transparent"
+            className="flex items-center gap-2 bg-emerald-500 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:bg-emerald-600 border border-transparent"
           >
             <Briefcase className="h-5 w-5" />
             Déclaration Bateaux
@@ -246,7 +247,7 @@ export default function Home() {
                 >
                   <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="h-10 w-10 bg-mint-50 rounded-lg flex items-center justify-center text-mint-600">
+                      <div className="h-10 w-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
                         <FileText className="h-5 w-5" />
                       </div>
                       <div className="flex items-center gap-2">
@@ -305,7 +306,4 @@ export default function Home() {
   );
 }
 
-// Helper for class names
-function cn(...classes: (string | undefined)[]) {
-  return classes.filter(Boolean).join(' ');
-}
+
