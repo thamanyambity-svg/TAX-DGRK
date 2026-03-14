@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Briefcase, Anchor, User } from 'lucide-react';
-import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
+import { Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
 import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
@@ -15,7 +15,7 @@ export default function CreateBoatPage() {
 
     // Form State
     const [formData, setFormData] = useState({
-        taxpayerType: 'N/A' as TaxpayerType,
+        taxpayerType: 'N/A' as any,
         name: '',
         nif: '',
         address: '',
