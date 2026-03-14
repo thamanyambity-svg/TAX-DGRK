@@ -125,7 +125,9 @@ const ReceiptView = ({
                         {/* VÉHICULE & TAXATION - 2 Columns Grid */}
                         <div className="border border-[#E0E0E0] rounded-sm bg-white overflow-hidden">
                             <div className="px-2 py-0.5 bg-white border-b border-[#E0E0E0]">
-                                <h3 className="font-bold text-[#333333] text-[8px] uppercase tracking-wide">VÉHICULE & TAXATION</h3>
+                                <h3 className="font-bold text-[#333333] text-[8px] uppercase tracking-wide">
+                                    {note.vehicle.category === 'Bateau' ? 'BATEAUX & TAXATION' : 'VÉHICULE & TAXATION'}
+                                </h3>
                             </div>
                             <div className="px-2 py-1 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[9px]">
                                 {/* Ligne 1 */}

@@ -205,28 +205,6 @@ export default function CreateBoatPage() {
                             />
                         </div>
 
-                        <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Puissance Fiscale (CV)</label>
-                            <input
-                                type="number"
-                                placeholder="Ex: 5"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
-                                value={formData.fiscalPower}
-                                onChange={(e: any) => setFormData({ ...formData, fiscalPower: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Poids / Jauge (Tonnes)</label>
-                            <input
-                                type="number"
-                                placeholder="Ex: 10"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-gray-900"
-                                value={formData.weight}
-                                onChange={(e: any) => setFormData({ ...formData, weight: e.target.value })}
-                            />
-                        </div>
-
                         <div className="col-span-2 mt-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
                             <label className="block text-sm font-bold text-emerald-800 mb-2">Montant de base (USD) <span className="text-red-500">*</span></label>
                             <div className="relative">
