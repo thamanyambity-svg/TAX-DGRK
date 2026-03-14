@@ -69,9 +69,15 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
 
     return (
         <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center p-4 font-sans text-slate-900 pb-10">
-            {/* Top Logos Bar */}
-            <div className="w-full max-w-sm flex justify-center items-center mb-6 mt-4 opacity-90">
-                <img src="/header-logos.png" alt="DGRK IRMS" className="w-[200px] h-auto" />
+            {/* Header Logos Section (Match Image 1) */}
+            <div className="w-full max-w-[400px] flex justify-center mb-6 mt-4">
+                <div className="bg-white px-8 py-3 rounded-2xl shadow-sm flex items-center justify-center border border-slate-100/50">
+                    <img 
+                        src="/header-logos.png" 
+                        alt="DGRK IRMS Official" 
+                        className="h-12 w-auto object-contain"
+                    />
+                </div>
             </div>
 
             {/* Main Info Box */}
