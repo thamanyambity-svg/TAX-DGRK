@@ -1,5 +1,5 @@
 'use client';
-// force-redeploy: 2026-03-14T11:00
+// force-redeploy: 2026-03-14T11:30
 export const dynamic = 'force-dynamic';
 import { Truck, User, FileText, Wallet, Calendar } from 'lucide-react';
 import { generateDeclaration, generateNote, DECL_BASE } from '@/lib/generator';
