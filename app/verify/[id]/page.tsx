@@ -1,4 +1,6 @@
-// force-redeploy: 2026-03-14T15:45
+'use client';
+
+// force-redeploy: 2026-03-14T18:05
 export const dynamic = 'force-dynamic';
 
 import { CheckCircle2, Truck, User, FileText, Wallet, Calendar, ShieldCheck, Check } from 'lucide-react';
