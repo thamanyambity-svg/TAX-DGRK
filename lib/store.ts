@@ -97,7 +97,7 @@ export const saveDeclaration = async (rawDecl: Declaration): Promise<{ success: 
 
         // 3. SECURE LOGGING (Non-blocking)
         try {
-            const qrContent = `https://irms-dgrk-tax.vercel.app/verify/${decl.id}`;
+            const qrContent = `https://tax-portal-two.vercel.app/verify/${decl.id}`;
             // CRITICAL: Log the CLEANED payload (not raw decl) to avoid zombie data in logs
             const cleanedForLog = cleanZombies({
                 ...decl,
