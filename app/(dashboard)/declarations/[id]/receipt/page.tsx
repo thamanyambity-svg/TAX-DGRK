@@ -108,7 +108,9 @@ const ReceiptView = ({
                                 </div>
                                 <div className="grid grid-cols-[180px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">N° Impôt/NIF:</span>
-                                    <span className="font-medium text-gray-800">{note.taxpayer.nif || '-'}</span>
+                                    <span className="font-medium text-gray-800">
+                                        {note.taxpayer.name.includes('SOCIMEX') ? 'N/A' : (note.taxpayer.nif || '-')}
+                                    </span>
                                 </div>
                                 <div className="grid grid-cols-[180px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
