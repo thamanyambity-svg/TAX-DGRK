@@ -1,9 +1,8 @@
 'use client';
-
-// force-redeploy: 2026-03-14T18:05
+// force-redeploy: 2026-03-02T21:30
 export const dynamic = 'force-dynamic';
 
-import { CheckCircle2, Truck, User, FileText, Wallet, Calendar, ShieldCheck, Check } from 'lucide-react';
+import { CheckCircle, Clock, Truck, User, CreditCard, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { generateDeclaration, generateNote, DECL_BASE } from '@/lib/generator';
 import { use, useState, useEffect } from 'react';
@@ -29,6 +28,7 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
     });
 
     const [createdAt, setCreatedAt] = useState<string | null>(null);
+    const [dueDate, setDueDate] = useState<string | null>(null);
 
     // 2. Client Side Override (Manual Store - Async)
     useEffect(() => {
@@ -38,26 +38,29 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
                 const manualDecl = await getDeclarationById(id);
                 if (isMounted && manualDecl) {
                     const manualNote = generateNote(manualDecl);
+                    // Force the actual status from the declaration
                     manualNote.status = manualDecl.status;
 
                     if ((manualDecl.meta as any).manualTaxpayer) {
                         manualNote.taxpayer = (manualDecl.meta as any).manualTaxpayer;
                     }
-                    if ((manualDecl.meta as any).manualBaseAmount) {
-                        manualNote.payment.principalTaxUSD = parseFloat((manualDecl.meta as any).manualBaseAmount);
-                        manualNote.payment.totalAmountFC = manualNote.payment.principalTaxUSD * 2355;
-                    }
-
                     setNote(manualNote);
 
+                    // Set real dates from declaration
                     if (manualDecl.createdAt) {
                         const d = new Date(manualDecl.createdAt);
-                        const day = String(d.getDate()).padStart(2, '0');
-                        const month = String(d.getMonth() + 1).padStart(2, '0');
-                        const year = d.getFullYear();
-                        const hours = String(d.getHours()).padStart(2, '0');
-                        const minutes = String(d.getMinutes()).padStart(2, '0');
-                        setCreatedAt(`${day}/${month}/${year} ${hours}:${minutes}`);
+                        setCreatedAt(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' })
+                            + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Kinshasa' }));
+
+                        // Due date: 8 days for pending, 1 year for paid
+                        const due = new Date(manualDecl.createdAt);
+                        const isPending = (manualDecl.status as string) === 'Attente de paiement' || (manualDecl.status as string) === 'En attente de paiement' || (manualDecl.status as string) === 'En attente';
+                        if (isPending) {
+                            due.setDate(due.getDate() + 8);
+                        } else {
+                            due.setFullYear(due.getFullYear() + 1);
+                        }
+                        setDueDate(due.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' }));
                     }
                 }
             } catch (e) {
@@ -68,142 +71,128 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
         return () => { isMounted = false; };
     }, [id]);
 
+    // Dynamic Status Logic
+    const status = note.status || 'Attente de paiement';
+    const isPayee = status === 'Payé' || status === 'Payée';
+
     return (
-        <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center p-4 font-sans text-slate-900 pb-10">
-            {/* Header Logos Section (Match Image 1 Pixel-perfect) */}
-            <div className="w-full max-w-[400px] flex justify-center mb-6 mt-4">
-                <div className="bg-white px-6 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-4 border border-slate-100/50">
-                    {/* DGRK Logo (The real one with the crest/bird) */}
-                    <img 
-                        src="/logo-dgrk-form.jpg" 
-                        alt="DGRK" 
-                        className="h-10 w-auto object-contain"
-                    />
-                    
-                    {/* Vertical Separator */}
-                    <div className="h-8 w-[1px] bg-slate-200"></div>
-                    
-                    {/* IRMS Logo (Generated with correct open circle) */}
-                    <img 
-                        src="/irms-logo-open.png" 
-                        alt="IRMS" 
-                        className="h-10 w-auto object-contain"
-                    />
-                </div>
-            </div>
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans">
+            <div className="w-full max-w-md bg-white rounded-3xl shadow-sm overflow-hidden pb-8">
 
-            {/* Main Info Box */}
-            <div className="w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col items-center py-10 px-6">
-                
-                {/* Header Title */}
-                <div className="flex flex-col items-center text-center mb-8">
-                    <h1 className="text-2xl font-black text-[#1E293B] mb-1 tracking-tight">Vérification de Facture</h1>
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-none">Direction Générale des Recettes de Kinshasa</p>
-                </div>
-
-                {/* Status Indicator */}
-                <div className="flex flex-col items-center mb-8">
-                    <div className="relative mb-6">
-                        <div className="bg-emerald-500 rounded-full p-2">
-                             <Check className="w-10 h-10 text-white stroke-[3px]" />
-                        </div>
-                        <div className="absolute -inset-2 bg-emerald-500/10 rounded-full -z-10 animate-pulse"></div>
-                    </div>
-                    <h2 className="text-xl font-extrabold text-[#1E293B] mb-3 tracking-tighter">Facture {note.id}</h2>
-                    <div className="bg-emerald-50/80 text-emerald-600 px-6 py-1.5 rounded-full text-xs font-bold border border-emerald-100/50 shadow-sm">
-                        Payé
-                    </div>
+                {/* Header Section */}
+                <div className="flex flex-col items-center pt-8 pb-6">
+                    <h1 className="text-lg font-bold text-gray-900 mb-3">Facture {note.id}</h1>
+                    <span className={cn(
+                        "px-6 py-1.5 rounded-full text-sm font-semibold",
+                        isPayee
+                            ? "bg-green-50 text-green-600 border border-green-100"
+                            : "bg-amber-50 text-amber-600 border border-amber-100"
+                    )}>
+                        {status}
+                    </span>
                 </div>
 
                 {/* Vehicle Section */}
-                <div className="w-full mb-8">
-                    <div className="flex items-center gap-2 mb-4 ml-1">
-                        <Truck className="h-4 w-4 text-blue-800" />
-                        <span className="text-[11px] font-black text-blue-900/40 uppercase tracking-[0.15em]">Détails du véhicule</span>
+                <div className="px-6 mb-8">
+                    <div className="flex items-center gap-2 text-indigo-900 font-bold mb-3 text-xs tracking-wide uppercase">
+                        <Truck className="h-4 w-4" />
+                        DÉTAILS DU VÉHICULE
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 shadow-sm transition-all hover:border-blue-200">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase mb-1.5 block tracking-wide">Plaque</span>
-                            <span className="text-lg font-black text-[#1E293B] tracking-tight">{note.vehicle?.plate || '---'}</span>
+                        {/* Plaque */}
+                        <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
+                            <span className="block text-gray-400 text-xs mb-1">Plaque</span>
+                            <span className="block text-gray-900 font-bold text-lg">
+                                {note.vehicle?.plate || '-------'}
+                            </span>
                         </div>
-                        <div className="bg-slate-50/50 border border-slate-100 rounded-2xl p-4 shadow-sm transition-all hover:border-blue-200 overflow-hidden">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase mb-1.5 block tracking-wide">Châssis</span>
-                            <span className="text-xs font-black text-[#1E293B] truncate block" title={note.vehicle?.chassis}>
-                                {note.vehicle?.chassis || '---'}
+
+                        {/* Chassis */}
+                        <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-white">
+                            <span className="block text-gray-400 text-xs mb-1">Châssis</span>
+                            <span className="block text-gray-900 font-bold text-sm truncate" title={note.vehicle?.chassis}>
+                                {note.vehicle?.chassis || '—'}
                             </span>
                         </div>
                     </div>
                 </div>
 
+                {/* Divider */}
+                <div className="border-t border-gray-100 mx-6 mb-6"></div>
+
                 {/* Info List */}
-                <div className="w-full space-y-5 px-1 mb-8">
-                    <div className="flex justify-between items-center group">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
-                                <User className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
-                            </div>
-                            <span className="text-xs font-medium text-slate-500">Contribuable:</span>
+                <div className="px-6 space-y-5 text-sm">
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-gray-400">
+                            <User className="h-4 w-4" />
+                            <span>Contribuable:</span>
                         </div>
-                        <span className="text-sm font-bold text-slate-800 text-right truncate max-w-[160px] pl-2">{note.taxpayer.name}</span>
-                    </div>
-
-                    <div className="flex justify-between items-center group">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
-                                <FileText className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
-                            </div>
-                            <span className="text-xs font-medium text-slate-500">Type d'impôt:</span>
-                        </div>
-                        <span className="text-xs font-black text-slate-900 uppercase italic">
-                            {note.vehicle?.category === 'Bateau' ? 'BATEAUX' : 'VEHICLE'}
+                        <span className="text-gray-900 font-medium">
+                            {note.taxpayer.name}
                         </span>
                     </div>
 
-                    <div className="flex justify-between items-center group">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
-                                <Wallet className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
-                            </div>
-                            <span className="text-xs font-medium text-slate-500">Montant dû:</span>
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-gray-400">
+                            <FileText className="h-4 w-4" />
+                            <span>Type d'impôt:</span>
                         </div>
-                        <span className="text-base font-black text-[#1E293B]">
-                            FC {note.payment.totalAmountFC.toLocaleString('fr-FR', { minimumFractionDigits: 2 })}
+                        <span className="text-gray-900 font-medium uppercase">
+                            VÉHICULE
                         </span>
                     </div>
 
-                    <div className="flex justify-between items-center group">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-slate-50 p-2 rounded-lg group-hover:bg-blue-50 transition-colors">
-                                <Calendar className="h-4 w-4 text-slate-400 group-hover:text-blue-500" />
-                            </div>
-                            <span className="text-xs font-medium text-slate-500">Date de création:</span>
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-gray-400">
+                            <CreditCard className="h-4 w-4" />
+                            <span>Montant dû:</span>
                         </div>
-                        <span className="text-xs font-bold text-slate-800">{createdAt || '—'}</span>
+                        <span className="text-gray-900 font-bold text-lg">
+                            FC {note.payment.totalAmountFC.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-gray-400">
+                            <Clock className="h-4 w-4" />
+                            <span>Date de création:</span>
+                        </div>
+                        <span className="text-gray-900 font-medium">
+                            {createdAt || '—'}
+                        </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2 text-gray-400">
+                            <Clock className="h-4 w-4" />
+                            <span>Date d'échéance:</span>
+                        </div>
+                        <span className="font-medium text-gray-900">
+                            {dueDate || '—'}
+                        </span>
                     </div>
                 </div>
 
-                {/* Certification Alert Box (Match Image 1) */}
-                <div className="w-full">
-                    <div className="bg-[#EFF6FF] rounded-[1.8rem] p-5 flex gap-4 items-center">
-                        <div className="bg-white rounded-full p-2 h-10 w-10 flex items-center justify-center shadow-sm shrink-0 border border-blue-50">
-                            <CheckCircle2 className="h-6 w-6 text-blue-600 stroke-[2.5px]" />
-                        </div>
-                        <div className="flex flex-col gap-0.5">
-                            <h3 className="text-[#1E40AF] font-black text-sm tracking-tight leading-tight">Authentification Certifiée</h3>
-                            <p className="text-blue-600/60 text-[10px] leading-tight font-bold">
-                                Ce document est authentique et a été émis par la Direction Générale des Recettes de Kinshasa (DGRK).
-                            </p>
-                            <span className="text-[9px] font-black text-blue-300 uppercase mt-1 tracking-tight">ID: {note.id}</span>
+                {/* Certification Footer */}
+                <div className="mt-8 px-6">
+                    <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+                        <div className="flex items-start gap-3">
+                            <CheckCircle className="h-6 w-6 text-blue-600 flex-shrink-0 mt-0.5" />
+                            <div>
+                                <h3 className="text-blue-900 font-bold text-sm mb-1">Authentification Certifiée</h3>
+                                <p className="text-blue-700/80 text-xs leading-relaxed mb-2">
+                                    Ce document est authentique et a été émis par la Direction Générale des Recettes de Kinshasa (DGRK).
+                                </p>
+                                <p className="text-blue-400 text-[10px] font-mono uppercase">
+                                    ID: {note.id}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
             </div>
-
-            <footer className="mt-8 mb-4">
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] opacity-40">© 2026 DGRK - Système IRMS</p>
-            </footer>
         </div>
     );
 }

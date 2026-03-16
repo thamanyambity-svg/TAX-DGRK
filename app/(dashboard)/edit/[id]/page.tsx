@@ -40,7 +40,8 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
         marque: '',
         modele: '',
         status: 'En attente', // Can edit status
-        paymentDate: '' // Field for updatedAt
+        paymentDate: '', // Field for updatedAt
+        baseAmount: ''
     });
 
     // Fetch existing data
@@ -70,6 +71,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     marque: decl?.vehicle?.marque || '',
                     modele: decl?.vehicle?.modele || '',
                     status: decl?.status || 'En attente',
+                    baseAmount: (decl?.meta as any)?.manualBaseAmount || '',
                     paymentDate: (() => {
                         const dateStr = (decl.meta as any)?.manualPaymentDate || decl?.updatedAt || decl?.createdAt;
                         if (!dateStr) return '';
@@ -94,9 +96,21 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
         const match = (powerStr || '').match(/(\d+)/);
         return match ? parseInt(match[1], 10) : 0;
     };
-    const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category);
+    
+    // For Bateaux, use the stored base amount (read-only in this form) array if present.
+    // Real editing of Bateau amounts is done via the receipt/bordereau admin UI, or when creating.
+    const isBoat = formData.category === 'Bateau';
+    const rulesTax = calculateTax(getCV(formData.fiscalPower), formData.category);
+    const manualBase = parseFloat((formData as any).baseAmount) || 0;
+    
+    const currentTax = {
+        ...rulesTax,
+        totalAmount: isBoat && manualBase > 0 ? manualBase : rulesTax.totalAmount, // Note: Edit page used totalAmount, Create used creditAmount. Keeping existing logic for non-boats.
+        creditAmount: isBoat && manualBase > 0 ? manualBase : rulesTax.creditAmount
+    };
+
     const EXCHANGE_RATE = 2355;
-    const currentAmountFC = currentTax.totalAmount * EXCHANGE_RATE;
+    const currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE; // Using creditAmount for FC conversion to match create logic for boats.
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -138,11 +152,13 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     annee: ''
                 },
                 tax: {
-                    baseRate: taxInfo.totalAmount,
+                    baseRate: currentTax.creditAmount, // Use the correct base rate (creditAmount)
                     currency: 'USD',
-                    totalAmountFC: taxInfo.totalAmount * EXCHANGE_RATE
+                    totalAmountFC: currentTax.creditAmount * EXCHANGE_RATE
                 },
                 meta: {
+                    manualBaseAmount: isBoat && manualBase > 0 ? manualBase : undefined,
+                    manualMarqueType: isBoat ? 'Bateau' : undefined,
                     manualTaxpayer: {
                         name: formData.name.toUpperCase(),
                         nif: formData.nif.toUpperCase(),
@@ -214,6 +230,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 outline-none font-bold text-gray-900"
                                 >
                                     <option value="Payée">Payée (Validé)</option>
+                                    <option value="En attente de paiement">En attente de paiement</option>
                                     <option value="En attente">En attente</option>
                                     <option value="Annulée">Annulée</option>
                                 </select>
@@ -278,7 +295,9 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Numéro Châssis</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    {formData.category === 'Bateau' ? 'Embarcation (Nom/Réf)' : 'Numéro Châssis'}
+                                </label>
                                 <input
                                     type="text"
                                     name="chassis"
@@ -343,8 +362,29 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                 >
                                     <option value="Vignette Automobile">Vignette Automobile</option>
                                     <option value="Véhicule utilitaire">Véhicule utilitaire / Poids Lourds</option>
+                                    <option value="Véhicule touristique">Véhicule touristique (Standard)</option>
+                                    <option value="touristique_light">Touristique Light (0-10 CV)</option>
+                                    <option value="touristique_updated">Touristique ($58.70)</option>
+                                    <option value="touristique_medium">Touristique Medium ($63.10)</option>
+                                    <option value="utilitaire_heavy">Utilitaire Heavy (Poids lourd)</option>
+                                    <option value="Transport public">Transport public</option>
+                                    <option value="Bateau">Bateau</option>
                                 </select>
                             </div>
+                            
+                            {formData.category === 'Bateau' && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Montant de Base (Bateau)</label>
+                                    <input
+                                        type="number"
+                                        disabled
+                                        value={(formData as any).baseAmount}
+                                        className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
+                                        title="Modifiable via l'espace Admin du Récépissé"
+                                    />
+                                    <p className="text-[10px] text-gray-400 mt-1">Modification dans Admin (Récépissé)</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
