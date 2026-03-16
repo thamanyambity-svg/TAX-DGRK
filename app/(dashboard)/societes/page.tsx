@@ -20,6 +20,8 @@ function groupDeclarationsByCompany(declarations: Declaration[]) {
         count: number;
         totalAmountFC: number;
         lastUpdate: string;
+        pendingCount: number;
+        paidCount: number;
     }>();
 
     declarations.forEach(decl => {
@@ -41,13 +43,21 @@ function groupDeclarationsByCompany(declarations: Declaration[]) {
                 address: taxAddress,
                 count: 0,
                 totalAmountFC: 0,
-                lastUpdate: decl.createdAt
+                lastUpdate: decl.createdAt,
+                pendingCount: 0,
+                paidCount: 0
             });
         }
 
         const group = groups.get(taxnif)!;
         group.count += 1;
         group.totalAmountFC += (decl.tax.totalAmountFC || 0);
+
+        if (decl.status === 'Payée' || decl.status === 'Payé') {
+            group.paidCount += 1;
+        } else if (decl.status === 'En attente de paiement' || decl.status === 'En attente') {
+            group.pendingCount += 1;
+        }
 
         // Update latest date
         if (new Date(decl.createdAt) > new Date(group.lastUpdate)) {
@@ -153,9 +163,16 @@ export default async function SocietesPage() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className="inline-flex items-center justify-center bg-blue-100 text-blue-700 font-bold px-2.5 py-0.5 rounded-full text-xs">
-                                                {comp.count} véhicules
-                                            </span>
+                                            <div className="flex flex-col items-center gap-1">
+                                                <span className="inline-flex items-center justify-center bg-blue-100 text-blue-700 font-bold px-2.5 py-0.5 rounded-full text-[10px] w-full max-w-[80px]">
+                                                    {comp.count} Véh.
+                                                </span>
+                                                {comp.pendingCount > 0 && (
+                                                    <span className="inline-flex items-center justify-center bg-violet-100 text-violet-700 font-bold px-2.5 py-0.5 rounded-full text-[10px] w-full max-w-[80px]">
+                                                        {comp.pendingCount} Attente
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <p className="font-bold text-gray-900 font-mono">

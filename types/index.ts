@@ -16,7 +16,7 @@ export type VehicleCategory =
   | 'Bateau'
   | 'Exonéré';
 
-export type DeclarationStatus = 'Payée' | 'En attente' | 'Facturée';
+export type DeclarationStatus = 'Payée' | 'Payé' | 'En attente' | 'Facturée' | 'En attente de paiement' | 'Annulée';
 
 export interface VehicleInfo {
   category: VehicleCategory;

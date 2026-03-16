@@ -114,6 +114,7 @@ export default async function DossierSpecifiquePage({ params }: { params: Promis
                                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest">Véhicule</th>
                                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest">Type</th>
                                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Montant (FC)</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest text-center">Statut</th>
                                 <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Documents</th>
                             </tr>
                         </thead>
@@ -158,6 +159,14 @@ export default async function DossierSpecifiquePage({ params }: { params: Promis
                                             </span>
                                             <span className="text-xs text-gray-400 font-mono">
                                                 ${decl.tax.baseRate.toFixed(2)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={cn(
+                                                "text-xs font-medium px-2 py-1 rounded-full",
+                                                decl.status === 'Payée' || decl.status === 'Payé' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
+                                            )}>
+                                                {decl.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
