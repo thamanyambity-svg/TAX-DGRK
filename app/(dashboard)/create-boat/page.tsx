@@ -42,11 +42,6 @@ export default function NewBoatDeclarationPage() {
         const EXCHANGE_RATE = 2355;
         const totalAmountFC = baseRate * EXCHANGE_RATE;
 
-        // Cleanup address from any zombie data or metadata tags
-        const ZOMBIE_RE = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
-        const cleanAddress = (addr: string) =>
-            addr.replace(ZOMBIE_RE, '').replace(/^\s*(N\/A|N\/A,|[,\s/-])+/, '').trim() || addr.trim();
-
         const newDeclaration: Declaration = {
             id,
             createdAt: dateIso,
@@ -77,7 +72,7 @@ export default function NewBoatDeclarationPage() {
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),
                     nif: formData.nif.toUpperCase(),
-                    address: cleanAddress(formData.address.toUpperCase()),
+                    address: formData.address.toUpperCase(),
                     type: 'N/A',
                 }
             }
@@ -107,7 +102,7 @@ export default function NewBoatDeclarationPage() {
                 </button>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Saisie simplifiée pour les embarcations</h1>
-                    <p className="text-gray-500 text-sm">Remplissez les informations spécifiques aux bateaux (Plaque incluse).</p>
+                    <p className="text-gray-500 text-sm">Remplissez les informations spécifiques aux bateaux.</p>
                 </div>
             </div>
 

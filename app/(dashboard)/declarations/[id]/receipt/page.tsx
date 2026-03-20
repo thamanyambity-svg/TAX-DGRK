@@ -580,6 +580,7 @@ export default function ReceiptPage() {
                                 <option value="64.50">64.50</option>
                                 <option value="68.20">68.20</option>
                                 <option value="70.10">70.10</option>
+                                <option value="70.30">70.30</option>
                             </select>
                         </div>
                     </div>

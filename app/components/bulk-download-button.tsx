@@ -28,7 +28,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
     const createdAt = decl.createdAt ? new Date(decl.createdAt) : new Date();
     const dateStr = createdAt.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Africa/Kinshasa' });
     const timeStr = createdAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Kinshasa' });
-    const verifyUrl = `https://irms-dgrk-tax.vercel.app/verify/${decl.id}`;
+    const verifyUrl = `https://tax-portal-two.vercel.app/verify/${decl.id}`;
 
     const address = (note.taxpayer.address || 'KINSHASA')
         .replace(/PERSONNE\s+(PHYSIQUE|MORALE)/gi, '')

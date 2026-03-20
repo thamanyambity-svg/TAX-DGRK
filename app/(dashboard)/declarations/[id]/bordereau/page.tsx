@@ -242,8 +242,7 @@ export default function BordereauPage() {
     // User requested format for Bordereau: NAME /1579A471 (ID Suffix)
     const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
     const noteSuffix = note.id.split('-').pop() || '';
-    // Format: NAME / Suffix (BATEAU if boat)
-    const motifDisplay = `${ownerFullName} /${noteSuffix}${decl.vehicle.category === 'Bateau' ? ' (BATEAU)' : ''}`;
+    const motifDisplay = `${ownerFullName} /${noteSuffix}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 text-black" data-version="2026-02-23-14-50">
@@ -306,65 +305,47 @@ export default function BordereauPage() {
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($)</label>
                         <div className="relative">
                             <span className="absolute left-2 top-1.5 text-blue-800 font-bold text-xs z-10">$</span>
-                            {decl.vehicle.category === 'Bateau' ? (
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
-                                    value={editBaseAmount}
-                                    onChange={(e) => setEditBaseAmount(e.target.value)}
-                                />
-                            ) : (
-                                <select
-                                    className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
-                                    value={parseFloat(editBaseAmount).toFixed(2)}
-                                    onChange={(e) => setEditBaseAmount(e.target.value)}
-                                >
-                                    <option value="">-- Sélectionner --</option>
-                                    <option value="58.20">58.20</option>
-                                    <option value="58.70">58.70</option>
-                                    <option value="63.10">63.10</option>
-                                    <option value="64.50">64.50</option>
-                                    <option value="68.20">68.20</option>
-                                    <option value="70.10">70.10</option>
-                                </select>
-                            )}
+                            <select
+                                className="pl-5 pr-2 py-1.5 w-32 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-mono font-bold text-blue-900"
+                                value={parseFloat(editBaseAmount).toFixed(2)}
+                                onChange={(e) => setEditBaseAmount(e.target.value)}
+                            >
+                                <option value="">-- Sélectionner --</option>
+                                <option value="58.20">58.20</option>
+                                <option value="58.70">58.70</option>
+                                <option value="63.10">63.10</option>
+                                <option value="64.50">64.50</option>
+                                <option value="68.20">68.20</option>
+                                <option value="70.10">70.10</option>
+                                <option value="70.30">70.30</option>
+                            </select>
                         </div>
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque / Type</label>
-                        {decl.vehicle.category === 'Bateau' ? (
-                            <input
-                                type="text"
-                                className="px-2 py-1.5 w-44 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
-                                value={editMarqueType}
-                                onChange={(e) => setEditMarqueType(e.target.value)}
-                                placeholder="Ex: Baleinière"
-                            />
-                        ) : (
-                            <select
-                                className="px-2 py-1.5 w-44 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
-                                value={editMarqueType}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setEditMarqueType(val);
-                                    if (val === 'touristique_medium') setEditBaseAmount('63.10');
-                                    else if (val === 'touristique_updated') setEditBaseAmount('58.70');
-                                    else if (val === 'touristique_light') setEditBaseAmount('58.20');
-                                    else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
-                                    else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
-                                    else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');
-                                }}
-                            >
-                                <option value="">-- Sélectionner --</option>
-                                <option value="touristique_heavy">Touristique Heavy</option>
-                                <option value="touristique_medium">Touristique Medium</option>
-                                <option value="touristique_updated">Touristique ($58.70)</option>
-                                <option value="touristique_light">Touristique Light</option>
-                                <option value="utilitaire_heavy">Utilitaire Heavy</option>
-                                <option value="utilitaire_medium">Utilitaire Medium</option>
-                            </select>
-                        )}
+                        <select
+                            className="px-2 py-1.5 w-44 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
+                            value={editMarqueType}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                setEditMarqueType(val);
+                                if (val === 'touristique_medium') setEditBaseAmount('63.10');
+                                else if (val === 'touristique_updated') setEditBaseAmount('58.70');
+                                else if (val === 'touristique_light') setEditBaseAmount('58.20');
+                                else if (val === 'touristique_heavy') setEditBaseAmount('70.10');
+                                else if (val === 'utilitaire_medium') setEditBaseAmount('64.50');
+                                else if (val === 'utilitaire_heavy') setEditBaseAmount('68.20');
+                            }}
+                        >
+                            <option value="">-- Sélectionner --</option>
+                            <option value="touristique_heavy">Touristique Heavy</option>
+                            <option value="touristique_medium">Touristique Medium</option>
+                            <option value="touristique_updated">Touristique ($58.70)</option>
+                            <option value="touristique_light">Touristique Light</option>
+                            <option value="utilitaire_heavy">Utilitaire Heavy</option>
+                            <option value="utilitaire_medium">Utilitaire Medium</option>
+                            <option value="Bateau">Bateau</option>
+                        </select>
                     </div>
                     <button
                         onClick={handleSaveDates}
@@ -469,9 +450,6 @@ export default function BordereauPage() {
                             <div>Nom du remettant ..: {remettantDisplay.toUpperCase()}</div>
                             <div className="ml-[185px]">310 - REP DEM CONGO</div>
                             <div className="mt-1">Motif             : {motifDisplay.toUpperCase()}</div>
-                            {decl.vehicle.category === 'Bateau' && (
-                                <div className="mt-1">Embarcation       : {decl.vehicle.chassis.toUpperCase()}</div>
-                            )}
                         </div>
 
                         {/* MONTANTS */}

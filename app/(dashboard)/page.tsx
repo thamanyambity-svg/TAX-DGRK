@@ -2,10 +2,9 @@
 
 import { FileText, ArrowRight, RefreshCw, Trash2, Pencil, Briefcase } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Declaration } from '@/types';
-import { cn } from '@/lib/utils';
 
 export default function Home() {
   const [declarations, setDeclarations] = useState<Declaration[]>([]);
@@ -40,7 +39,7 @@ export default function Home() {
       const success = await deleteDeclaration(id);
       if (success) {
         // Mise à jour locale immédiate
-        setDeclarations((prev: Declaration[]) => prev.filter((d: Declaration) => d.id !== id));
+        setDeclarations(prev => prev.filter(d => d.id !== id));
       } else {
         alert("Erreur lors de la suppression. Vérifiez la console.");
       }
@@ -51,7 +50,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'yesterday', 'week', 'month'
 
-  const filteredDeclarations = declarations.filter((decl: Declaration) => {
+  const filteredDeclarations = declarations.filter(decl => {
     // 1. Text Search
     const searchLower = searchTerm.toLowerCase();
     const matchesText =
@@ -92,7 +91,7 @@ export default function Home() {
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-violet-700 to-blurple-500 rounded-2xl p-8 text-white flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Bonjour, Josuah <span className="text-violet-200 text-sm font-normal">V3.1 - BATEAUX</span></h1>
+          <h1 className="text-3xl font-bold mb-2">Bonjour, Josuah <span className="text-violet-200 text-sm font-normal">V3.0 - BRALIMA</span></h1>
           <p className="text-violet-100">Bienvenue sur votre portail fiscal numérique.</p>
         </div>
         <div className="flex gap-3">
@@ -105,7 +104,7 @@ export default function Home() {
           </Link>
           <Link
             href="/create-boat"
-            className="flex items-center gap-2 bg-emerald-500 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:bg-emerald-600 border border-transparent"
+            className="flex items-center gap-2 bg-mint-500 text-white px-5 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:bg-mint-600 border border-transparent"
           >
             <Briefcase className="h-5 w-5" />
             Déclaration Bateaux
@@ -136,7 +135,7 @@ export default function Home() {
           {/* DATE FILTER */}
           <select
             value={dateFilter}
-            onChange={(e: any) => setDateFilter(e.target.value)}
+            onChange={(e) => setDateFilter(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-violet-500 outline-none cursor-pointer"
           >
             <option value="all">📅 Toutes les dates</option>
@@ -153,7 +152,7 @@ export default function Home() {
               placeholder="Rechercher (ID, Nom, Plaque)..."
               className="pl-4 pr-10 py-2 border border-gray-200 rounded-lg text-sm w-full md:w-64 focus:ring-2 focus:ring-violet-500 outline-none"
               value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
@@ -247,7 +246,7 @@ export default function Home() {
                 >
                   <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="h-10 w-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600">
+                      <div className="h-10 w-10 bg-mint-50 rounded-lg flex items-center justify-center text-mint-600">
                         <FileText className="h-5 w-5" />
                       </div>
                       <div className="flex items-center gap-2">
@@ -306,4 +305,7 @@ export default function Home() {
   );
 }
 
-
+// Helper for class names
+function cn(...classes: (string | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
