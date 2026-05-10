@@ -377,7 +377,7 @@ export default function BordereauPage() {
             <div
                 id="printable-root"
                 className="mx-auto"
-                style={{ width: '210mm', minHeight: '297mm', position: 'relative' }}
+                style={{ width: '210mm', minHeight: '296.5mm', position: 'relative' }}
             >
                 <div
                     id="printable-bordereau"
@@ -385,7 +385,7 @@ export default function BordereauPage() {
                     className="relative w-full h-full bg-white shadow-xl px-[30px] py-[20px] text-[10pt] leading-[1.2] box-border"
                     style={{
                         width: '210mm',
-                        minHeight: '297mm',
+                        minHeight: '296.5mm',
                         fontFamily: '"Courier New", Courier, monospace',
                         fontWeight: 400,
                         position: 'relative'

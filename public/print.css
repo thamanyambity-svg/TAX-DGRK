@@ -7,8 +7,12 @@
 @media print {
 
   /* 1. On ne cache pas le body, sinon on perd le contexte React */
-  body {
+  html, body {
     background: white;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100vh !important;
+    overflow: hidden !important;
   }
 
   /* 2. On cache explicitement les éléments d'interface connus */
@@ -30,13 +34,15 @@
     left: 0 !important;
     top: 0 !important;
     width: 210mm !important;
-    height: 297mm !important;
+    height: 296.5mm !important;
+    max-height: 296.5mm !important;
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     z-index: 9999 !important;
     /* Passe au dessus de tout */
     overflow: hidden !important;
+    page-break-after: avoid !important;
   }
 
   /* Force les enfants à être visibles */

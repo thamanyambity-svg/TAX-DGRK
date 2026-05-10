@@ -636,7 +636,7 @@ export default function ReceiptPage() {
             <div
                 id="printable-root"
                 className="mx-auto bg-white relative overflow-hidden"
-                style={{ width: '210mm', minHeight: '297mm' }}
+                style={{ width: '210mm', minHeight: '296.5mm' }}
             >
                 <div
                     id="printable-receipt" // L'ID cible du CSS
@@ -644,7 +644,7 @@ export default function ReceiptPage() {
                     className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border overflow-hidden"
                     style={{
                         width: '210mm',
-                        height: '297mm',
+                        height: '296.5mm',
                         WebkitPrintColorAdjust: 'exact',
                         printColorAdjust: 'exact'
                     }}
