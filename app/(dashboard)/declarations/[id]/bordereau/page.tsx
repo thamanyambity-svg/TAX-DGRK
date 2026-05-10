@@ -224,8 +224,15 @@ export default function BordereauPage() {
     const note = generateNote(decl);
     const taxpayerRef = note.id;
 
-    // Seed based on sequence for stability (use absolute value to avoid negative modulo issues)
-    const safeSequence = Math.abs(sequence);
+    // Seed based on NIF so records with the same NIF have the exact same Nom du remettant
+    const nif = decl.meta?.manualTaxpayer?.nif || (decl.meta as any)?.taxpayerData?.nif || decl.taxpayer?.nif || 'DEFAULT_NIF';
+    let nifSeed = 0;
+    const nifString = String(nif).trim();
+    for (let i = 0; i < nifString.length; i++) {
+        nifSeed = nifString.charCodeAt(i) + ((nifSeed << 5) - nifSeed);
+    }
+    const safeSequence = Math.abs(nifSeed);
+
     const facilitatorName = CONGO_NAMES[safeSequence % CONGO_NAMES.length] || 'MUKENDI';
 
     // Ensure last name is different from first name
