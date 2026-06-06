@@ -45,6 +45,10 @@ export default function BordereauPage() {
     const [editPaymentDate, setEditPaymentDate] = useState('');
     const [editBaseAmount, setEditBaseAmount] = useState('');
     const [editMarqueType, setEditMarqueType] = useState('');
+    const [editPlate, setEditPlate] = useState('');
+    const [editNIF, setEditNIF] = useState('');
+    const [editName, setEditName] = useState('');
+    const [editAddress, setEditAddress] = useState('');
     const [isSavingDates, setIsSavingDates] = useState(false);
 
     useEffect(() => {
@@ -85,6 +89,16 @@ export default function BordereauPage() {
                 setEditBaseAmount(currentBase.toString());
 
                 setEditMarqueType((d.meta as any)?.manualMarqueType || '');
+
+                // Initialize Plate, NIF, Name, Address
+                const currentPlate = (d.meta as any)?.manualPlate || d.vehicle?.plate || '';
+                const currentNIF = (d.meta as any)?.manualNIF || d.taxpayer?.nif || '';
+                const currentName = (d.meta as any)?.manualTaxpayerName || d.taxpayer?.name || '';
+                const currentAddress = (d.meta as any)?.manualTaxpayerAddress || d.taxpayer?.address || '';
+                setEditPlate(currentPlate);
+                setEditNIF(currentNIF);
+                setEditName(currentName);
+                setEditAddress(currentAddress);
             }
         });
     }, [id]);
@@ -111,12 +125,26 @@ export default function BordereauPage() {
                     baseRate: newBaseAmount,
                     totalAmountFC: newTotalFC
                 },
+                vehicle: {
+                    ...decl.vehicle,
+                    plate: editPlate
+                },
+                taxpayer: {
+                    ...decl.taxpayer,
+                    nif: editNIF,
+                    name: editName,
+                    address: editAddress
+                },
                 meta: {
                     ...decl.meta,
                     manualReceiptDate: newReceiptDate,
                     manualPaymentDate: newPaymentDate,
                     manualBaseAmount: newBaseAmount,
-                    manualMarqueType: editMarqueType
+                    manualMarqueType: editMarqueType,
+                    manualPlate: editPlate,
+                    manualNIF: editNIF,
+                    manualTaxpayerName: editName,
+                    manualTaxpayerAddress: editAddress
                 }
             };
 
@@ -353,6 +381,46 @@ export default function BordereauPage() {
                             <option value="utilitaire_medium">Utilitaire Medium</option>
                             <option value="Bateau">Bateau</option>
                         </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Plaque d'immatriculation</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-32"
+                            placeholder="1234AB01"
+                            value={editPlate}
+                            onChange={(e) => setEditPlate(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">NIF</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-40"
+                            placeholder="A1234567K"
+                            value={editNIF}
+                            onChange={(e) => setEditNIF(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Nom / Raison Sociale</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
+                            placeholder="Josuah Kitona"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1 flex-1 min-w-[280px]">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Adresse Complète</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
+                            placeholder="12 Av. de la Libération, Gombe"
+                            value={editAddress}
+                            onChange={(e) => setEditAddress(e.target.value)}
+                        />
                     </div>
                     <button
                         onClick={handleSaveDates}
