@@ -133,7 +133,8 @@ export default function BordereauPage() {
                     ...decl.taxpayer,
                     nif: editNIF,
                     name: editName,
-                    address: editAddress
+                    address: editAddress,
+                    type: decl.taxpayer?.type || 'N/A'
                 },
                 meta: {
                     ...decl.meta,
