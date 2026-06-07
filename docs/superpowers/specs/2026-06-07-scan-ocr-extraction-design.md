@@ -19,7 +19,7 @@ variable, manuscrit). Donc rien n'est enregistré sans que l'utilisateur ait
 
 ---
 
-## 2. Documents pris en charge (6 modèles)
+## 2. Documents pris en charge (4 types, recto/verso inclus)
 
 | # | Type | Format | Infos clés |
 |---|------|--------|------------|
