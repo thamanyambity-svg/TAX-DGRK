@@ -3,11 +3,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Settings, LogOut, Briefcase } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, ScanLine } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
     { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
+    { name: 'Scan IA', href: '/scan', icon: ScanLine },
     { name: 'Déclarations', href: '/declarations', icon: FileText },
     { name: 'Dossiers Entreprises', href: '/societes', icon: Briefcase },
     { name: 'Paramètres', href: '/settings', icon: Settings },
