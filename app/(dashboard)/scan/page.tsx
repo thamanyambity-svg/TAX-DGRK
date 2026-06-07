@@ -292,8 +292,8 @@ export default function ScanPage() {
                             <button onClick={handleReset} className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg font-medium hover:bg-gray-50">
                                 <RotateCcw className="h-4 w-4" /> Recommencer
                             </button>
-                            <button onClick={handleValidate} disabled={statut === 'saving'} className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 disabled:opacity-50">
-                                {statut === 'saving' ? <><Loader2 className="h-4 w-4 animate-spin" /> Enregistrement…</> : <><Save className="h-4 w-4" /> Valider & Enregistrer</>}
+                            <button onClick={handleValidate} disabled={(statut as Statut) === 'saving'} className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 disabled:opacity-50">
+                                {(statut as Statut) === 'saving' ? <><Loader2 className="h-4 w-4 animate-spin" /> Enregistrement…</> : <><Save className="h-4 w-4" /> Valider & Enregistrer</>}
                             </button>
                         </div>
                     </div>
