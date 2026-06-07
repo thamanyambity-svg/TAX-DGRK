@@ -5,7 +5,7 @@ import { FileArchive, Loader2, CheckCircle2 } from 'lucide-react';
 import { Declaration } from '@/types';
 import JSZip from 'jszip';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import { generateNote } from '@/lib/generator';
 import { createPortal } from 'react-dom';
 import QRCode from 'react-qr-code';

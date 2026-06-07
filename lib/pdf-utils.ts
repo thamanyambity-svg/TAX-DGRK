@@ -1,5 +1,5 @@
 
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 
 export const downloadElementAsPDF = async (elementId: string, fileName: string) => {
@@ -39,7 +39,7 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
             removeContainer: false,
             ignoreElements: (el) => {
                 // Ignore print-hidden elements
-                return el.className && el.className.includes('no-print');
+                return typeof el.className === 'string' && el.className.includes('no-print');
             }
         });
 
