@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ScanLine, Loader2, CheckCircle2, AlertTriangle, RotateCcw, Save } from 'lucide-react';
 import { resizeImageToBase64 } from '@/lib/image-resize';
@@ -35,11 +35,18 @@ export default function ScanPage() {
     const [prixBase, setPrixBase] = useState<number>(64.50);
     const [savedId, setSavedId] = useState<string>('');
 
-    const previews = {
+    const previews = useMemo(() => ({
         page: filePage ? URL.createObjectURL(filePage) : '',
         recto: fileRecto ? URL.createObjectURL(fileRecto) : '',
         verso: fileVerso ? URL.createObjectURL(fileVerso) : '',
-    };
+    }), [filePage, fileRecto, fileVerso]);
+
+    // Libère les blob URLs quand les fichiers changent ou au démontage (évite la fuite mémoire)
+    useEffect(() => {
+        return () => {
+            Object.values(previews).forEach((u) => { if (u) URL.revokeObjectURL(u); });
+        };
+    }, [previews]);
 
     const setField = (k: keyof DonneesVehicule, v: string) => {
         const next = { ...donnees, [k]: v };
