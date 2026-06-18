@@ -149,7 +149,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                                 <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#D32F2F' }}>FC {fcFormatted}</span>
                             </div>
                             <div style={{ fontSize: '7px', color: '#888', fontStyle: 'italic', marginTop: '2px' }}>
-                                (Payable en Francs Congolais au taux de {RATE_FC} FC/USD)
+                                (Payable en Francs Congolais au taux du jour)
                             </div>
                         </div>
                     </div>

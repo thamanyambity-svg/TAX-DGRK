@@ -213,7 +213,7 @@ const ReceiptView = ({
                                         <span className="text-base font-extrabold text-[#D32F2F] tracking-tight whitespace-nowrap">FC {displayAmountFC}</span>
                                     </div>
                                     <p className="text-[7px] text-gray-500 italic font-medium leading-none">
-                                        (Payable en Francs Congolais au taux de {RATE_FC} FC/USD)
+                                        (Payable en Francs Congolais au taux du jour)
                                     </p>
 
                                 </div>
