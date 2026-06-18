@@ -30,6 +30,8 @@ export interface VehicleInfo {
   genre?: string;
   couleur?: string;
   annee?: string;
+  anneeImmat?: string;
+  moteur?: string;
   imageUrl?: string;
 }
 

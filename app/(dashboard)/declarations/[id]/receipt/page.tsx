@@ -301,6 +301,9 @@ export default function ReceiptPage() {
     const [editNIF, setEditNIF] = useState('');
     const [editName, setEditName] = useState('');
     const [editAddress, setEditAddress] = useState('');
+    const [editCouleur, setEditCouleur] = useState('');
+    const [editAnneeFab, setEditAnneeFab] = useState('');
+    const [editAnneeImmat, setEditAnneeImmat] = useState('');
     const [isSavingDates, setIsSavingDates] = useState(false);
 
     // --- Ajout du CSS d'impression ---
@@ -388,6 +391,9 @@ export default function ReceiptPage() {
                         setEditNIF(currentNIF);
                         setEditName(currentName);
                         setEditAddress(currentAddress);
+                        setEditCouleur(manualDecl.vehicle?.couleur || '');
+                        setEditAnneeFab(manualDecl.vehicle?.annee || '');
+                        setEditAnneeImmat((manualDecl.vehicle as any)?.anneeImmat || (manualDecl.meta as any)?.manualAnneeImmat || '');
 
                         // CRITICAL FIX: Clear timeout immediately on success
                         if (timeoutId) clearTimeout(timeoutId);
@@ -459,7 +465,10 @@ export default function ReceiptPage() {
                 },
                 vehicle: {
                     ...decl.vehicle,
-                    plate: editPlate
+                    plate: editPlate,
+                    couleur: editCouleur,
+                    annee: editAnneeFab,
+                    anneeImmat: editAnneeImmat
                 },
                 taxpayer: {
                     ...decl.taxpayer,
@@ -477,7 +486,10 @@ export default function ReceiptPage() {
                     manualPlate: editPlate,
                     manualNIF: editNIF,
                     manualTaxpayerName: editName,
-                    manualTaxpayerAddress: editAddress
+                    manualTaxpayerAddress: editAddress,
+                    manualCouleur: editCouleur,
+                    manualAnneeFab: editAnneeFab,
+                    manualAnneeImmat: editAnneeImmat
                 }
             };
 
@@ -689,6 +701,36 @@ export default function ReceiptPage() {
                             placeholder="12 Av. de la Libération, Gombe"
                             value={editAddress}
                             onChange={(e) => setEditAddress(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Couleur</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-32"
+                            placeholder="GRISE"
+                            value={editCouleur}
+                            onChange={(e) => setEditCouleur(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Année Fab.</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-24"
+                            placeholder="2016"
+                            value={editAnneeFab}
+                            onChange={(e) => setEditAnneeFab(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Année Immat.</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-24"
+                            placeholder="2022"
+                            value={editAnneeImmat}
+                            onChange={(e) => setEditAnneeImmat(e.target.value)}
                         />
                     </div>
                     <button
