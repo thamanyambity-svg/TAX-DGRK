@@ -126,62 +126,73 @@ const ReceiptView = ({
                             </div>
                         </div>
 
-                        {/* VÉHICULE & TAXATION - 2 Columns Grid */}
+                        {/* VÉHICULE & TAXATION - 3 Columns Grid (complet, identique au document officiel) */}
                         <div className="border border-[#E0E0E0] rounded-sm bg-white overflow-hidden">
                             <div className="px-2 py-0.5 bg-white border-b border-[#E0E0E0]">
                                 <h3 className="font-bold text-[#333333] text-[8px] uppercase tracking-wide">
                                     {note.vehicle.category === 'Bateau' ? 'BATEAUX & TAXATION' : 'VÉHICULE & TAXATION'}
                                 </h3>
                             </div>
-                            <div className="px-2 py-1 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[9px]">
-                                {/* Ligne 1 */}
-                                <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600">
-                                        {note.vehicle.category === 'Bateau' ? 'Embarcation:' : 'Chassis:'}
-                                    </span>
-                                    <span className="uppercase font-bold text-gray-800 tracking-tight truncate">{note.vehicle.chassis}</span>
+                            <div className="px-2 py-1 grid grid-cols-3 gap-x-2 gap-y-0.5 text-[8px]">
+                                {/* Ligne 1 : Chassis | Plaque | Usage */}
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">{note.vehicle.category === 'Bateau' ? 'Embarcation:' : 'Chassis:'}</span>
+                                    <span className="uppercase font-bold text-gray-800 truncate">{note.vehicle.chassis || '-'}</span>
                                 </div>
-                                <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600">Plaque:</span>
-                                    <span className="uppercase font-bold text-gray-800">{note.vehicle.plate}</span>
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Plaque:</span>
+                                    <span className="uppercase font-bold text-gray-800 truncate">{note.vehicle.plate || '-'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Usage:</span>
+                                    <span className="font-medium text-gray-800 truncate">N/A</span>
                                 </div>
 
-                                {/* Ligne 2 */}
-                                <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
-                                    <span className="font-bold text-gray-600">Marque/Type:</span>
-                                    <span className="text-[9px] font-medium text-gray-800 truncate">
-                                        {(note.vehicle as any).manualMarqueType || (() => {
-                                            const cat = (note.vehicle.category || '');
-                                            // If it has underscores, force lowercase and show ONLY category
-                                            if (cat.includes('_')) {
-                                                return <span className="lowercase">{cat}</span>;
-                                            }
+                                {/* Ligne 2 : Marque | Modèle | Couleur */}
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Marque:</span>
+                                    <span className="uppercase font-medium text-gray-800 truncate">{note.vehicle.marque || '-'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Modèle:</span>
+                                    <span className="uppercase font-medium text-gray-800 truncate">{note.vehicle.modele || '-'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Couleur:</span>
+                                    <span className="uppercase font-medium text-gray-800 truncate">{note.vehicle.couleur || '-'}</span>
+                                </div>
 
-                                            return (
-                                                <>
-                                                    <span className="uppercase">{note.vehicle.marque}</span>
-                                                    <span> / </span>
-                                                    <span>{note.vehicle.category}</span>
-                                                </>
-                                            );
+                                {/* Ligne 3 : N° Moteur | Année Fab. | Année Immat. */}
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">N° Moteur:</span>
+                                    <span className="uppercase font-medium text-gray-800 truncate">{(note.vehicle as any).moteur || '0000'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Année Fab.:</span>
+                                    <span className="font-medium text-gray-800 truncate">{note.vehicle.annee || '-'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Année Immat.:</span>
+                                    <span className="font-medium text-gray-800 truncate">{(note.vehicle as any).anneeImmat || (note.vehicle as any).manualAnneeImmat || '-'}</span>
+                                </div>
+
+                                {/* Ligne 4 : Puissance | Poids | Catégorie */}
+                                <div className="flex gap-1 min-w-0 pt-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Puissance:</span>
+                                    <span className="font-medium text-gray-800 truncate">{note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 pt-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Poids:</span>
+                                    <span className="font-medium text-gray-800 truncate">{note.vehicle.weight || '-'}</span>
+                                </div>
+                                <div className="flex gap-1 min-w-0 pt-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Catégorie:</span>
+                                    <span className="font-medium text-gray-800 truncate">
+                                        {(() => {
+                                            const catRaw = String((note.vehicle as any).manualMarqueType || note.vehicle.category || '-');
+                                            return catRaw.includes('_') ? catRaw.replace(/_/g, ' ').toLowerCase() : catRaw;
                                         })()}
                                     </span>
-                                </div>
-                                <div className="grid grid-cols-[90px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
-                                    <span className="font-bold text-gray-600">Puissance:</span>
-                                    <span className="font-medium text-gray-800">
-                                        {note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV'}
-                                    </span>
-                                </div>
-
-                                {/* Ligne 3 */}
-                                <div className="grid grid-cols-[90px_1fr] pt-0.5">
-                                    <span className="font-bold text-gray-600">Usage:</span>
-                                    <span className="font-medium text-gray-800">N/A</span>
-                                </div>
-                                <div className="grid grid-cols-[90px_1fr] pt-0.5">
-                                    <span className="font-bold text-gray-600">Poids:</span>
-                                    <span className="font-medium text-gray-800">{note.vehicle.weight || '-'}</span>
                                 </div>
                             </div>
                         </div>

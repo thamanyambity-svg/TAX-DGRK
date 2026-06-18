@@ -79,6 +79,10 @@ export interface NoteDePerception {
     modele?: string;
     weight?: string;
     type?: string;
+    couleur?: string;
+    annee?: string;
+    moteur?: string;
+    anneeImmat?: string;
   };
   bankDetails: {
     reservedBox: boolean; // placeholder for UI

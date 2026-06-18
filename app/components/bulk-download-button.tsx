@@ -35,7 +35,6 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
         .replace(/^[\s,/-]+/, '').replace(/[\s,/-]+$/, '').trim() || 'KINSHASA';
 
     const cat = (decl.vehicle?.category || '');
-    const marqueType = cat.includes('_') ? cat : `${decl.vehicle?.marque || ''} / ${cat}`;
     const fiscalPower = decl.vehicle?.fiscalPower ? `${String(decl.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV';
 
     const ticketStyle: React.CSSProperties = {
@@ -117,13 +116,23 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                     {/* Véhicule */}
                     <div style={sectionStyle}>
                         <div style={sectionHeader}>VÉHICULE &amp; TAXATION</div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', padding: '4px 8px', gap: '2px 8px', fontSize: '9px' }}>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Chassis:</span><span style={valueStyle}>{note.vehicle.chassis}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Plaque:</span><span style={valueStyle}>{note.vehicle.plate}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Marque/Type:</span><span style={{ ...valueStyle, textTransform: 'lowercase' }}>{marqueType}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Puissance:</span><span style={valueStyle}>{fiscalPower}</span></div>
-                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Usage:</span><span style={valueStyle}>N/A</span></div>
-                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Poids:</span><span style={valueStyle}>{decl.vehicle?.weight || '0 T'}</span></div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 8px', gap: '2px 6px', fontSize: '8px' }}>
+                            {/* Ligne 1 */}
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Chassis:</span><span style={valueStyle}>{note.vehicle.chassis || '-'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Plaque:</span><span style={valueStyle}>{note.vehicle.plate || '-'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Usage:</span><span style={{ ...valueStyle, textTransform: 'none' }}>N/A</span></div>
+                            {/* Ligne 2 */}
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Marque:</span><span style={valueStyle}>{decl.vehicle?.marque || '-'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Modèle:</span><span style={valueStyle}>{decl.vehicle?.modele || '-'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Couleur:</span><span style={valueStyle}>{decl.vehicle?.couleur || '-'}</span></div>
+                            {/* Ligne 3 */}
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>N° Moteur:</span><span style={valueStyle}>{(decl.vehicle as any)?.moteur || '0000'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Année Fab.:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{decl.vehicle?.annee || '-'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Année Immat.:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{(decl.vehicle as any)?.anneeImmat || '-'}</span></div>
+                            {/* Ligne 4 */}
+                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Puissance:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{fiscalPower}</span></div>
+                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Poids:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{decl.vehicle?.weight || '0 T'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Catégorie:</span><span style={{ ...valueStyle, textTransform: 'lowercase' }}>{cat.includes('_') ? cat.replace(/_/g, ' ').toLowerCase() : cat}</span></div>
                         </div>
                     </div>
 
