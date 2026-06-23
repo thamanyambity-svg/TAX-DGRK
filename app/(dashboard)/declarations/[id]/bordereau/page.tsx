@@ -157,7 +157,10 @@ export default function BordereauPage() {
                     manualTaxpayerAddress: editAddress,
                     manualCouleur: editCouleur,
                     manualAnneeFab: editAnneeFab,
-                    manualAnneeImmat: editAnneeImmat
+                    manualAnneeImmat: editAnneeImmat,
+                    // CRITICAL: l'objet imbriqué est lu en priorité par generateNote ET le récépissé.
+                    manualTaxpayer: { name: editName, nif: editNIF, address: editAddress },
+                    taxpayerData: { name: editName, nif: editNIF, address: editAddress }
                 }
             };
 
