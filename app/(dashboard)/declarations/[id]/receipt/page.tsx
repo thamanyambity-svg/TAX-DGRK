@@ -287,6 +287,7 @@ export default function ReceiptPage() {
     const router = useRouter();
     const [note, setNote] = useState<NoteDePerception | null>(null);
     const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+    const [isBulkDownloading, setIsBulkDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const receiptRef = useRef<HTMLDivElement>(null);
 
@@ -424,7 +425,7 @@ export default function ReceiptPage() {
     };
 
     const handleDownloadPDF = async () => {
-        if (!id || isGeneratingPDF) return;
+        if (!id || isGeneratingPDF || isBulkDownloading) return;
         setIsGeneratingPDF(true);
         try {
             const { downloadElementAsPDF } = await import('@/lib/pdf-utils');
@@ -433,6 +434,21 @@ export default function ReceiptPage() {
             console.error('PDF error', error);
         } finally {
             setIsGeneratingPDF(false);
+        }
+    };
+
+    const handleDownloadThreePDFs = async () => {
+        if (!id || isGeneratingPDF || isBulkDownloading) return;
+        setIsBulkDownloading(true);
+        try {
+            const { downloadElementAsPDF } = await import('@/lib/pdf-utils');
+            await downloadElementAsPDF('printable-root', `recepisse-${id}-1`);
+            await downloadElementAsPDF('printable-root', `recepisse-${id}-2`);
+            await downloadElementAsPDF('printable-root', `recepisse-${id}-3`);
+        } catch (error) {
+            console.error('Bulk PDF error', error);
+        } finally {
+            setIsBulkDownloading(false);
         }
     };
 
@@ -567,6 +583,19 @@ export default function ReceiptPage() {
                     </div>
 
                     <div className="flex gap-2">
+                        <button
+                            onClick={handleDownloadThreePDFs}
+                            disabled={isGeneratingPDF || isBulkDownloading}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50 text-gray-700 transition-colors"
+                        >
+                            {isBulkDownloading ? (
+                                <span className="animate-spin h-3.5 w-3.5 border-2 border-gray-400 border-t-transparent rounded-full" />
+                            ) : (
+                                <Download className="h-3.5 w-3.5" />
+                            )}
+                            {isBulkDownloading ? 'Téléchargement...' : 'Télécharger 3 fichiers'}
+                        </button>
+
                         {/* BOUTON BORDEREAU */}
                         <button
                             onClick={() => router.push(`/declarations/${id}/bordereau`)}
