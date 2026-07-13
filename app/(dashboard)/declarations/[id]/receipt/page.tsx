@@ -437,16 +437,16 @@ export default function ReceiptPage() {
         }
     };
 
-    const handleDownloadThreePDFs = async () => {
+    const handleDownloadThreeLabelPDFs = async () => {
         if (!id || isGeneratingPDF || isBulkDownloading) return;
         setIsBulkDownloading(true);
         try {
             const { downloadElementAsPDF } = await import('@/lib/pdf-utils');
-            await downloadElementAsPDF('printable-root', `recepisse-${id}-1`);
-            await downloadElementAsPDF('printable-root', `recepisse-${id}-2`);
-            await downloadElementAsPDF('printable-root', `recepisse-${id}-3`);
+            await downloadElementAsPDF('printable-label', `etiquette-${id}-1`);
+            await downloadElementAsPDF('printable-label', `etiquette-${id}-2`);
+            await downloadElementAsPDF('printable-label', `etiquette-${id}-3`);
         } catch (error) {
-            console.error('Bulk PDF error', error);
+            console.error('Label PDF error', error);
         } finally {
             setIsBulkDownloading(false);
         }
@@ -584,7 +584,7 @@ export default function ReceiptPage() {
 
                     <div className="flex gap-2">
                         <button
-                            onClick={handleDownloadThreePDFs}
+                            onClick={handleDownloadThreeLabelPDFs}
                             disabled={isGeneratingPDF || isBulkDownloading}
                             className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50 text-gray-700 transition-colors"
                         >
@@ -593,7 +593,7 @@ export default function ReceiptPage() {
                             ) : (
                                 <Download className="h-3.5 w-3.5" />
                             )}
-                            {isBulkDownloading ? 'Téléchargement...' : 'Télécharger 3 fichiers'}
+                            {isBulkDownloading ? 'Téléchargement...' : 'Télécharger 3 étiquettes'}
                         </button>
 
                         {/* BOUTON BORDEREAU */}
@@ -829,6 +829,232 @@ export default function ReceiptPage() {
                     Format A4 Standard (210 x 297 mm). Ajustez l'échelle à 100% lors de l'impression.
                 </p>
             </div>
+
+            <div className="mt-6 px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm max-w-5xl mx-auto">
+                <h2 className="text-sm font-semibold text-gray-800 mb-3">Aperçu du modèle d’étiquette DGRK</h2>
+                <div className="flex justify-center">
+                    <LabelTemplate decl={decl!} note={note} id={id} verifyUrl={verifyUrl} />
+                </div>
+            </div>
         </div >
     );
 }
+
+const LabelTemplate = ({ decl, note, id, verifyUrl }: { decl: any; note: NoteDePerception; id: string; verifyUrl: string }) => {
+    const createdAt = decl.createdAt ? new Date(decl.createdAt) : new Date();
+    const year = createdAt.getFullYear();
+    const categoryLabel = ((decl.meta as any)?.manualMarqueType || note.vehicle.category || '').replace(/_/g, ' ');
+    const vehicleLabel = categoryLabel && categoryLabel !== 'Vignette Automobile' ? categoryLabel : 'Utilitaire light';
+    const powerText = note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : 'N/A';
+    const weightText = note.vehicle.weight || '1630 T';
+    const refText = id;
+
+    const labelStyle: React.CSSProperties = {
+        width: '420px',
+        minHeight: '560px',
+        padding: '18px',
+        boxSizing: 'border-box',
+        background: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+        color: '#222',
+    };
+
+    const cardStyle: React.CSSProperties = {
+        width: '100%',
+        minHeight: '520px',
+        border: '8px solid #1f3c88',
+        borderRadius: '30px',
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        background: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
+    };
+
+    const headerRow: React.CSSProperties = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        gap: '12px',
+        marginBottom: '12px',
+    };
+
+    const topText: React.CSSProperties = {
+        textAlign: 'center',
+        flex: 1,
+        fontSize: '9px',
+        textTransform: 'uppercase',
+        color: '#143c84',
+        lineHeight: 1.2,
+        fontWeight: 700,
+        letterSpacing: '0.08em',
+    };
+
+    const titleText: React.CSSProperties = {
+        fontSize: '13px',
+        fontWeight: 800,
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        color: '#111827',
+    };
+
+    const divider: React.CSSProperties = {
+        height: '1px',
+        background: '#111',
+        width: '100%',
+        marginTop: '12px',
+    };
+
+    const yearBox: React.CSSProperties = {
+        width: '130px',
+        margin: '0 auto',
+        padding: '10px 0',
+        borderRadius: '999px',
+        background: '#1f3c88',
+        color: '#fff',
+        fontSize: '24px',
+        fontWeight: 900,
+        textAlign: 'center',
+        letterSpacing: '0.08em',
+    };
+
+    const plateBox: React.CSSProperties = {
+        width: '100%',
+        border: '6px solid #111',
+        borderRadius: '18px',
+        padding: '18px 12px',
+        marginTop: '18px',
+        textAlign: 'center',
+        fontSize: '36px',
+        fontWeight: 900,
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        background: '#fff',
+    };
+
+    const vehicleInfoRow: React.CSSProperties = {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        marginTop: '14px',
+    };
+
+    const vehicleInfoText: React.CSSProperties = {
+        fontSize: '11px',
+        fontWeight: 700,
+        color: '#1f3c88',
+        textTransform: 'capitalize',
+        letterSpacing: '0.04em',
+    };
+
+    const qrSection: React.CSSProperties = {
+        display: 'grid',
+        gridTemplateColumns: '1fr 120px',
+        gap: '16px',
+        alignItems: 'center',
+        marginTop: '24px',
+    };
+
+    const hologramBox: React.CSSProperties = {
+        minHeight: '120px',
+        border: '1px dashed #9ca3af',
+        borderRadius: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        padding: '8px',
+        color: '#9ca3af',
+        fontSize: '10px',
+        fontWeight: 700,
+        lineHeight: 1.3,
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+    };
+
+    const qrBox: React.CSSProperties = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#fff',
+        padding: '12px',
+        borderRadius: '18px',
+        border: '1px solid #e5e7eb',
+    };
+
+    const footerStyle: React.CSSProperties = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        gap: '12px',
+        marginTop: '20px',
+        fontSize: '10px',
+        lineHeight: 1.4,
+        color: '#111827',
+        fontWeight: 700,
+    };
+
+    const watermarkStyle: React.CSSProperties = {
+        position: 'absolute',
+        bottom: '48px',
+        left: '24px',
+        opacity: 0.08,
+        fontSize: '58px',
+        fontWeight: 900,
+        color: '#1f3c88',
+        transform: 'rotate(-20deg)',
+        pointerEvents: 'none',
+    };
+
+    return (
+        <div id="printable-label" style={labelStyle}>
+            <div style={cardStyle}>
+                <div style={watermarkStyle}>DGRK</div>
+                <div style={headerRow}>
+                    <div style={{ width: '60px' }}>
+                        <img src="/logo-dgrk-form.jpg" alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
+                    </div>
+                    <div style={topText}>
+                        <div style={titleText}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
+                        <div style={{ marginTop: '6px', fontSize: '9px', fontWeight: 600, color: '#1f3c88', letterSpacing: '0.08em' }}>
+                            VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES
+                        </div>
+                    </div>
+                    <div style={{ width: '60px', display: 'flex', justifyContent: 'flex-end' }}>
+                        <div style={{ width: '52px', height: '52px', borderRadius: '999px', background: '#f3f4f6', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1f3c88', fontSize: '12px', fontWeight: 800, textTransform: 'uppercase' }}>
+                            IRMS
+                        </div>
+                    </div>
+                </div>
+
+                <div style={divider} />
+
+                <div style={yearBox}>{year}</div>
+                <div style={plateBox}>{note.vehicle.plate || id}</div>
+
+                <div style={vehicleInfoRow}>
+                    <div style={vehicleInfoText}>{vehicleLabel}</div>
+                    <div style={vehicleInfoText}>{powerText} • {weightText}</div>
+                </div>
+
+                <div style={qrSection}>
+                    <div style={qrBox}>
+                        <QRCode value={verifyUrl} size={128} />
+                    </div>
+                    <div style={hologramBox}>HOLOGRAM ZONE</div>
+                </div>
+
+                <div style={footerStyle}>
+                    <div>
+                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>REF: {refText}</div>
+                        <div style={{ fontSize: '10px' }}>Valide du 01/01/{year}</div>
+                        <div style={{ fontSize: '10px' }}>au 31/12/{year}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
