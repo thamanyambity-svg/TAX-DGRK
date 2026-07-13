@@ -12,6 +12,25 @@ import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-re
 
 import { numberToWords } from '@/lib/number-to-words';
 
+// --- Label data shape (user-provided JSON) ---
+type LabelData = {
+    document_type?: string;
+    emetteur?: string;
+    statut?: string;
+    reference?: string;
+    plaque_immatriculation?: string;
+    annee_fiscale?: string;
+    categorie_vehicule?: string;
+    date_emission?: string;
+    date_expiration?: string;
+    qr_code?: string | null;
+    couleurs?: { principale?: string; secondaire?: string; texte?: string };
+    mentions?: string[];
+    // convenience fields
+    logoLeft?: string;
+    logoRight?: string;
+};
+
 // --- Sub-component for a single receipt ticket (Rebuilt strict design) ---
 const ReceiptView = ({
     type,
@@ -833,21 +852,62 @@ export default function ReceiptPage() {
             <div className="mt-6 px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm max-w-5xl mx-auto">
                 <h2 className="text-sm font-semibold text-gray-800 mb-3">Aperçu du modèle d’étiquette DGRK</h2>
                 <div className="flex justify-center">
-                    <LabelTemplate decl={decl!} note={note} id={id} verifyUrl={verifyUrl} />
+                    {/* Label preview using provided JSON (defaults merged with live data) */}
+                    <div className="mt-6 px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm max-w-5xl mx-auto">
+                        <h2 className="text-sm font-semibold text-gray-800 mb-3">Aperçu du modèle d’étiquette DGRK</h2>
+                        <div className="flex justify-center">
+                            {/* build label data from user JSON and live `note`/`decl` */}
+                            {(() => {
+                                const SPECIMEN_LABEL: LabelData = {
+                                    document_type: 'Vignette Automobile',
+                                    emetteur: "Direction Générale des Recettes de Kinshasa",
+                                    statut: 'SPECIMEN',
+                                    reference: `VIG-2026-000123`,
+                                    plaque_immatriculation: note?.vehicle?.plate || 'AC1234CD',
+                                    annee_fiscale: '2026',
+                                    categorie_vehicule: note?.vehicle?.category || 'Utilitaire light',
+                                    date_emission: '2026-01-01',
+                                    date_expiration: '2026-12-31',
+                                    qr_code: verifyUrl || `https://dgrk.example/verify/VIG-2026-000123`,
+                                    couleurs: { principale: '#1f3c88', secondaire: '#FDE047', texte: '#111827' },
+                                    mentions: ['SPECIMEN - Document non valide', 'Ne pas utiliser pour circulation'],
+                                    logoLeft: '/dgrk-logo.jpg',
+                                    logoRight: '/irms-logo-open.png'
+                                };
+
+                                const userProvided = SPECIMEN_LABEL;
+
+                                const labelData = {
+                                    year: userProvided.annee_fiscale || new Date().getFullYear().toString(),
+                                    plate: userProvided.plaque_immatriculation || (note?.vehicle?.plate || id),
+                                    vehicleType: userProvided.categorie_vehicule || (note?.vehicle?.category || 'Utilitaire light'),
+                                    power: note?.vehicle?.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '7 CV',
+                                    weight: note?.vehicle?.weight || '1630 T',
+                                    reference: userProvided.reference || id,
+                                    qrValue: userProvided.qr_code || verifyUrl,
+                                    logoLeft: userProvided.logoLeft || '/dgrk-logo.jpg',
+                                    logoRight: userProvided.logoRight || '/irms-logo-open.png',
+                                    mentions: userProvided.mentions || ['SPECIMEN - Document non valide']
+                                };
+
+                                return <LabelTemplate data={labelData} />;
+                            })()}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div >
     );
 }
 
-const LabelTemplate = ({ decl, note, id, verifyUrl }: { decl: any; note: NoteDePerception; id: string; verifyUrl: string }) => {
-    const createdAt = decl.createdAt ? new Date(decl.createdAt) : new Date();
-    const year = createdAt.getFullYear();
-    const categoryLabel = ((decl.meta as any)?.manualMarqueType || note.vehicle.category || '').replace(/_/g, ' ');
-    const vehicleLabel = categoryLabel && categoryLabel !== 'Vignette Automobile' ? categoryLabel : 'Utilitaire light';
-    const powerText = note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : 'N/A';
-    const weightText = note.vehicle.weight || '1630 T';
-    const refText = id;
+const LabelTemplate = ({ data }: { data: any }) => {
+    const year = data.year;
+    const plate = data.plate;
+    const vehicleLabel = data.vehicleType || 'Utilitaire light';
+    const powerText = data.power || '7 CV';
+    const weightText = data.weight || '1630 T';
+    const refText = data.reference || 'DECL-XXXX-XXXXXX';
+    const verifyUrlLabel = data.qrValue || data.qrValue === null ? data.qrValue : '';
 
     const labelStyle: React.CSSProperties = {
         width: '420px',
@@ -873,130 +933,6 @@ const LabelTemplate = ({ decl, note, id, verifyUrl }: { decl: any; note: NoteDeP
         overflow: 'hidden',
     };
 
-    const headerRow: React.CSSProperties = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        gap: '12px',
-        marginBottom: '12px',
-    };
-
-    const topText: React.CSSProperties = {
-        textAlign: 'center',
-        flex: 1,
-        fontSize: '9px',
-        textTransform: 'uppercase',
-        color: '#143c84',
-        lineHeight: 1.2,
-        fontWeight: 700,
-        letterSpacing: '0.08em',
-    };
-
-    const titleText: React.CSSProperties = {
-        fontSize: '13px',
-        fontWeight: 800,
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        color: '#111827',
-    };
-
-    const divider: React.CSSProperties = {
-        height: '1px',
-        background: '#111',
-        width: '100%',
-        marginTop: '12px',
-    };
-
-    const yearBox: React.CSSProperties = {
-        width: '130px',
-        margin: '0 auto',
-        padding: '10px 0',
-        borderRadius: '999px',
-        background: '#1f3c88',
-        color: '#fff',
-        fontSize: '24px',
-        fontWeight: 900,
-        textAlign: 'center',
-        letterSpacing: '0.08em',
-    };
-
-    const plateBox: React.CSSProperties = {
-        width: '100%',
-        border: '6px solid #111',
-        borderRadius: '18px',
-        padding: '18px 12px',
-        marginTop: '18px',
-        textAlign: 'center',
-        fontSize: '36px',
-        fontWeight: 900,
-        letterSpacing: '0.12em',
-        textTransform: 'uppercase',
-        background: '#fff',
-    };
-
-    const vehicleInfoRow: React.CSSProperties = {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '6px',
-        marginTop: '14px',
-    };
-
-    const vehicleInfoText: React.CSSProperties = {
-        fontSize: '11px',
-        fontWeight: 700,
-        color: '#1f3c88',
-        textTransform: 'capitalize',
-        letterSpacing: '0.04em',
-    };
-
-    const qrSection: React.CSSProperties = {
-        display: 'grid',
-        gridTemplateColumns: '1fr 120px',
-        gap: '16px',
-        alignItems: 'center',
-        marginTop: '24px',
-    };
-
-    const hologramBox: React.CSSProperties = {
-        minHeight: '120px',
-        border: '1px dashed #9ca3af',
-        borderRadius: '16px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        padding: '8px',
-        color: '#9ca3af',
-        fontSize: '10px',
-        fontWeight: 700,
-        lineHeight: 1.3,
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-    };
-
-    const qrBox: React.CSSProperties = {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#fff',
-        padding: '12px',
-        borderRadius: '18px',
-        border: '1px solid #e5e7eb',
-    };
-
-    const footerStyle: React.CSSProperties = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        gap: '12px',
-        marginTop: '20px',
-        fontSize: '10px',
-        lineHeight: 1.4,
-        color: '#111827',
-        fontWeight: 700,
-    };
-
     const watermarkStyle: React.CSSProperties = {
         position: 'absolute',
         bottom: '48px',
@@ -1006,6 +942,54 @@ const LabelTemplate = ({ decl, note, id, verifyUrl }: { decl: any; note: NoteDeP
         fontWeight: 900,
         color: '#1f3c88',
         transform: 'rotate(-20deg)',
+        pointerEvents: 'none',
+    };
+
+    return (
+        <div id="printable-label" style={labelStyle}>
+            <div style={cardStyle}>
+                <div style={watermarkStyle}>DGRK</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+                    <div style={{ width: '60px' }}>
+                        <img src={data.logoLeft || '/logo-dgrk-form.jpg'} alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
+                    </div>
+                    <div style={{ textAlign: 'center', flex: 1, fontSize: '9px', textTransform: 'uppercase', color: '#143c84', lineHeight: 1.2, fontWeight: 700, letterSpacing: '0.08em' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#111827' }}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
+                        <div style={{ marginTop: '6px', fontSize: '9px', fontWeight: 600, color: '#1f3c88', letterSpacing: '0.08em' }}>VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES</div>
+                    </div>
+                    <div style={{ width: '60px', display: 'flex', justifyContent: 'flex-end' }}>
+                        <img src={data.logoRight || '/logo-solidaire.png'} alt="IRMS" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
+                    </div>
+                </div>
+
+                <div style={{ height: '1px', background: '#111', width: '100%', marginTop: '12px' }} />
+
+                <div style={{ width: '130px', margin: '0 auto', padding: '10px 0', borderRadius: '999px', background: '#1f3c88', color: '#fff', fontSize: '24px', fontWeight: 900, textAlign: 'center', letterSpacing: '0.08em' }}>{year}</div>
+                <div style={{ width: '100%', border: '6px solid #111', borderRadius: '18px', padding: '18px 12px', marginTop: '18px', textAlign: 'center', fontSize: '36px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', background: '#fff' }}>{plate}</div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '14px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#1f3c88', textTransform: 'capitalize', letterSpacing: '0.04em' }}>{vehicleLabel}</div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#1f3c88' }}>{powerText} • {weightText}</div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '16px', alignItems: 'center', marginTop: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', padding: '12px', borderRadius: '18px', border: '1px solid #e5e7eb' }}>
+                        {verifyUrlLabel ? <QRCode value={verifyUrlLabel} size={128} /> : <QRCode value={""} size={128} />}
+                    </div>
+                    <div style={{ minHeight: '120px', border: '1px dashed #9ca3af', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '8px', color: '#9ca3af', fontSize: '10px', fontWeight: 700, lineHeight: 1.3, textTransform: 'uppercase', letterSpacing: '0.08em' }}>HOLOGRAM ZONE</div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '12px', marginTop: '20px', fontSize: '10px', lineHeight: 1.4, color: '#111827', fontWeight: 700 }}>
+                    <div>
+                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>REF: {refText}</div>
+                        <div style={{ fontSize: '10px' }}>Valide du 01/01/{year}</div>
+                        <div style={{ fontSize: '10px' }}>au 31/12/{year}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
         pointerEvents: 'none',
     };
 
