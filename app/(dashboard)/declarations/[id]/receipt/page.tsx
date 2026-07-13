@@ -11,6 +11,7 @@ import QRCode from 'react-qr-code';
 import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-react';
 
 import { numberToWords } from '@/lib/number-to-words';
+import SPECIMEN_LABEL from '@/lib/label-specimen';
 
 // --- Label data shape (user-provided JSON) ---
 type LabelData = {
@@ -858,23 +859,6 @@ export default function ReceiptPage() {
                         <div className="flex justify-center">
                             {/* build label data from user JSON and live `note`/`decl` */}
                             {(() => {
-                                const SPECIMEN_LABEL: LabelData = {
-                                    document_type: 'Vignette Automobile',
-                                    emetteur: "Direction Générale des Recettes de Kinshasa",
-                                    statut: 'SPECIMEN',
-                                    reference: `VIG-2026-000123`,
-                                    plaque_immatriculation: note?.vehicle?.plate || 'AC1234CD',
-                                    annee_fiscale: '2026',
-                                    categorie_vehicule: note?.vehicle?.category || 'Utilitaire light',
-                                    date_emission: '2026-01-01',
-                                    date_expiration: '2026-12-31',
-                                    qr_code: verifyUrl || `https://dgrk.example/verify/VIG-2026-000123`,
-                                    couleurs: { principale: '#1f3c88', secondaire: '#FDE047', texte: '#111827' },
-                                    mentions: ['SPECIMEN - Document non valide', 'Ne pas utiliser pour circulation'],
-                                    logoLeft: '/dgrk-logo.jpg',
-                                    logoRight: '/irms-logo-open.png'
-                                };
-
                                 const userProvided = SPECIMEN_LABEL;
 
                                 const labelData = {
