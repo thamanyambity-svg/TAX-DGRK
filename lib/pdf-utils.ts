@@ -29,16 +29,15 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
 
         // High quality canvas capture with improved settings
         const canvas = await html2canvas(element, {
-            scale: 2,
+            scale: 3,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',
-            windowWidth: Math.max(width, 800),
-            windowHeight: Math.max(height, 1000),
+            windowWidth: Math.max(Math.ceil(width * 3), 1200),
+            windowHeight: Math.max(Math.ceil(height * 3), 1600),
             allowTaint: true,
             removeContainer: false,
             ignoreElements: (el) => {
-                // Ignore print-hidden elements
                 return typeof el.className === 'string' && el.className.includes('no-print');
             }
         });

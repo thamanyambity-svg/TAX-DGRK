@@ -455,7 +455,7 @@ export default function ReceiptPage() {
     };
 
     const handlePrintLabelPreview = () => {
-        const el = document.getElementById('printable-label');
+        const el = document.getElementById('printable-label-page');
         if (!el) return alert('Étiquette introuvable pour impression.');
         setupPrintMode('print-label');
         window.print();
@@ -474,14 +474,12 @@ export default function ReceiptPage() {
         }
     };
 
-    const handleDownloadThreeLabelPDFs = async () => {
+    const handleDownloadLabelSheetPDF = async () => {
         if (!id || isGeneratingPDF || isBulkDownloading) return;
         setIsBulkDownloading(true);
         try {
             const { downloadElementAsPDF } = await import('@/lib/pdf-utils');
-            await downloadElementAsPDF('printable-label', `etiquette-${id}-1`);
-            await downloadElementAsPDF('printable-label', `etiquette-${id}-2`);
-            await downloadElementAsPDF('printable-label', `etiquette-${id}-3`);
+            await downloadElementAsPDF('printable-label-page', `etiquettes-${id}`);
         } catch (error) {
             console.error('Label PDF error', error);
         } finally {
@@ -863,44 +861,83 @@ export default function ReceiptPage() {
             </div>
 
             <div className="mt-6 px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm max-w-5xl mx-auto">
-                <h2 className="text-sm font-semibold text-gray-800 mb-3">Aperçu du modèle d’étiquette DGRK</h2>
-                <div className="flex justify-center">
-                    {/* Label preview using provided JSON (defaults merged with live data) */}
-                    <div className="mt-6 px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm max-w-5xl mx-auto">
-                        <h2 className="text-sm font-semibold text-gray-800 mb-3">Aperçu du modèle d’étiquette DGRK</h2>
-                        <div className="flex justify-center">
-                            {/* build label data from user JSON and live `note`/`decl` */}
-                            {(() => {
-                                const userProvided = SPECIMEN_LABEL;
-
-                                // Use declaration (`decl`) and generated `note` to populate authoritative fields
-                                const declRef = (decl && (decl.reference || decl.id)) || id;
-                                const categoryFromDecl = (decl && ((decl.meta && (decl.meta as any).manualMarqueType) || decl.category)) || note?.vehicle?.category || (note?.vehicle as any)?.manualMarqueType || 'Utilitaire light';
-                                const validYear = userProvided.annee_fiscale || new Date().getFullYear().toString();
-                                const validFrom = decl && decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
-                                const validTo = new Date(`${validYear}-12-31`);
-
-                                const labelData = {
-                                    year: validYear,
-                                    plate: userProvided.plaque_immatriculation || (note?.vehicle?.plate || id),
-                                    vehicleType: categoryFromDecl,
-                                    category: categoryFromDecl,
-                                    power: note?.vehicle?.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : 'N/A',
-                                    weight: note?.vehicle?.weight || 'N/A',
-                                    reference: userProvided.reference || (note?.id || declRef),
-                                    declarationNumber: declRef,
-                                    validFrom: `${String(validFrom.getDate()).padStart(2,'0')}/${String(validFrom.getMonth()+1).padStart(2,'0')}/${validFrom.getFullYear()}`,
-                                    validTo: `${String(validTo.getDate()).padStart(2,'0')}/${String(validTo.getMonth()+1).padStart(2,'0')}/${validTo.getFullYear()}`,
-                                    qrValue: userProvided.qr_code || verifyUrl,
-                                    logoLeft: userProvided.logoLeft || '/dgrk-logo.jpg',
-                                    logoRight: userProvided.logoRight || '/irms-logo-open.png',
-                                    mentions: userProvided.mentions || ['SPECIMEN - Document non valide']
-                                };
-
-                                return <LabelTemplate data={labelData} />;
-                            })()}
-                        </div>
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                    <h2 className="text-sm font-semibold text-gray-800">Aperçu du modèle d’étiquette DGRK</h2>
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={handlePrintLabelPreview}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-[#2C5EB5] text-white rounded text-xs font-medium hover:bg-[#1e4483] transition-colors"
+                        >
+                            <Scissors className="h-3.5 w-3.5" />
+                            Imprimer 4 étiquettes A6
+                        </button>
+                        <button
+                            onClick={handleDownloadLabelSheetPDF}
+                            disabled={isBulkDownloading}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50 text-gray-700 transition-colors"
+                        >
+                            {isBulkDownloading ? (
+                                <span className="animate-spin h-3.5 w-3.5 border-2 border-gray-400 border-t-transparent rounded-full" />
+                            ) : (
+                                <Download className="h-3.5 w-3.5" />
+                            )}
+                            {isBulkDownloading ? 'Génération...' : 'Télécharger 4 étiquettes A6'}
+                        </button>
                     </div>
+                </div>
+                <div className="flex justify-center">
+                    {(() => {
+                        const userProvided = SPECIMEN_LABEL;
+                        const declRef = (decl && (decl.reference || decl.id)) || id;
+                        const categoryFromDecl = (decl && ((decl.meta && (decl.meta as any).manualMarqueType) || decl.category)) || note?.vehicle?.category || (note?.vehicle as any)?.manualMarqueType || 'Utilitaire light';
+                        const validYear = userProvided.annee_fiscale || new Date().getFullYear().toString();
+                        const validFrom = decl && decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
+                        const validTo = new Date(`${validYear}-12-31`);
+
+                        const labelData = {
+                            year: validYear,
+                            plate: userProvided.plaque_immatriculation || (note?.vehicle?.plate || id),
+                            vehicleType: categoryFromDecl,
+                            category: categoryFromDecl,
+                            power: note?.vehicle?.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : 'N/A',
+                            weight: note?.vehicle?.weight || 'N/A',
+                            reference: userProvided.reference || (note?.id || declRef),
+                            declarationNumber: declRef,
+                            validFrom: `${String(validFrom.getDate()).padStart(2,'0')}/${String(validFrom.getMonth()+1).padStart(2,'0')}/${validFrom.getFullYear()}`,
+                            validTo: `${String(validTo.getDate()).padStart(2,'0')}/${String(validTo.getMonth()+1).padStart(2,'0')}/${validTo.getFullYear()}`,
+                            qrValue: userProvided.qr_code || verifyUrl,
+                            logoLeft: userProvided.logoLeft || '/dgrk-logo.jpg',
+                            logoRight: userProvided.logoRight || '/irms-logo-open.png',
+                            mentions: userProvided.mentions || ['SPECIMEN - Document non valide']
+                        };
+
+                        return (
+                            <div
+                                id="printable-label-page"
+                                className="overflow-hidden"
+                                style={{
+                                    width: '210mm',
+                                    height: '297mm',
+                                    minWidth: '210mm',
+                                    minHeight: '297mm',
+                                    background: '#f9fbff',
+                                    padding: '0',
+                                    boxSizing: 'border-box',
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(2, 105mm)',
+                                    gridTemplateRows: 'repeat(2, 148.5mm)',
+                                    gap: '0',
+                                    margin: '0',
+                                    border: 'none'
+                                }}
+                            >
+                                <LabelTemplate data={labelData} />
+                                <LabelTemplate data={labelData} />
+                                <LabelTemplate data={labelData} />
+                                <LabelTemplate data={labelData} />
+                            </div>
+                        );
+                    })()}
                 </div>
             </div>
         </div >
@@ -920,177 +957,214 @@ const LabelTemplate = ({ data }: { data: any }) => {
     const verifyUrlLabel = data.qrValue || '';
 
     const labelStyle: React.CSSProperties = {
-        width: '360px',
-        height: '360px',
-        padding: '14px',
+        width: '105mm',
+        height: '148.5mm',
+        padding: '1.5mm',
         boxSizing: 'border-box',
-        background: '#ffffff',
-        fontFamily: 'Inter, Arial, sans-serif',
-        color: '#111',
+        background: '#f9fbff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     };
 
     const cardStyle: React.CSSProperties = {
         width: '100%',
         height: '100%',
-        border: '12px solid #1e3a8a',
-        borderRadius: '34px',
-        padding: '14px',
+        border: '3mm solid #1d4ed8',
+        borderRadius: '7mm',
+        padding: '3mm',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        background: '#fff',
-        position: 'relative',
-        overflow: 'hidden',
+        background: '#ffffff',
+        boxSizing: 'border-box',
     };
 
-    const headerStyle: React.CSSProperties = {
+    const topHeader: React.CSSProperties = {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: '10px',
-        marginBottom: '14px',
+        gap: '4mm',
+        marginBottom: '1.5mm',
     };
 
-    const centerTextStyle: React.CSSProperties = {
-        textAlign: 'center',
+    const logoBox: React.CSSProperties = {
+        width: '24mm',
+        minWidth: '24mm',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    };
+
+    const titleBlock: React.CSSProperties = {
         flex: 1,
+        textAlign: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: '0.5mm',
+    };
+
+    const titleText: React.CSSProperties = {
+        fontSize: '7px',
         fontWeight: 800,
-        color: '#1f3c88',
+        color: '#1d4ed8',
+        textTransform: 'uppercase',
+        letterSpacing: '0.18em',
+        lineHeight: 1.1,
+    };
+
+    const subtitleText: React.CSSProperties = {
+        fontSize: '6px',
+        fontWeight: 700,
+        color: '#111827',
         textTransform: 'uppercase',
         letterSpacing: '0.12em',
-        lineHeight: 1.1,
-        fontSize: '8px',
+    };
+
+    const separatorStyle: React.CSSProperties = {
+        height: '0.6mm',
+        width: '100%',
+        background: '#1d4ed8',
+        margin: '2mm 0',
     };
 
     const yearStyle: React.CSSProperties = {
-        width: '104px',
+        width: '56%',
         margin: '0 auto',
         borderRadius: '999px',
-        background: '#1e3a8a',
+        background: '#1d4ed8',
         color: '#fff',
-        fontSize: '24px',
+        fontSize: '22px',
         fontWeight: 900,
         textAlign: 'center',
-        padding: '10px 0',
-        letterSpacing: '0.12em',
+        padding: '3mm 0',
+        letterSpacing: '0.16em',
     };
 
     const plateStyle: React.CSSProperties = {
         width: '100%',
-        border: '6px solid #111',
-        borderRadius: '16px',
-        padding: '18px 12px',
-        marginTop: '16px',
+        border: '4px solid #111',
+        borderRadius: '6px',
+        padding: '4.5mm 3mm',
+        marginTop: '4mm',
         textAlign: 'center',
         fontSize: '34px',
         fontWeight: 900,
-        letterSpacing: '0.14em',
+        letterSpacing: '0.18em',
         textTransform: 'uppercase',
-        background: '#fff',
+        background: '#ffffff',
     };
 
-    const badgeStyle: React.CSSProperties = {
-        marginTop: '12px',
-        fontSize: '11px',
-        fontWeight: 700,
-        color: '#1e3a8a',
+    const categoryStyle: React.CSSProperties = {
+        marginTop: '3mm',
+        fontSize: '9px',
+        fontWeight: 800,
+        color: '#1d4ed8',
         textTransform: 'capitalize',
-        letterSpacing: '0.06em',
+        letterSpacing: '0.08em',
     };
 
     const infoStyle: React.CSSProperties = {
-        fontSize: '10px',
-        color: '#1e3a8a',
+        fontSize: '8.5px',
+        color: '#1d4ed8',
         fontWeight: 700,
         textAlign: 'center',
-        marginTop: '2px',
+        marginTop: '1mm',
     };
 
-    const qrSection: React.CSSProperties = {
+    const middleGrid: React.CSSProperties = {
         display: 'grid',
-        gridTemplateColumns: '1fr 100px',
-        gap: '12px',
-        alignItems: 'center',
-        marginTop: '18px',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '4mm',
+        marginTop: '5mm',
     };
 
-    const qrBox: React.CSSProperties = {
-        background: '#fff',
-        border: '1px solid #d1d5db',
-        borderRadius: '18px',
-        padding: '12px',
+    const squareBox: React.CSSProperties = {
+        width: '100%',
+        minHeight: '35mm',
+        background: '#f8fafc',
+        borderRadius: '5px',
+        border: '0.75mm solid #d1d5db',
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
     };
 
     const hologramStyle: React.CSSProperties = {
-        minHeight: '110px',
-        border: '1px dashed #9ca3af',
-        borderRadius: '16px',
+        width: '100%',
+        minHeight: '35mm',
+        borderRadius: '5px',
+        border: '0.75mm dashed #9ca3af',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        padding: '8px',
+        padding: '2mm',
         color: '#9ca3af',
-        fontSize: '10px',
+        fontSize: '8px',
         fontWeight: 700,
         textTransform: 'uppercase',
         letterSpacing: '0.08em',
+        lineHeight: 1.2,
     };
 
     const footerRow: React.CSSProperties = {
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        gap: '12px',
-        marginTop: '18px',
-        fontSize: '10px',
-        lineHeight: 1.4,
+        alignItems: 'flex-start',
+        gap: '4mm',
+        marginTop: '4mm',
+        fontSize: '7.5px',
+        lineHeight: 1.3,
         color: '#111827',
         fontWeight: 700,
+    };
+
+    const footerLeft: React.CSSProperties = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5mm',
     };
 
     return (
         <div id="printable-label" style={labelStyle}>
             <div style={cardStyle}>
-                <div style={headerStyle}>
-                    <div style={{ width: '58px' }}>
+                <div style={topHeader}>
+                    <div style={logoBox}>
                         <img src={data.logoLeft || '/logo-dgrk-form.jpg'} alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
                     </div>
-                    <div style={centerTextStyle}>
-                        <div style={{ fontSize: '11px', color: '#111827', letterSpacing: '0.18em', marginBottom: '4px' }}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
-                        <div style={{ fontSize: '8px', fontWeight: 700, color: '#1e3a8a' }}>VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES</div>
+                    <div style={titleBlock}>
+                        <span style={titleText}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</span>
+                        <span style={subtitleText}>VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES</span>
                     </div>
-                    <div style={{ width: '58px', display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style={logoBox}>
                         <img src={data.logoRight || '/irms-logo-open.png'} alt="IRMS" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
                     </div>
                 </div>
 
-                <div style={{ height: '1px', background: '#1e3a8a', width: '100%', margin: '0 auto 16px' }} />
+                <div style={separatorStyle} />
 
                 <div style={yearStyle}>{year}</div>
                 <div style={plateStyle}>{plate}</div>
-
-                <div style={badgeStyle}>{category}</div>
+                <div style={categoryStyle}>{category}</div>
                 <div style={infoStyle}>{powerText} • {weightText}</div>
 
-                <div style={qrSection}>
-                    <div style={qrBox}>
-                        {verifyUrlLabel ? <QRCode value={verifyUrlLabel} size={108} /> : <QRCode value="" size={108} />}
+                <div style={middleGrid}>
+                    <div style={squareBox}>
+                        {verifyUrlLabel ? <QRCode value={verifyUrlLabel} size={110} /> : <div style={{ width: '86px', height: '86px', background: '#fff' }} />}
                     </div>
                     <div style={hologramStyle}>HOLOGRAMME<br />ZONE</div>
                 </div>
 
                 <div style={footerRow}>
-                    <div style={{ maxWidth: '220px' }}>
-                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>N° Déclaration: {declarationNumber}</div>
-                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>REF: {refText}</div>
-                        <div style={{ fontSize: '10px' }}>{`Valide du ${validFrom}`}</div>
-                        <div style={{ fontSize: '10px' }}>{`au ${validTo}`}</div>
+                    <div style={footerLeft}>
+                        <span>N° Déclaration: {declarationNumber}</span>
+                        <span>REF: {refText}</span>
+                        <span>{`Valide du ${validFrom}`}</span>
+                        <span>{`au ${validTo}`}</span>
                     </div>
-                    <div style={{ fontSize: '10px', color: '#1e3a8a', textAlign: 'right', lineHeight: 1.2 }}>{category}</div>
+                    <div style={{ textAlign: 'right', color: '#1d4ed8', fontSize: '7.5px' }}>{category}</div>
                 </div>
             </div>
         </div>

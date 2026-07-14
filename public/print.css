@@ -34,7 +34,8 @@
   }
 
   body.print-root #printable-root,
-  body.print-label #printable-label {
+  body.print-label #printable-label,
+  body.print-label #printable-label-page {
     visibility: visible !important;
     display: block !important;
     position: absolute !important;
@@ -55,14 +56,16 @@
 
   /* Force les enfants à être visibles */
   body.print-root #printable-root *,
-  body.print-label #printable-label * {
+  body.print-label #printable-label *,
+  body.print-label #printable-label-page * {
     visibility: visible !important;
   }
 
   /* Ajustements spécifiques pour le contenu interne */
   body.print-root #printable-bordereau,
   body.print-root #printable-receipt,
-  body.print-label #printable-label {
+  body.print-label #printable-label,
+  body.print-label #printable-label-page {
     box-shadow: none !important;
     margin: 0 !important;
     width: 100% !important;
