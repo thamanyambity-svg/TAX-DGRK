@@ -861,13 +861,24 @@ export default function ReceiptPage() {
                             {(() => {
                                 const userProvided = SPECIMEN_LABEL;
 
+                                // Use declaration (`decl`) and generated `note` to populate authoritative fields
+                                const declRef = (decl && (decl.reference || decl.id)) || id;
+                                const categoryFromDecl = (decl && ((decl.meta && (decl.meta as any).manualMarqueType) || decl.category)) || note?.vehicle?.category || (note?.vehicle as any)?.manualMarqueType || 'Utilitaire light';
+                                const validYear = userProvided.annee_fiscale || new Date().getFullYear().toString();
+                                const validFrom = decl && decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
+                                const validTo = new Date(`${validYear}-12-31`);
+
                                 const labelData = {
-                                    year: userProvided.annee_fiscale || new Date().getFullYear().toString(),
+                                    year: validYear,
                                     plate: userProvided.plaque_immatriculation || (note?.vehicle?.plate || id),
-                                    vehicleType: userProvided.categorie_vehicule || (note?.vehicle?.category || 'Utilitaire light'),
-                                    power: note?.vehicle?.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '7 CV',
-                                    weight: note?.vehicle?.weight || '1630 T',
-                                    reference: userProvided.reference || id,
+                                    vehicleType: categoryFromDecl,
+                                    category: categoryFromDecl,
+                                    power: note?.vehicle?.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : 'N/A',
+                                    weight: note?.vehicle?.weight || 'N/A',
+                                    reference: userProvided.reference || (note?.id || declRef),
+                                    declarationNumber: declRef,
+                                    validFrom: `${String(validFrom.getDate()).padStart(2,'0')}/${String(validFrom.getMonth()+1).padStart(2,'0')}/${validFrom.getFullYear()}`,
+                                    validTo: `${String(validTo.getDate()).padStart(2,'0')}/${String(validTo.getMonth()+1).padStart(2,'0')}/${validTo.getFullYear()}`,
                                     qrValue: userProvided.qr_code || verifyUrl,
                                     logoLeft: userProvided.logoLeft || '/dgrk-logo.jpg',
                                     logoRight: userProvided.logoRight || '/irms-logo-open.png',
@@ -965,62 +976,12 @@ const LabelTemplate = ({ data }: { data: any }) => {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '12px', marginTop: '20px', fontSize: '10px', lineHeight: 1.4, color: '#111827', fontWeight: 700 }}>
                     <div>
+                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>N° Déclaration: {data.declarationNumber || '—'}</div>
                         <div style={{ fontSize: '10px', marginBottom: '4px' }}>REF: {refText}</div>
-                        <div style={{ fontSize: '10px' }}>Valide du 01/01/{year}</div>
-                        <div style={{ fontSize: '10px' }}>au 31/12/{year}</div>
+                        <div style={{ fontSize: '10px' }}>Valide du {data.validFrom || `01/01/${year}`}</div>
+                        <div style={{ fontSize: '10px' }}>au {data.validTo || `31/12/${year}`}</div>
                     </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-        pointerEvents: 'none',
-    };
-
-    return (
-        <div id="printable-label" style={labelStyle}>
-            <div style={cardStyle}>
-                <div style={watermarkStyle}>DGRK</div>
-                <div style={headerRow}>
-                    <div style={{ width: '60px' }}>
-                        <img src="/logo-dgrk-form.jpg" alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
-                    </div>
-                    <div style={topText}>
-                        <div style={titleText}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
-                        <div style={{ marginTop: '6px', fontSize: '9px', fontWeight: 600, color: '#1f3c88', letterSpacing: '0.08em' }}>
-                            VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES
-                        </div>
-                    </div>
-                    <div style={{ width: '60px', display: 'flex', justifyContent: 'flex-end' }}>
-                        <div style={{ width: '52px', height: '52px', borderRadius: '999px', background: '#f3f4f6', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1f3c88', fontSize: '12px', fontWeight: 800, textTransform: 'uppercase' }}>
-                            IRMS
-                        </div>
-                    </div>
-                </div>
-
-                <div style={divider} />
-
-                <div style={yearBox}>{year}</div>
-                <div style={plateBox}>{note.vehicle.plate || id}</div>
-
-                <div style={vehicleInfoRow}>
-                    <div style={vehicleInfoText}>{vehicleLabel}</div>
-                    <div style={vehicleInfoText}>{powerText} • {weightText}</div>
-                </div>
-
-                <div style={qrSection}>
-                    <div style={qrBox}>
-                        <QRCode value={verifyUrl} size={128} />
-                    </div>
-                    <div style={hologramBox}>HOLOGRAM ZONE</div>
-                </div>
-
-                <div style={footerStyle}>
-                    <div>
-                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>REF: {refText}</div>
-                        <div style={{ fontSize: '10px' }}>Valide du 01/01/{year}</div>
-                        <div style={{ fontSize: '10px' }}>au 31/12/{year}</div>
-                    </div>
+                    <div style={{ textAlign: 'right', fontSize: '10px', color: '#1f3c88' }}>{data.category || vehicleLabel}</div>
                 </div>
             </div>
         </div>
