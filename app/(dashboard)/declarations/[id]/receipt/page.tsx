@@ -908,30 +908,33 @@ export default function ReceiptPage() {
 }
 
 const LabelTemplate = ({ data }: { data: any }) => {
-    const year = data.year;
-    const plate = data.plate;
-    const vehicleLabel = data.vehicleType || 'Utilitaire light';
+    const year = data.year || new Date().getFullYear().toString();
+    const plate = data.plate || '0000AB00';
+    const category = data.category || data.vehicleType || 'Utilitaire light';
     const powerText = data.power || '7 CV';
     const weightText = data.weight || '1630 T';
-    const refText = data.reference || 'DECL-XXXX-XXXXXX';
-    const verifyUrlLabel = data.qrValue || data.qrValue === null ? data.qrValue : '';
+    const refText = data.reference || 'VIG-2026-000123';
+    const declarationNumber = data.declarationNumber || 'DECL-2026-XXXXXX';
+    const validFrom = data.validFrom || `01/01/${year}`;
+    const validTo = data.validTo || `31/12/${year}`;
+    const verifyUrlLabel = data.qrValue || '';
 
     const labelStyle: React.CSSProperties = {
-        width: '420px',
-        minHeight: '560px',
-        padding: '18px',
+        width: '360px',
+        height: '360px',
+        padding: '14px',
         boxSizing: 'border-box',
         background: '#ffffff',
-        fontFamily: 'Arial, sans-serif',
-        color: '#222',
+        fontFamily: 'Inter, Arial, sans-serif',
+        color: '#111',
     };
 
     const cardStyle: React.CSSProperties = {
         width: '100%',
-        minHeight: '520px',
-        border: '8px solid #1f3c88',
-        borderRadius: '30px',
-        padding: '20px',
+        height: '100%',
+        border: '12px solid #1e3a8a',
+        borderRadius: '34px',
+        padding: '14px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -940,60 +943,154 @@ const LabelTemplate = ({ data }: { data: any }) => {
         overflow: 'hidden',
     };
 
-    const watermarkStyle: React.CSSProperties = {
-        position: 'absolute',
-        bottom: '48px',
-        left: '24px',
-        opacity: 0.08,
-        fontSize: '58px',
-        fontWeight: 900,
+    const headerStyle: React.CSSProperties = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '10px',
+        marginBottom: '14px',
+    };
+
+    const centerTextStyle: React.CSSProperties = {
+        textAlign: 'center',
+        flex: 1,
+        fontWeight: 800,
         color: '#1f3c88',
-        transform: 'rotate(-20deg)',
-        pointerEvents: 'none',
+        textTransform: 'uppercase',
+        letterSpacing: '0.12em',
+        lineHeight: 1.1,
+        fontSize: '8px',
+    };
+
+    const yearStyle: React.CSSProperties = {
+        width: '104px',
+        margin: '0 auto',
+        borderRadius: '999px',
+        background: '#1e3a8a',
+        color: '#fff',
+        fontSize: '24px',
+        fontWeight: 900,
+        textAlign: 'center',
+        padding: '10px 0',
+        letterSpacing: '0.12em',
+    };
+
+    const plateStyle: React.CSSProperties = {
+        width: '100%',
+        border: '6px solid #111',
+        borderRadius: '16px',
+        padding: '18px 12px',
+        marginTop: '16px',
+        textAlign: 'center',
+        fontSize: '34px',
+        fontWeight: 900,
+        letterSpacing: '0.14em',
+        textTransform: 'uppercase',
+        background: '#fff',
+    };
+
+    const badgeStyle: React.CSSProperties = {
+        marginTop: '12px',
+        fontSize: '11px',
+        fontWeight: 700,
+        color: '#1e3a8a',
+        textTransform: 'capitalize',
+        letterSpacing: '0.06em',
+    };
+
+    const infoStyle: React.CSSProperties = {
+        fontSize: '10px',
+        color: '#1e3a8a',
+        fontWeight: 700,
+        textAlign: 'center',
+        marginTop: '2px',
+    };
+
+    const qrSection: React.CSSProperties = {
+        display: 'grid',
+        gridTemplateColumns: '1fr 100px',
+        gap: '12px',
+        alignItems: 'center',
+        marginTop: '18px',
+    };
+
+    const qrBox: React.CSSProperties = {
+        background: '#fff',
+        border: '1px solid #d1d5db',
+        borderRadius: '18px',
+        padding: '12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    };
+
+    const hologramStyle: React.CSSProperties = {
+        minHeight: '110px',
+        border: '1px dashed #9ca3af',
+        borderRadius: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        padding: '8px',
+        color: '#9ca3af',
+        fontSize: '10px',
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+    };
+
+    const footerRow: React.CSSProperties = {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        gap: '12px',
+        marginTop: '18px',
+        fontSize: '10px',
+        lineHeight: 1.4,
+        color: '#111827',
+        fontWeight: 700,
     };
 
     return (
         <div id="printable-label" style={labelStyle}>
             <div style={cardStyle}>
-                <div style={watermarkStyle}>DGRK</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
-                    <div style={{ width: '60px' }}>
+                <div style={headerStyle}>
+                    <div style={{ width: '58px' }}>
                         <img src={data.logoLeft || '/logo-dgrk-form.jpg'} alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
                     </div>
-                    <div style={{ textAlign: 'center', flex: 1, fontSize: '9px', textTransform: 'uppercase', color: '#143c84', lineHeight: 1.2, fontWeight: 700, letterSpacing: '0.08em' }}>
-                        <div style={{ fontSize: '13px', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#111827' }}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
-                        <div style={{ marginTop: '6px', fontSize: '9px', fontWeight: 600, color: '#1f3c88', letterSpacing: '0.08em' }}>VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES</div>
+                    <div style={centerTextStyle}>
+                        <div style={{ fontSize: '11px', color: '#111827', letterSpacing: '0.18em', marginBottom: '4px' }}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
+                        <div style={{ fontSize: '8px', fontWeight: 700, color: '#1e3a8a' }}>VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES</div>
                     </div>
-                    <div style={{ width: '60px', display: 'flex', justifyContent: 'flex-end' }}>
-                        <img src={data.logoRight || '/logo-solidaire.png'} alt="IRMS" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
+                    <div style={{ width: '58px', display: 'flex', justifyContent: 'flex-end' }}>
+                        <img src={data.logoRight || '/irms-logo-open.png'} alt="IRMS" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
                     </div>
                 </div>
 
-                <div style={{ height: '1px', background: '#111', width: '100%', marginTop: '12px' }} />
+                <div style={{ height: '1px', background: '#1e3a8a', width: '100%', margin: '0 auto 16px' }} />
 
-                <div style={{ width: '130px', margin: '0 auto', padding: '10px 0', borderRadius: '999px', background: '#1f3c88', color: '#fff', fontSize: '24px', fontWeight: 900, textAlign: 'center', letterSpacing: '0.08em' }}>{year}</div>
-                <div style={{ width: '100%', border: '6px solid #111', borderRadius: '18px', padding: '18px 12px', marginTop: '18px', textAlign: 'center', fontSize: '36px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', background: '#fff' }}>{plate}</div>
+                <div style={yearStyle}>{year}</div>
+                <div style={plateStyle}>{plate}</div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '14px' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#1f3c88', textTransform: 'capitalize', letterSpacing: '0.04em' }}>{vehicleLabel}</div>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#1f3c88' }}>{powerText} • {weightText}</div>
-                </div>
+                <div style={badgeStyle}>{category}</div>
+                <div style={infoStyle}>{powerText} • {weightText}</div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '16px', alignItems: 'center', marginTop: '24px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', padding: '12px', borderRadius: '18px', border: '1px solid #e5e7eb' }}>
-                        {verifyUrlLabel ? <QRCode value={verifyUrlLabel} size={128} /> : <QRCode value={""} size={128} />}
+                <div style={qrSection}>
+                    <div style={qrBox}>
+                        {verifyUrlLabel ? <QRCode value={verifyUrlLabel} size={108} /> : <QRCode value="" size={108} />}
                     </div>
-                    <div style={{ minHeight: '120px', border: '1px dashed #9ca3af', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '8px', color: '#9ca3af', fontSize: '10px', fontWeight: 700, lineHeight: 1.3, textTransform: 'uppercase', letterSpacing: '0.08em' }}>HOLOGRAM ZONE</div>
+                    <div style={hologramStyle}>HOLOGRAMME<br />ZONE</div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: '12px', marginTop: '20px', fontSize: '10px', lineHeight: 1.4, color: '#111827', fontWeight: 700 }}>
-                    <div>
-                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>N° Déclaration: {data.declarationNumber || '—'}</div>
+                <div style={footerRow}>
+                    <div style={{ maxWidth: '220px' }}>
+                        <div style={{ fontSize: '10px', marginBottom: '4px' }}>N° Déclaration: {declarationNumber}</div>
                         <div style={{ fontSize: '10px', marginBottom: '4px' }}>REF: {refText}</div>
-                        <div style={{ fontSize: '10px' }}>Valide du {data.validFrom || `01/01/${year}`}</div>
-                        <div style={{ fontSize: '10px' }}>au {data.validTo || `31/12/${year}`}</div>
+                        <div style={{ fontSize: '10px' }}>{`Valide du ${validFrom}`}</div>
+                        <div style={{ fontSize: '10px' }}>{`au ${validTo}`}</div>
                     </div>
-                    <div style={{ textAlign: 'right', fontSize: '10px', color: '#1f3c88' }}>{data.category || vehicleLabel}</div>
+                    <div style={{ fontSize: '10px', color: '#1e3a8a', textAlign: 'right', lineHeight: 1.2 }}>{category}</div>
                 </div>
             </div>
         </div>
