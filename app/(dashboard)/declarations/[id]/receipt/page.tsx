@@ -444,6 +444,24 @@ export default function ReceiptPage() {
         window.print();
     };
 
+    const handlePrintLabelPreview = () => {
+        try {
+            const el = document.getElementById('printable-label');
+            if (!el) return alert('Étiquette introuvable pour impression.');
+
+            const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Étiquette</title><link rel="stylesheet" href="/globals.css"><link rel="stylesheet" href="/print.css" media="print"></head><body style="margin:0;padding:20px;display:flex;justify-content:center;align-items:flex-start;background:#fff;">${el.outerHTML}<script>setTimeout(()=>{window.print();},250);</script></body></html>`;
+
+            const win = window.open('', '_blank', 'noopener,noreferrer');
+            if (!win) return alert('Impossible d’ouvrir la fenêtre d’impression (bloqueur de pop-up).');
+            win.document.open();
+            win.document.write(html);
+            win.document.close();
+        } catch (e) {
+            console.error('Print preview failed', e);
+            alert('Erreur lors de la préparation de l’aperçu d’impression.');
+        }
+    };
+
     const handleDownloadPDF = async () => {
         if (!id || isGeneratingPDF || isBulkDownloading) return;
         setIsGeneratingPDF(true);
@@ -604,16 +622,11 @@ export default function ReceiptPage() {
 
                     <div className="flex gap-2">
                         <button
-                            onClick={handleDownloadThreeLabelPDFs}
-                            disabled={isGeneratingPDF || isBulkDownloading}
+                            onClick={handlePrintLabelPreview}
                             className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50 text-gray-700 transition-colors"
                         >
-                            {isBulkDownloading ? (
-                                <span className="animate-spin h-3.5 w-3.5 border-2 border-gray-400 border-t-transparent rounded-full" />
-                            ) : (
-                                <Download className="h-3.5 w-3.5" />
-                            )}
-                            {isBulkDownloading ? 'Téléchargement...' : 'Télécharger 3 étiquettes'}
+                            <Scissors className="h-3.5 w-3.5" />
+                            Aperçu impression étiquette
                         </button>
 
                         {/* BOUTON BORDEREAU */}
