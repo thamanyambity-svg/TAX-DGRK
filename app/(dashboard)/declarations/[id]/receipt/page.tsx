@@ -440,26 +440,25 @@ export default function ReceiptPage() {
         return () => { isMounted = false; clearTimeout(timeoutId); };
     }, [id, rawId]);
 
+    const setupPrintMode = (cssClass: string) => {
+        document.body.classList.add(cssClass);
+        const cleanup = () => {
+            document.body.classList.remove(cssClass);
+            window.removeEventListener('afterprint', cleanup);
+        };
+        window.addEventListener('afterprint', cleanup);
+    };
+
     const handlePrint = () => {
+        setupPrintMode('print-root');
         window.print();
     };
 
     const handlePrintLabelPreview = () => {
-        try {
-            const el = document.getElementById('printable-label');
-            if (!el) return alert('Étiquette introuvable pour impression.');
-
-            const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Étiquette</title><link rel="stylesheet" href="/globals.css"><link rel="stylesheet" href="/print.css" media="print"></head><body style="margin:0;padding:20px;display:flex;justify-content:center;align-items:flex-start;background:#fff;">${el.outerHTML}<script>setTimeout(()=>{window.print();},250);</script></body></html>`;
-
-            const win = window.open('', '_blank', 'noopener,noreferrer');
-            if (!win) return alert('Impossible d’ouvrir la fenêtre d’impression (bloqueur de pop-up).');
-            win.document.open();
-            win.document.write(html);
-            win.document.close();
-        } catch (e) {
-            console.error('Print preview failed', e);
-            alert('Erreur lors de la préparation de l’aperçu d’impression.');
-        }
+        const el = document.getElementById('printable-label');
+        if (!el) return alert('Étiquette introuvable pour impression.');
+        setupPrintMode('print-label');
+        window.print();
     };
 
     const handleDownloadPDF = async () => {

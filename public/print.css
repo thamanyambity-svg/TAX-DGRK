@@ -27,7 +27,14 @@
 
   /* 3. Technique de l'"Overlay Absolu" pour l'élément à imprimer */
   /* Cela lui permet de prendre toute la page même s'il est imbriqué */
-  #printable-root {
+  #printable-root,
+  #printable-label {
+    visibility: hidden !important;
+    display: none !important;
+  }
+
+  body.print-root #printable-root,
+  body.print-label #printable-label {
     visibility: visible !important;
     display: block !important;
     position: absolute !important;
@@ -36,12 +43,10 @@
     width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
-    max-height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     z-index: 9999 !important;
-    /* Passe au dessus de tout */
     overflow: hidden !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
@@ -49,13 +54,15 @@
   }
 
   /* Force les enfants à être visibles */
-  #printable-root * {
+  body.print-root #printable-root *,
+  body.print-label #printable-label * {
     visibility: visible !important;
   }
 
   /* Ajustements spécifiques pour le contenu interne */
-  #printable-bordereau,
-  #printable-receipt {
+  body.print-root #printable-bordereau,
+  body.print-root #printable-receipt,
+  body.print-label #printable-label {
     box-shadow: none !important;
     margin: 0 !important;
     width: 100% !important;
