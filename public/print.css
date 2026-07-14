@@ -28,7 +28,8 @@
   /* 3. Technique de l'"Overlay Absolu" pour l'élément à imprimer */
   /* Cela lui permet de prendre toute la page même s'il est imbriqué */
   #printable-root,
-  #printable-label {
+  #printable-label,
+  .printable-label-card {
     visibility: hidden !important;
     display: none !important;
   }

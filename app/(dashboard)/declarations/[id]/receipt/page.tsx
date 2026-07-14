@@ -1128,7 +1128,7 @@ const LabelTemplate = ({ data }: { data: any }) => {
     };
 
     return (
-        <div id="printable-label" style={labelStyle}>
+        <div className="printable-label-card" style={labelStyle}>
             <div style={cardStyle}>
                 <div style={topHeader}>
                     <div style={logoBox}>
