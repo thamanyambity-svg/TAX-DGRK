@@ -1,5 +1,3 @@
-import type { } from '.';
-
 const SPECIMEN_LABEL = {
   document_type: 'Vignette Automobile',
   emetteur: 'Direction Générale des Recettes de Kinshasa',
