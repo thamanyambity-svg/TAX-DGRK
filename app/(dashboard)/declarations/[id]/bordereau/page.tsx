@@ -192,14 +192,13 @@ export default function BordereauPage() {
     };
 
     const handlePrint = () => {
-        // Force le chargement du fond avant d'imprimer
-        const bgImg = new Image();
-        bgImg.src = '/bordereau-bg.png';
-        bgImg.onload = () => {
-            window.print();
+        document.body.classList.add('print-root');
+        const cleanup = () => {
+            document.body.classList.remove('print-root');
+            window.removeEventListener('afterprint', cleanup);
         };
-        // Fallback rapide
-        setTimeout(() => window.print(), 1000);
+        window.addEventListener('afterprint', cleanup);
+        setTimeout(() => window.print(), 300);
     };
 
     if (!decl) return <div className="p-10 text-center font-mono text-sm">Chargement...</div>;
