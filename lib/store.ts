@@ -4,6 +4,16 @@ import { supabase } from './supabase';
 // Session cache to ensure instant availability after creation (Fixes "Too long loading" error)
 const SESSION_CACHE: Declaration[] = [];
 
+// Communes de Kinshasa — si l'adresse saisie est une commune seule, formater en "N/A, Commune"
+const COMMUNES = ['GOMBE', 'KINTAMBO', 'NGALIEMA', 'LIMETE', 'MAKALA', 'BANDALUNGWA'];
+const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+const cleanAddr = (s: string) => {
+    const raw = (s || '').replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '').replace(/^\s*(N\/A|N\/A,|[,/\s-])+/, '').trim() || '';
+    const upper = raw.toUpperCase();
+    if (COMMUNES.includes(upper)) return `N/A, ${capFirst(raw)}`;
+    return raw;
+};
+
 /**
  * FINAL FIREWALL: Recursively wipes 'Personne Physique' or 'Personne Morale' from any object.
  */
@@ -66,8 +76,6 @@ export const saveDeclaration = async (rawDecl: Declaration): Promise<{ success: 
             dbPayload.vehicle.genre = 'N/A';
         }
 
-        // FORCE address cleaning in meta
-        const cleanAddr = (s: string) => (s || '').replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '').replace(/^\s*(N\/A|N\/A,|[,/\s-])+/, '').trim() || '';
         if (dbPayload.meta?.manualTaxpayer) {
             dbPayload.meta.manualTaxpayer.type = 'N/A';
             const a = cleanAddr(dbPayload.meta.manualTaxpayer.address);
@@ -287,6 +295,18 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
             // Forced emergency wipe on the string
             const forcedClean = JSON.parse(payloadStr.replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, 'N/A'));
             Object.assign(dbPayload, forcedClean);
+        }
+
+        // FORCE address cleaning in meta (same as saveDeclaration)
+        if (dbPayload.meta?.manualTaxpayer) {
+            dbPayload.meta.manualTaxpayer.type = 'N/A';
+            const a = cleanAddr(dbPayload.meta.manualTaxpayer.address);
+            if (a) dbPayload.meta.manualTaxpayer.address = a;
+        }
+        if (dbPayload.meta?.taxpayerData) {
+            dbPayload.meta.taxpayerData.type = 'N/A';
+            const a = cleanAddr(dbPayload.meta.taxpayerData.address);
+            if (a) dbPayload.meta.taxpayerData.address = a;
         }
 
         delete (dbPayload as any).taxpayer;
