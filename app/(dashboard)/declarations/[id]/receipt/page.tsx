@@ -366,6 +366,13 @@ export default function ReceiptPage() {
                         if ((manualDecl.meta as any)?.manualTaxpayer) {
                             manualNote.taxpayer = (manualDecl.meta as any).manualTaxpayer;
                         }
+                        // Format commune-only addresses as "N/A, Commune"
+                        const COMMUNES = ['GOMBE', 'KINTAMBO', 'NGALIEMA', 'LIMETE', 'MAKALA', 'BANDALUNGWA'];
+                        const addr = (manualNote.taxpayer.address || '').trim().toUpperCase();
+                        if (COMMUNES.includes(addr)) {
+                            const raw = (manualNote.taxpayer.address || '').trim();
+                            manualNote.taxpayer.address = `N/A, ${raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()}`;
+                        }
                         // Manual Marque Override
                         if ((manualDecl.meta as any)?.manualMarqueType) {
                             (manualNote.vehicle as any).manualMarqueType = (manualDecl.meta as any).manualMarqueType;

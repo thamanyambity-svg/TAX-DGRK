@@ -4,14 +4,8 @@ import { supabase } from './supabase';
 // Session cache to ensure instant availability after creation (Fixes "Too long loading" error)
 const SESSION_CACHE: Declaration[] = [];
 
-// Communes de Kinshasa — si l'adresse saisie est une commune seule, formater en "N/A, Commune"
-const COMMUNES = ['GOMBE', 'KINTAMBO', 'NGALIEMA', 'LIMETE', 'MAKALA', 'BANDALUNGWA'];
-const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 const cleanAddr = (s: string) => {
-    const raw = (s || '').replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '').replace(/^\s*(N\/A|N\/A,|[,/\s-])+/, '').trim() || '';
-    const upper = raw.toUpperCase();
-    if (COMMUNES.includes(upper)) return `N/A, ${capFirst(raw)}`;
-    return raw;
+    return (s || '').replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '').replace(/^\s*(N\/A|N\/A,|[,/\s-])+/, '').trim() || '';
 };
 
 /**

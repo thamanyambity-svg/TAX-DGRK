@@ -201,5 +201,14 @@ export function generateNote(declaration: Declaration): NoteDePerception {
     if ((finalNote.taxpayer as any).type) (finalNote.taxpayer as any).type = 'N/A';
     if (finalNote.vehicle.type) finalNote.vehicle.type = 'N/A';
 
+    // Format commune-only addresses as "N/A, Commune" for proper display
+    const COMMUNES = ['GOMBE', 'KINTAMBO', 'NGALIEMA', 'LIMETE', 'MAKALA', 'BANDALUNGWA'];
+    const capFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+    const addr = (finalNote.taxpayer.address || '').trim();
+    const addrUpper = addr.toUpperCase();
+    if (COMMUNES.includes(addrUpper)) {
+        finalNote.taxpayer.address = `N/A, ${capFirst(addr)}`;
+    }
+
     return finalNote;
 }
