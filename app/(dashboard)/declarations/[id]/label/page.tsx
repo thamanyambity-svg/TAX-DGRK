@@ -62,47 +62,9 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
                     </div>
                     {/* Thin vertical separator */}
                     <div style={{ width: '1px', height: '18mm', background: '#333', margin: '0 2mm', flexShrink: 0 }} />
-                    {/* IRMS Logo - incomplete yellow circle + dark text */}
-                    <div style={{ position: 'relative', width: '22mm', height: '22mm', flexShrink: 0 }}>
-                        {/* SVG incomplete circle */}
-                        <svg viewBox="0 0 100 100" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                            <circle
-                                cx="50" cy="50" r="46"
-                                fill="none"
-                                stroke={YELLOW}
-                                strokeWidth="4"
-                                strokeDasharray="260 28"
-                                strokeDashoffset="-14"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        {/* Text */}
-                        <div style={{
-                            position: 'absolute',
-                            top: 0, left: 0, right: 0, bottom: 0,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <div style={{
-                                fontSize: '12px',
-                                fontWeight: 900,
-                                color: '#2d1b4e',
-                                letterSpacing: '0.06em',
-                                fontFamily: 'Arial, Helvetica, sans-serif',
-                                lineHeight: 1,
-                            }}>IRMS</div>
-                            <div style={{
-                                fontSize: '5.5px',
-                                fontWeight: 700,
-                                color: '#2d1b4e',
-                                letterSpacing: '0.08em',
-                                fontFamily: 'Arial, Helvetica, sans-serif',
-                                lineHeight: 1,
-                                marginTop: '1mm',
-                            }}>DGRK</div>
-                        </div>
+                    {/* IRMS Logo - SVG from Replit */}
+                    <div style={{ width: '22mm', height: '12mm', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <img src="/irms-logo.svg" alt="IRMS DGRK" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     </div>
                 </div>
 
