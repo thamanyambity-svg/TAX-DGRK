@@ -1,26 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 320" width="580" height="320">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 350" width="650" height="350">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+    </style>
+  </defs>
+
+  <!-- Arc jaune -->
   <path
-    d="M 126,252.2 A 118,118 0 1,1 287.2,209"
+    d="M 335,60 A 145,145 0 1,0 320,290"
     fill="none"
     stroke="#FFD600"
-    stroke-width="13"
+    stroke-width="16"
     stroke-linecap="round"
   />
+
+  <!-- IRMS : Violet très foncé -->
   <text
-    x="335" y="198"
-    text-anchor="middle"
+    x="160" y="230"
+    text-anchor="start"
     font-family="Nunito, 'Arial Rounded MT Bold', Arial, sans-serif"
     font-weight="900"
-    font-size="115"
-    fill="#3D006B"
+    font-size="165"
+    fill="#2A004E"
   >IRMS</text>
+
+  <!-- DGRK : Aligné sous la partie droite de IRMS -->
   <text
-    x="335" y="244"
-    text-anchor="middle"
+    x="330" y="285"
+    text-anchor="start"
     font-family="Nunito, 'Arial Rounded MT Bold', Arial, sans-serif"
     font-weight="800"
-    font-size="34"
+    font-size="44"
     letter-spacing="4"
-    fill="#3D006B"
+    fill="#2A004E"
   >DGRK</text>
+
 </svg>
