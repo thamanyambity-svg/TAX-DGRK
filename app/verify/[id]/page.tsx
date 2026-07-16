@@ -81,6 +81,12 @@ export default function VerifyPage({ params }: { params: Promise<{ id: string }>
 
                 {/* Header Section */}
                 <div className="flex flex-col items-center pt-8 pb-6">
+                    {/* Official logos DGRK | IRMS */}
+                    <img
+                        src="/header-logos.png"
+                        alt="DGRK - IRMS"
+                        className="h-16 w-auto object-contain mb-4"
+                    />
                     <h1 className="text-lg font-bold text-gray-900 mb-3">Facture {note.id}</h1>
                     <span className={cn(
                         "px-6 py-1.5 rounded-full text-sm font-semibold",
