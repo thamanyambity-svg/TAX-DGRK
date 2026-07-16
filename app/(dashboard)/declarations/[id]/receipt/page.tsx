@@ -625,7 +625,7 @@ export default function ReceiptPage() {
 
                     <div className="flex gap-2">
                         <button
-                            onClick={handlePrintLabelPreview}
+                            onClick={() => router.push(`/declarations/${id}/label`)}
                             className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-300 rounded text-xs font-medium hover:bg-gray-50 text-gray-700 transition-colors"
                         >
                             <Scissors className="h-3.5 w-3.5" />
