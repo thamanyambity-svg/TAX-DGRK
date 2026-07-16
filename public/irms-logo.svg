@@ -1,10 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 350" width="650" height="350">
-  <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
-    </style>
-  </defs>
-
   <!-- Arc jaune -->
   <path
     d="M 335,60 A 145,145 0 1,0 320,290"
