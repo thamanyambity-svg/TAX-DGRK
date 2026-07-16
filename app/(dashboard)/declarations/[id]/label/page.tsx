@@ -22,7 +22,7 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
     const verifyUrl = `https://tax-portal-two.vercel.app/verify/${decl.id}`;
 
     const BLUE = '#1a3c7a';
-    const GOLD = '#c8a84e';
+    const YELLOW = '#f5c518';
 
     return (
         <div
@@ -54,27 +54,47 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
                     overflow: 'hidden',
                 }}
             >
-                {/* Logos - closer together, centered */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3mm', marginBottom: '0.5mm' }}>
-                    <div style={{ width: '22mm', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Logos - exactly like reference */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '1mm' }}>
+                    {/* DGRK Logo */}
+                    <div style={{ width: '30mm', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img src="/dgrk-logo.jpg" alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
                     </div>
+                    {/* Thin vertical separator */}
+                    <div style={{ width: '1px', height: '18mm', background: '#333', margin: '0 2mm', flexShrink: 0 }} />
+                    {/* IRMS Logo - text in yellow circle */}
                     <div style={{
-                        width: '20mm',
-                        height: '20mm',
+                        width: '22mm',
+                        height: '22mm',
                         borderRadius: '50%',
-                        border: `1mm solid ${GOLD}`,
+                        border: `1.2mm solid ${YELLOW}`,
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        overflow: 'hidden',
                         flexShrink: 0,
                     }}>
-                        <img src="/irms-logo-open.png" alt="IRMS DGRK" style={{ width: '65%', height: 'auto' }} crossOrigin="anonymous" />
+                        <div style={{
+                            fontSize: '11px',
+                            fontWeight: 900,
+                            color: BLUE,
+                            letterSpacing: '0.08em',
+                            fontFamily: 'Arial, Helvetica, sans-serif',
+                            lineHeight: 1,
+                        }}>IRMS</div>
+                        <div style={{
+                            fontSize: '5px',
+                            fontWeight: 700,
+                            color: BLUE,
+                            letterSpacing: '0.06em',
+                            fontFamily: 'Arial, Helvetica, sans-serif',
+                            lineHeight: 1,
+                            marginTop: '1mm',
+                        }}>DGRK</div>
                     </div>
                 </div>
 
-                {/* Title - centered */}
+                {/* Title */}
                 <div style={{ textAlign: 'center', marginBottom: '0.5mm' }}>
                     <div style={{
                         fontSize: '7.5px',
@@ -121,7 +141,7 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
                     {year}
                 </div>
 
-                {/* Plate */}
+                {/* Plate - OCR font with dotted zero */}
                 <div style={{
                     width: '82%',
                     margin: '3mm auto 0',
@@ -134,7 +154,8 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
                     letterSpacing: '0.15em',
                     textTransform: 'uppercase',
                     background: '#ffffff',
-                    fontFamily: '"Courier New", Courier, monospace',
+                    fontFamily: '"Cousine", "OCR-B", "Courier New", monospace',
+                    fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1,
                     color: '#000000',
                 }}>
@@ -187,7 +208,7 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
                     </div>
                 </div>
 
-                {/* Hologram - small, bottom right */}
+                {/* Hologram */}
                 <div style={{
                     position: 'absolute',
                     bottom: '14mm',
@@ -273,6 +294,10 @@ export default function LabelPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 py-8">
+            {/* Google Font for plate */}
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap');
+            `}</style>
             <div className="no-print max-w-[210mm] mx-auto mb-6 px-4 flex justify-between items-center">
                 <button onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-black bg-white px-4 py-2 rounded shadow-sm text-sm">
                     <ArrowLeft className="h-4 w-4 mr-2" /> Retour
