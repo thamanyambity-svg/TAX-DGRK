@@ -53,6 +53,8 @@
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     box-sizing: border-box !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   /* Force les enfants à être visibles */
@@ -60,6 +62,8 @@
   body.print-label #printable-label *,
   body.print-label #printable-label-page * {
     visibility: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   /* Ajustements spécifiques pour le contenu interne */
