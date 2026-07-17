@@ -111,6 +111,8 @@ const LabelView = ({ decl }: { decl: Declaration }) => {
                     letterSpacing: '0.1em',
                     fontFamily: 'Arial, Helvetica, sans-serif',
                     lineHeight: 1,
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
                 }}>
                     {year}
                 </div>
@@ -252,6 +254,14 @@ export default function LabelPage() {
             });
         });
     }, [id]);
+
+    useEffect(() => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/print.css';
+        link.media = 'print';
+        document.head.appendChild(link);
+    }, []);
 
     const handlePrint = () => {
         document.body.classList.add('print-root');
