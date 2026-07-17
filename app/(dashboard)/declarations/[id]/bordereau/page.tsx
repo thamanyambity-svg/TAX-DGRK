@@ -122,47 +122,62 @@ export default function BordereauPage() {
             const newReceiptDate = parseKinshasa(editReceiptDate);
             const newPaymentDate = parseKinshasa(editPaymentDate);
             const newBaseAmount = parseFloat(editBaseAmount);
-            const exchangeRate = 2355;
-            const newTotalFC = newBaseAmount * exchangeRate;
 
-            const updates = {
-                tax: {
-                    ...decl.tax,
-                    baseRate: newBaseAmount,
-                    totalAmountFC: newTotalFC
-                },
-                vehicle: {
-                    ...decl.vehicle,
-                    plate: editPlate,
-                    couleur: editCouleur,
-                    annee: editAnneeFab,
-                    anneeImmat: editAnneeImmat
-                },
-                taxpayer: {
-                    ...decl.taxpayer,
-                    nif: editNIF,
-                    name: editName,
-                    address: editAddress,
-                    type: decl.taxpayer?.type || 'N/A'
-                },
-                meta: {
-                    ...decl.meta,
-                    manualReceiptDate: newReceiptDate,
-                    manualPaymentDate: newPaymentDate,
-                    manualBaseAmount: newBaseAmount,
-                    manualMarqueType: editMarqueType,
-                    manualPlate: editPlate,
-                    manualNIF: editNIF,
-                    manualTaxpayerName: editName,
-                    manualTaxpayerAddress: editAddress,
-                    manualCouleur: editCouleur,
-                    manualAnneeFab: editAnneeFab,
-                    manualAnneeImmat: editAnneeImmat,
-                    // CRITICAL: l'objet imbriqué est lu en priorité par generateNote ET le récépissé.
-                    manualTaxpayer: { name: editName, nif: editNIF, address: editAddress },
-                    taxpayerData: { name: editName, nif: editNIF, address: editAddress }
-                }
-            };
+            // Get original values for comparison
+            const origReceipt = (decl.meta as any)?.manualReceiptDate || decl.createdAt;
+            const origPayment = (decl.meta as any)?.manualPaymentDate;
+            const origBase = (decl.meta as any)?.manualBaseAmount || decl.tax?.baseRate || 0;
+            const origPlate = (decl.meta as any)?.manualPlate || decl.vehicle?.plate || '';
+            const origCouleur = decl.vehicle?.couleur || '';
+            const origAnnee = decl.vehicle?.annee || '';
+            const origAnneeImmat = (decl.vehicle as any)?.anneeImmat || (decl.meta as any)?.manualAnneeImmat || '';
+            const origMarque = (decl.meta as any)?.manualMarqueType || '';
+            const origNIF = (decl.meta as any)?.manualNIF || decl.taxpayer?.nif || '';
+            const origName = (decl.meta as any)?.manualTaxpayerName || decl.taxpayer?.name || '';
+            const origAddress = (decl.meta as any)?.manualTaxpayerAddress || decl.taxpayer?.address || '';
+
+            // Only build updates with changed fields
+            const updates: any = { meta: { ...decl.meta } };
+
+            // Dates
+            if (newReceiptDate !== origReceipt) updates.meta.manualReceiptDate = newReceiptDate;
+            if (newPaymentDate !== origPayment) updates.meta.manualPaymentDate = newPaymentDate;
+
+            // Tax
+            if (newBaseAmount !== origBase) {
+                const exchangeRate = 2355;
+                updates.tax = { ...decl.tax, baseRate: newBaseAmount, totalAmountFC: newBaseAmount * exchangeRate };
+                updates.meta.manualBaseAmount = newBaseAmount;
+            }
+
+            // Vehicle
+            const vehicleChanged = editPlate !== origPlate || editCouleur !== origCouleur || editAnneeFab !== origAnnee || editAnneeImmat !== origAnneeImmat;
+            if (vehicleChanged) {
+                updates.vehicle = { ...decl.vehicle, plate: editPlate, couleur: editCouleur, annee: editAnneeFab, anneeImmat: editAnneeImmat };
+                if (editPlate !== origPlate) updates.meta.manualPlate = editPlate;
+                if (editCouleur !== origCouleur) updates.meta.manualCouleur = editCouleur;
+                if (editAnneeFab !== origAnnee) updates.meta.manualAnneeFab = editAnneeFab;
+                if (editAnneeImmat !== origAnneeImmat) updates.meta.manualAnneeImmat = editAnneeImmat;
+            }
+
+            // Marque
+            if (editMarqueType !== origMarque) updates.meta.manualMarqueType = editMarqueType;
+
+            // Taxpayer
+            const taxpayerChanged = editNIF !== origNIF || editName !== origName || editAddress !== origAddress;
+            if (taxpayerChanged) {
+                updates.taxpayer = { ...decl.taxpayer, nif: editNIF, name: editName, address: editAddress, type: decl.taxpayer?.type || 'N/A' };
+                if (editNIF !== origNIF) { updates.meta.manualNIF = editNIF; }
+                if (editName !== origName) { updates.meta.manualTaxpayerName = editName; updates.meta.manualTaxpayer = { name: editName, nif: editNIF, address: editAddress }; updates.meta.taxpayerData = { name: editName, nif: editNIF, address: editAddress }; }
+                if (editAddress !== origAddress) { updates.meta.manualTaxpayerAddress = editAddress; }
+            }
+
+            // Check if anything actually changed
+            if (Object.keys(updates).length === 1 && Object.keys(updates.meta).length === Object.keys(decl.meta || {}).length) {
+                alert('Aucune modification détectée.');
+                setIsSavingDates(false);
+                return;
+            }
 
             const result = await updateDeclaration(id, updates);
             if (result.success) {
