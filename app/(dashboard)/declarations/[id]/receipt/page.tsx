@@ -12,6 +12,7 @@ import { ArrowLeft, Download, Scissors, CalendarClock, Save, X } from 'lucide-re
 
 import { numberToWords } from '@/lib/number-to-words';
 import SPECIMEN_LABEL from '@/lib/label-specimen';
+import { clampBordereauDate } from '@/lib/utils';
 
 // --- Label data shape (user-provided JSON) ---
 type LabelData = {
@@ -669,21 +670,27 @@ export default function ReceiptPage() {
                 <div className="max-w-4xl mx-auto mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md shadow-inner mb-4 flex flex-wrap items-end gap-4 animate-in fade-in slide-in-from-top-2">
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date & Heure Récépissé</label>
-                        <input
-                            type="datetime-local"
-                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
-                            value={editReceiptDate}
-                            onChange={(e) => setEditReceiptDate(e.target.value)}
-                        />
+                            <input
+                                type="datetime-local"
+                                className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
+                                value={editReceiptDate}
+                                onChange={(e) => {
+                                    const newReceipt = e.target.value;
+                                    setEditReceiptDate(newReceipt);
+                                    setEditPaymentDate(clampBordereauDate(newReceipt, editPaymentDate));
+                                }}
+                            />
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Date & Heure Bordereau</label>
-                        <input
-                            type="datetime-local"
-                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
-                            value={editPaymentDate}
-                            onChange={(e) => setEditPaymentDate(e.target.value)}
-                        />
+                            <input
+                                type="datetime-local"
+                                className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
+                                value={editPaymentDate}
+                                onChange={(e) => {
+                                    setEditPaymentDate(clampBordereauDate(editReceiptDate, e.target.value));
+                                }}
+                            />
                     </div>
                     <div className="flex flex-col gap-1">
                         <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Prix de Base ($)</label>

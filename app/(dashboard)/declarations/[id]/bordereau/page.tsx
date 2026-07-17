@@ -11,7 +11,7 @@ import { calculateTax } from '@/lib/tax-rules';
 import { generateNote, DECL_BASE, CONGO_NAMES, generateRandomPhone } from '@/lib/generator';
 import { numberToWords } from '@/lib/number-to-words';
 import { getPaymentDate } from '@/lib/business-calendar';
-import { formatKinshasaDateLong, formatKinshasaTime } from '@/lib/utils';
+import { formatKinshasaDateLong, formatKinshasaTime, clampBordereauDate } from '@/lib/utils';
 
 export default function BordereauPage() {
     const params = useParams();
@@ -339,7 +339,11 @@ export default function BordereauPage() {
                             type="datetime-local"
                             className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
                             value={editReceiptDate}
-                            onChange={(e) => setEditReceiptDate(e.target.value)}
+                            onChange={(e) => {
+                                const newReceipt = e.target.value;
+                                setEditReceiptDate(newReceipt);
+                                setEditPaymentDate(clampBordereauDate(newReceipt, editPaymentDate));
+                            }}
                         />
                     </div>
                     <div className="flex flex-col gap-1">
@@ -348,7 +352,9 @@ export default function BordereauPage() {
                             type="datetime-local"
                             className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium"
                             value={editPaymentDate}
-                            onChange={(e) => setEditPaymentDate(e.target.value)}
+                            onChange={(e) => {
+                                setEditPaymentDate(clampBordereauDate(editReceiptDate, e.target.value));
+                            }}
                         />
                     </div>
                     <div className="flex flex-col gap-1">

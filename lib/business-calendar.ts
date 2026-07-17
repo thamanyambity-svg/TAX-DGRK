@@ -59,21 +59,15 @@ export function getNowOrBusinessHours(): string {
 }
 
 /**
- * Calculates a payment date that is approx 48h after the creation date,
- * strictly respecting business hours and skipping Sundays.
+ * Calculates the bordereau date: same day as creation, 1 to 40 minutes after receipt.
+ * Receipt always comes first, bordereau follows within max 40 min.
  */
 export function getPaymentDate(creationDateStr: string): string {
     const date = new Date(creationDateStr);
 
-    // NEW LOGIC: Declaration (Day D, Hour H) -> Bank (Day D+1, Hour H-2)
-    // This equals to adding 22 hours total.
-    date.setUTCHours(date.getUTCHours() + 22);
-
-    // If the resulting date falls on a Sunday, move it to Monday (add 24h)
-    // This keeps the "two hours before" relative time but on a working day.
-    if (date.getUTCDay() === 0) {
-        date.setUTCDate(date.getUTCDate() + 1);
-    }
+    // Random offset between 1 and 40 minutes
+    const offsetMinutes = Math.floor(Math.random() * 40) + 1;
+    date.setMinutes(date.getMinutes() + offsetMinutes);
 
     return date.toISOString();
 }

@@ -95,7 +95,12 @@ export function generateDeclaration(sequence: number): Declaration {
     const declaration: Declaration = {
         id,
         createdAt: getStableDate(sequence), // Deterministic date
-        updatedAt: getStableDate(sequence),
+        updatedAt: (() => {
+            const created = new Date(getStableDate(sequence));
+            const offsetMin = (sequence * 7 + 13) % 40 + 1; // deterministic 1-40 min
+            created.setMinutes(created.getMinutes() + offsetMin);
+            return created.toISOString();
+        })(),
         status: sequence % 3 === 0 ? 'Payée' : 'Facturée', // Cycle statuses
         vehicle: {
             category,
