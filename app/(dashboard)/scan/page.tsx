@@ -96,7 +96,8 @@ export default function ScanPage() {
             const sequence = getSecureSequence();
             const id = generateDeclarationId(sequence);
             const noteId = generateNoteId(sequence);
-            const now = new Date().toISOString();
+            const now = new Date();
+            const bordereau = new Date(now.getTime() + (Math.floor(Math.random() * 40) + 1) * 60000);
             const totalFC = montantFC(prixBase);
 
             const nom = (donnees.nom || 'INCONNU').toUpperCase();
@@ -106,8 +107,8 @@ export default function ScanPage() {
             const newDecl: Declaration = {
                 id,
                 status: 'Payée',
-                createdAt: now,
-                updatedAt: now,
+                createdAt: now.toISOString(),
+                updatedAt: bordereau.toISOString(),
                 taxpayer: { name: nom, nif, address: adresse, type: 'N/A' },
                 vehicle: {
                     plate: donnees.plaque.toUpperCase(),
