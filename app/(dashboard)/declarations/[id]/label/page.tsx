@@ -182,7 +182,7 @@ export default function LabelPage() {
                                 textTransform: 'uppercase', letterSpacing: '0.07em',
                                 fontFamily: 'Arial, Helvetica, sans-serif',
                             }}>
-                                VILLE DE KINSHASA – PROVINCE
+                                VILLE DE KINSHASA/DGRK - TAXE VEHICULE
                             </div>
                         </div>
 
@@ -242,12 +242,33 @@ export default function LabelPage() {
                             </div>
                         </div>
 
-                        {/* ── QR CODE — centré, grand ───────────────── */}
+                        {/* ── QR CODE — centré, grand, cadre blanc léger ── */}
                         <div style={{
                             display: 'flex', justifyContent: 'center',
                             alignItems: 'center', width: '100%', flexShrink: 0,
+                            marginBottom: '2mm',
                         }}>
-                            <QRCode value={verifyUrl} size={108} />
+                            <div style={{
+                                background: 'white',
+                                padding: '4px',
+                                border: '1.5px solid #d0d0d0',
+                                borderRadius: '3px',
+                                lineHeight: 0,
+                            }}>
+                                <QRCode value={verifyUrl} size={104} />
+                            </div>
+                        </div>
+
+                        {/* ── FOOTER — dans le flux, juste sous QR ───────── */}
+                        <div style={{
+                            textAlign: 'center',
+                            fontSize: '9px', fontWeight: 700,
+                            color: BLUE, lineHeight: 1.6,
+                            fontFamily: 'Arial, Helvetica, sans-serif',
+                            flexShrink: 0,
+                        }}>
+                            <div>REF: {refId}</div>
+                            <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
                         </div>
 
                         {/* ── CASE EMISSION IRMS — absolue, bas-droit ─ */}
@@ -269,18 +290,7 @@ export default function LabelPage() {
                             EMISSION<br />IRMS
                         </div>
 
-                        {/* ── FOOTER — absolue, bas-centre ─────────── */}
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '4mm', left: 0, right: 0,
-                            textAlign: 'center',
-                            fontSize: '7px', fontWeight: 700,
-                            color: BLUE, lineHeight: 1.55,
-                            fontFamily: 'Arial, Helvetica, sans-serif',
-                        }}>
-                            <div>REF: {refId}</div>
-                            <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
-                        </div>
+
 
                     </div>{/* fin étiquette */}
                 </div>
