@@ -109,7 +109,7 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
         creditAmount: isBoat && manualBase > 0 ? manualBase : rulesTax.creditAmount
     };
 
-    const EXCHANGE_RATE = 2355;
+    const EXCHANGE_RATE = 2414.93;
     const currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE; // Using creditAmount for FC conversion to match create logic for boats.
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

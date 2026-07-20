@@ -15,7 +15,7 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Taux de change USD -> FC
-const EXCHANGE_RATE = 2355;
+const EXCHANGE_RATE = 2414.93;
 
 const realDeclarations = [
     // ... (Keep existing if needed, or start fresh. Let's keep the eclectic mix for demo + the new fleet)

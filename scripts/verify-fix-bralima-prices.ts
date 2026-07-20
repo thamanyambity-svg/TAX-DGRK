@@ -5,7 +5,7 @@ const supabase = createClient(
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFla214aGNmZHFzdmxwa3ljcHNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMTg1OTAsImV4cCI6MjA4NTY5NDU5MH0._zsSPTyD-MaEOrarBg-QuTnqwAsyxRFowY51ZTWloag'
 );
 
-const RATE = 2355;
+const RATE = 2414.93;
 
 // Tax grid — ONLY based on CV power (no category exception except motos)
 function getCorrectBaseRate(category: string, fiscalPower: string | number | undefined): number | null {

@@ -40,7 +40,7 @@ export default function NewDeclarationPage() {
 
     // Calculate current tax based on form state for Preview & Submission
     const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category, formData.weight);
-    const EXCHANGE_RATE = 2355;
+    const EXCHANGE_RATE = 2414.93;
     // User Requirement: Receipt shows RAW price (creditAmount), Bordereau shows Total (w/ fees)
     // We store the RAW price in the declaration so the Receipt (which reads stored data) is correct.
     const currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE;

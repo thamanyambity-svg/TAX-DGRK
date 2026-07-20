@@ -20,7 +20,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
     }
     if (decl.meta?.manualTaxpayer?.nif) note.taxpayer.nif = decl.meta.manualTaxpayer.nif;
 
-    const RATE_FC = 2355;
+    const RATE_FC = 2414.93;
     const principalUSD = note.payment.principalTaxUSD;
     const totalFC = principalUSD * RATE_FC;
     const fcFormatted = totalFC.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

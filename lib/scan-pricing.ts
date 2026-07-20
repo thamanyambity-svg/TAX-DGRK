@@ -1,5 +1,5 @@
 // Taux de change fixe USD -> FC (cohérent avec le reste du système)
-export const TAUX_FC = 2355;
+export const TAUX_FC = 2414.93;
 
 // Extrait le nombre de CV depuis une chaîne ("08", "9 CV", "11cv" -> 8, 9, 11)
 export function parseCv(cvRaw: string): number {

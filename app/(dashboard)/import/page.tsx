@@ -162,7 +162,7 @@ export default function ImportPage() {
 
         try {
             let successCount = 0;
-            const EXCHANGE_RATE = 2355; // Keep consistent
+            const EXCHANGE_RATE = 2414.93; // Keep consistent
 
             for (const row of previewData) {
                 if (!row._valid) {

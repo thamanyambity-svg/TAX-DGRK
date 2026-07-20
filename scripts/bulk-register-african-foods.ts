@@ -63,7 +63,7 @@ const VEHICLES_DATA = [
 async function runBulkRegistration() {
     console.log(`Starting bulk registration for ${COMPANY_INFO.name} (${VEHICLES_DATA.length} vehicles)`);
 
-    const EXCHANGE_RATE = 2355;
+    const EXCHANGE_RATE = 2414.93;
     const baseSequence = getSecureSequence(); // Generate 1 base sequence
     let currentSequence = baseSequence;
     const dateIso = getNowOrBusinessHours();

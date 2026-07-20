@@ -145,7 +145,7 @@ export default function BordereauPage() {
 
             // Tax
             if (newBaseAmount !== origBase) {
-                const exchangeRate = 2355;
+                const exchangeRate = 2414.93;
                 updates.tax = { ...decl.tax, baseRate: newBaseAmount, totalAmountFC: newBaseAmount * exchangeRate };
                 updates.meta.manualBaseAmount = newBaseAmount;
             }

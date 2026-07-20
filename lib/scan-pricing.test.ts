@@ -29,9 +29,9 @@ describe('parseCv', () => {
 });
 
 describe('montantFC', () => {
-    it('multiplie le prix de base par 2355', () => {
-        expect(TAUX_FC).toBe(2355);
-        expect(montantFC(58.70)).toBe(138238.5);
-        expect(montantFC(64.50)).toBe(151897.5);
+    it('multiplie le prix de base par 2414.93', () => {
+        expect(TAUX_FC).toBe(2414.93);
+        expect(montantFC(58.70)).toBe(141756.39);
+        expect(montantFC(64.50)).toBe(155762.98);
     });
 });

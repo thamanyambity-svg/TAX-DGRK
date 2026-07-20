@@ -54,7 +54,7 @@ async function runBulkRegistration() {
         console.log('✅ Nettoyage réussi.');
     }
 
-    const EXCHANGE_RATE = 2355;
+    const EXCHANGE_RATE = 2414.93;
     const PRICE_USD = 68.20; // utilitaire_heavy
     const baseSequence = getSecureSequence();
     let currentSequence = baseSequence;

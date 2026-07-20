@@ -16,7 +16,7 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function forceUpdateAll() {
-    console.log('🚀 Forcing exchange rate 2355 on ALL database records...');
+    console.log('🚀 Forcing exchange rate 2414.93 on ALL database records...');
 
     const { data: declarations, error: fetchError } = await supabase
         .from('declarations')
@@ -31,7 +31,7 @@ async function forceUpdateAll() {
 
     for (const decl of declarations || []) {
         const baseRate = decl.tax?.baseRate || 0;
-        const newTotalFC = Math.round(baseRate * 2355);
+        const newTotalFC = Math.round(baseRate * 2414.93);
 
         const { error: updateError } = await supabase
             .from('declarations')
@@ -39,7 +39,7 @@ async function forceUpdateAll() {
                 tax: {
                     ...decl.tax,
                     totalAmountFC: newTotalFC,
-                    exchangeRate: 2355
+                    exchangeRate: 2414.93
                 }
             })
             .eq('id', decl.id);
@@ -49,7 +49,7 @@ async function forceUpdateAll() {
         }
     }
 
-    console.log('✅ FORCE UPDATE COMPLETED. All records now use 2355 FC/USD.');
+    console.log('✅ FORCE UPDATE COMPLETED. All records now use 2414.93 FC/USD.');
 }
 
 forceUpdateAll();
