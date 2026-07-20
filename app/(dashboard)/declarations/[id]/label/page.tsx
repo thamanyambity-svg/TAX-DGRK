@@ -152,13 +152,25 @@ export default function LabelPage() {
                             marginBottom:   '1.5mm',
                             flexShrink:     0,
                         }}>
-                            {/* DGRK */}
-                            <img
-                                src="/dgrk-logo.jpg"
-                                alt="DGRK"
-                                style={{ height: '16mm', width: 'auto', objectFit: 'contain' }}
-                                crossOrigin="anonymous"
-                            />
+                            {/* DGRK — Nouveau blason avec texte en dessous */}
+                            <div style={{
+                                display: 'flex', flexDirection: 'column',
+                                alignItems: 'center', justifyContent: 'center'
+                            }}>
+                                <img
+                                    src="/kinshasa-coat.webp"
+                                    alt="Kinshasa"
+                                    style={{ height: '12mm', width: 'auto', objectFit: 'contain' }}
+                                    crossOrigin="anonymous"
+                                />
+                                <div style={{
+                                    fontSize: '9px', fontWeight: 900, color: BLACK,
+                                    fontFamily: 'Arial, Helvetica, sans-serif', marginTop: '1mm',
+                                    letterSpacing: '0.05em'
+                                }}>
+                                    DGRK
+                                </div>
+                            </div>
                             {/* IRMS — nouveau logo SVG exact */}
                             <img
                                 src="/irms-logo-new.svg"
