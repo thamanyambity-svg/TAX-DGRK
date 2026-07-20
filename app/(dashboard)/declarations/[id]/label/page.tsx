@@ -128,9 +128,9 @@ export default function LabelPage() {
                      * ═══════════════════════════════════════════════════
                      */}
                     <div style={{
-                        width:        '124mm',
-                        height:       '124mm',
-                        border:       `6px solid ${BLUE}`,   /* épaisse, unique */
+                        width:        '90mm',
+                        height:       '90mm',
+                        border:       `10px solid ${BLUE}`,   /* épaisse, unique */
                         borderRadius: '12mm',
                         background:   'white',
                         position:     'relative',
