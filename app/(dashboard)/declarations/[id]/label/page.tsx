@@ -129,7 +129,7 @@ export default function LabelPage() {
                      */}
                     <div style={{
                         width:        '90mm',
-                        height:       '124mm',
+                        height:       '127mm',
                         border:       `10px solid ${BLUE}`,   /* épaisse, unique */
                         borderRadius: '8mm',
                         background:   'white',
@@ -261,11 +261,17 @@ export default function LabelPage() {
                         </div>
                         </div> {/* ── FIN ENCADRÉ VÉHICULE ── */}
 
-                        {/* ── QR CODE — centré, grand, cadre blanc léger ── */}
+                        {/* ── ENCADRÉ SÉCURITÉ (QR + POL) ── */}
                         <div style={{
-                            display: 'flex', justifyContent: 'center',
-                            alignItems: 'center', width: '100%', flexShrink: 0,
-                            marginBottom: '2mm',
+                            width: '90%',
+                            border: `1.5px solid ${BLUE}`,
+                            borderRadius: '8px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: '2mm',
+                            marginBottom: '2mm', flexShrink: 0,
+                            position: 'relative',
                         }}>
                             <div style={{
                                 background: 'white',
@@ -276,9 +282,24 @@ export default function LabelPage() {
                             }}>
                                 <QRCode value={verifyUrl} size={104} />
                             </div>
+
+                            {/* ── POL. ─ */}
+                            <div style={{
+                                position: 'absolute',
+                                right: '4mm',
+                                top: '50%',
+                                transform: 'translateY(-50%) rotate(-90deg)',
+                                transformOrigin: 'center',
+                                color: BLACK,
+                                fontSize: '12px', fontWeight: 900,
+                                letterSpacing: '0.06em',
+                                fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
+                            }}>
+                                POL.
+                            </div>
                         </div>
 
-                        {/* ── FOOTER — dans le flux, juste sous QR ───────── */}
+                        {/* ── FOOTER — dans le flux, juste sous l'encadré sécurité ───────── */}
                         <div style={{
                             textAlign: 'center',
                             fontSize: '9px', fontWeight: 700,
@@ -288,20 +309,6 @@ export default function LabelPage() {
                         }}>
                             <div>REF: {refId}</div>
                             <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
-                        </div>
-
-                        {/* ── POL. — absolue, bas-droit, texte vertical ─ */}
-                        <div style={{
-                            position: 'absolute',
-                            right: '5mm', bottom: '22mm',
-                            transform: 'rotate(-90deg)',
-                            transformOrigin: 'right bottom',
-                            color: BLACK,
-                            fontSize: '12px', fontWeight: 900,
-                            letterSpacing: '0.06em',
-                            fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
-                        }}>
-                            POL.
                         </div>
 
 
