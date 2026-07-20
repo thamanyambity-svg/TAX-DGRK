@@ -131,14 +131,14 @@ export default function LabelPage() {
                         width:        '90mm',
                         height:       '124mm',
                         border:       `10px solid ${BLUE}`,   /* épaisse, unique */
-                        borderRadius: '12mm',
+                        borderRadius: '8mm',
                         background:   'white',
                         position:     'relative',
                         display:      'flex',
                         flexDirection:'column',
                         alignItems:   'center',
                         boxSizing:    'border-box',
-                        padding:      '5mm 6mm 10mm',
+                        padding:      '5mm 4mm 4mm',
                         overflow:     'hidden',
                     }}>
 
@@ -183,16 +183,18 @@ export default function LabelPage() {
                         {/* ── TITRES ────────────────────────────────── */}
                         <div style={{ textAlign: 'center', lineHeight: 1.3, marginBottom: '1.5mm', flexShrink: 0 }}>
                             <div style={{
-                                fontSize: '12px', fontWeight: 900, color: BLACK,
-                                textTransform: 'uppercase', letterSpacing: '0.09em',
+                                fontSize: '9px', fontWeight: 900, color: BLACK,
+                                textTransform: 'uppercase', letterSpacing: '0.05em',
                                 fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
+                                whiteSpace: 'nowrap',
                             }}>
                                 RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
                             </div>
                             <div style={{
-                                fontSize: '10px', fontWeight: 300, color: BLACK,
-                                textTransform: 'uppercase', letterSpacing: '0.07em',
+                                fontSize: '8.5px', fontWeight: 300, color: BLACK,
+                                textTransform: 'uppercase', letterSpacing: '0.04em',
                                 fontFamily: '"Abadi MT Light", "Abadi MT", Arial, sans-serif',
+                                whiteSpace: 'nowrap',
                             }}>
                                 VILLE DE KINSHASA/DGRK - TAXE VEHICULE
                             </div>
