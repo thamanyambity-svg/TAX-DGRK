@@ -183,16 +183,16 @@ export default function LabelPage() {
                         {/* ── TITRES ────────────────────────────────── */}
                         <div style={{ textAlign: 'center', lineHeight: 1.3, marginBottom: '1.5mm', flexShrink: 0 }}>
                             <div style={{
-                                fontSize: '7.5px', fontWeight: 800, color: BLUE,
+                                fontSize: '12px', fontWeight: 900, color: BLACK,
                                 textTransform: 'uppercase', letterSpacing: '0.09em',
-                                fontFamily: 'Arial, Helvetica, sans-serif',
+                                fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
                             }}>
                                 RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
                             </div>
                             <div style={{
-                                fontSize: '6.8px', fontWeight: 700, color: BLUE,
+                                fontSize: '10px', fontWeight: 300, color: BLUE,
                                 textTransform: 'uppercase', letterSpacing: '0.07em',
-                                fontFamily: 'Arial, Helvetica, sans-serif',
+                                fontFamily: '"Abadi MT Light", "Abadi MT", Arial, sans-serif',
                             }}>
                                 VILLE DE KINSHASA/DGRK - TAXE VEHICULE
                             </div>
