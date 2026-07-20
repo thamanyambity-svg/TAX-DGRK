@@ -283,23 +283,18 @@ export default function LabelPage() {
                             <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
                         </div>
 
-                        {/* ── CASE EMISSION IRMS — absolue, bas-droit ─ */}
+                        {/* ── POL. — absolue, bas-droit, texte vertical ─ */}
                         <div style={{
                             position: 'absolute',
-                            right: '5mm', bottom: '14mm',
-                            width: '18mm', height: '18mm',
-                            border: '1px dashed #c0c0c0',
-                            borderRadius: '2mm',
-                            display: 'flex', alignItems: 'center',
-                            justifyContent: 'center', flexDirection: 'column',
-                            textAlign: 'center',
-                            color: '#c0c0c0',
-                            fontSize: '5.5px', fontWeight: 500,
-                            textTransform: 'uppercase', letterSpacing: '0.06em',
-                            lineHeight: 1.5,
-                            fontFamily: 'Arial, sans-serif',
+                            right: '5mm', bottom: '22mm',
+                            transform: 'rotate(-90deg)',
+                            transformOrigin: 'right bottom',
+                            color: BLACK,
+                            fontSize: '12px', fontWeight: 900,
+                            letterSpacing: '0.06em',
+                            fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
                         }}>
-                            EMISSION<br />IRMS
+                            POL.
                         </div>
 
 
