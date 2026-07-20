@@ -175,7 +175,7 @@ export default function LabelPage() {
                             <img
                                 src="/irms-logo-new.svg"
                                 alt="IRMS DGRK"
-                                style={{ height: '16mm', width: 'auto', objectFit: 'contain' }}
+                                style={{ height: '19mm', width: 'auto', objectFit: 'contain' }}
                                 crossOrigin="anonymous"
                             />
                         </div>
@@ -190,7 +190,7 @@ export default function LabelPage() {
                                 RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
                             </div>
                             <div style={{
-                                fontSize: '10px', fontWeight: 300, color: BLUE,
+                                fontSize: '10px', fontWeight: 300, color: BLACK,
                                 textTransform: 'uppercase', letterSpacing: '0.07em',
                                 fontFamily: '"Abadi MT Light", "Abadi MT", Arial, sans-serif',
                             }}>
