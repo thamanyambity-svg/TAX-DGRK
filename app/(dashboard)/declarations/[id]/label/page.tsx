@@ -208,8 +208,8 @@ export default function LabelPage() {
 
                         {/* ── PLAQUE ────────────────────────────────── */}
                         <div style={{
-                            width: '88%',
-                            border: `3.5px solid ${BLACK}`,
+                            width: '70mm',
+                            border: `3.5px solid ${BLUE}`,
                             borderRadius: '5px',
                             padding: '3mm 2mm',
                             textAlign: 'center',
