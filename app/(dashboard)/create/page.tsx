@@ -1,25 +1,82 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, FileText, Car, User } from 'lucide-react';
+import { ArrowLeft, Save, FileText, Car, User, AlertCircle } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
 import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
+import { getTariffMode, TariffMode } from '@/lib/tariff-mode';
+import { calculer2026, Categorie2026 } from '@/lib/tarif-2026';
+
+// ─── Sous-catégories 2026 ─────────────────────────────────────────────────────
+const SOUS_CATEGORIES_2026: {
+    categorie: Categorie2026;
+    label: string;
+    requireCV?: boolean;
+    requireTonnage?: boolean;
+    group: string;
+}[] = [
+    { categorie: 'moto', label: 'Motocycle (toutes cylindrées)', group: 'Motocycles' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (1–7 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (8–10 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (11–15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (> 15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire ≤ 3,5 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire 3,5–10 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire 10–20 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire > 20 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'tracteur_agricole', label: 'Tracteur Agricole', group: 'Tracteurs & Remorques' },
+    { categorie: 'tracteur_routier', label: 'Tracteur Routier', group: 'Tracteurs & Remorques' },
+    { categorie: 'remorque', label: 'Remorque ≤ 5 T', requireTonnage: true, group: 'Tracteurs & Remorques' },
+    { categorie: 'remorque', label: 'Remorque > 5 T', requireTonnage: true, group: 'Tracteurs & Remorques' },
+    { categorie: 'bateau_baleiniere', label: 'Baleinière à moteur', group: 'Unités Flottantes' },
+    { categorie: 'bateau_plaisance', label: 'Bateau de plaisance', group: 'Unités Flottantes' },
+    { categorie: 'bateau_transport', label: 'Bateau de transport', group: 'Unités Flottantes' },
+];
+
+// Helper to determine CV from label
+const getCvFromLabel = (label: string): { min: number; max: number } => {
+    if (label.includes('1–7')) return { min: 1, max: 7 };
+    if (label.includes('8–10')) return { min: 8, max: 10 };
+    if (label.includes('11–15')) return { min: 11, max: 15 };
+    if (label.includes('> 15')) return { min: 16, max: 99 };
+    return { min: 0, max: 99 };
+};
+
+// Helper to determine tonnage from label
+const getTonnageFromLabel = (label: string): number => {
+    if (label.includes('≤ 3,5')) return 3;
+    if (label.includes('3,5–10')) return 7;
+    if (label.includes('10–20')) return 15;
+    if (label.includes('> 20')) return 25;
+    if (label.includes('≤ 5')) return 4;
+    if (label.includes('> 5')) return 10;
+    return 1;
+};
 
 export default function NewDeclarationPage() {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [tariffMode, setTariffModeState] = useState<TariffMode>('legacy');
+
+    useEffect(() => {
+        setTariffModeState(getTariffMode());
+        const handleChange = (e: Event) => {
+            setTariffModeState((e as CustomEvent<TariffMode>).detail);
+        };
+        window.addEventListener('tariffModeChanged', handleChange);
+        return () => window.removeEventListener('tariffModeChanged', handleChange);
+    }, []);
 
     // Form State
     const [formData, setFormData] = useState({
         taxpayerType: 'N/A' as TaxpayerType,
         name: '',
-        nif: '', // ADDED: Numéro d'Impôt field
+        nif: '',
         address: '',
         city: 'Kinshasa',
-
         category: 'Vignette Automobile' as VehicleCategory,
         plate: '',
         chassis: '',
@@ -29,42 +86,71 @@ export default function NewDeclarationPage() {
         modele: '',
     });
 
-    // --- DYNAMIC TAX CALCULATION ---
-    const { calculateTax } = require('@/lib/tax-rules');
+    // 2026 specific state
+    const [sousCategorie2026, setSousCategorie2026] = useState(SOUS_CATEGORIES_2026[0]);
 
-    // Helper to get CV number safely
+    // ── CALCUL TAXES ──────────────────────────────────────────────────────────
+
+    const { calculateTax } = require('@/lib/tax-rules');
+    const EXCHANGE_RATE = 2414.93;
+
     const getCV = (powerStr: string) => {
         const match = powerStr.match(/(\d+)/);
         return match ? parseInt(match[1], 10) : 0;
     };
 
-    // Calculate current tax based on form state for Preview & Submission
-    const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category, formData.weight);
-    const EXCHANGE_RATE = 2414.93;
-    // User Requirement: Receipt shows RAW price (creditAmount), Bordereau shows Total (w/ fees)
-    // We store the RAW price in the declaration so the Receipt (which reads stored data) is correct.
-    const currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE;
+    // Calcul selon le mode
+    let currentAmountUSD = 0;
+    let currentAmountFC = 0;
+    let tarif2026Breakdown: { impot: number; tsc: number; redevance: number; imprime: number; total: number; categorie: string } | null = null;
+
+    if (tariffMode === 'new2026') {
+        const cvForCalc = sousCategorie2026.requireCV ? getCV(formData.fiscalPower) || getCvFromLabel(sousCategorie2026.label).min : 0;
+        const tonnageForCalc = sousCategorie2026.requireTonnage ? parseFloat(formData.weight) || getTonnageFromLabel(sousCategorie2026.label) : 0;
+        const result = calculer2026({ categorie: sousCategorie2026.categorie, cv: cvForCalc, tonnage: tonnageForCalc });
+        tarif2026Breakdown = result;
+        currentAmountUSD = result.total;
+        currentAmountFC = Math.round(result.total * EXCHANGE_RATE);
+    } else {
+        const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category, formData.weight);
+        currentAmountUSD = currentTax.creditAmount;
+        currentAmountFC = currentTax.creditAmount * EXCHANGE_RATE;
+    }
+
+    // ── SOUMISSION ─────────────────────────────────────────────────────────────
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Generate a unique sequence based on time to avoid collisions (Grave Error Fix)
         const sequence = getSecureSequence();
         const id = generateDeclarationId(sequence);
         const noteId = generateNoteId(sequence);
 
-        // Use the calculated tax from the rules
-        // Store RAW PRICE (creditAmount) for Receipt
-        const baseRate = currentTax.creditAmount;
+        let baseRate = currentAmountUSD;
         let totalAmount = currentAmountFC;
+
+        if (tariffMode === 'legacy') {
+            const currentTax = calculateTax(getCV(formData.fiscalPower), formData.category, formData.weight);
+            baseRate = currentTax.creditAmount;
+            totalAmount = currentTax.creditAmount * EXCHANGE_RATE;
+        }
 
         const dateIso = getNowOrBusinessHours();
 
-        // FIREWALL: Clean address from any zombie data
         const ZOMBIE_RE = /PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi;
         const cleanAddress = (addr: string) =>
             addr.replace(ZOMBIE_RE, '').replace(/^\s*(N\/A|N\/A,|[,\s/-])+/, '').trim() || addr.trim();
+
+        // Déterminer la catégorie véhicule à enregistrer
+        const vehicleCategory: VehicleCategory = tariffMode === 'new2026'
+            ? sousCategorie2026.categorie === 'moto' ? 'Motocycle'
+            : sousCategorie2026.categorie === 'tourisme' ? 'Vignette Automobile'
+            : sousCategorie2026.categorie === 'utilitaire' ? 'Véhicule utilitaire'
+            : sousCategorie2026.categorie === 'tracteur_agricole' || sousCategorie2026.categorie === 'tracteur_routier' ? 'Véhicule tracteur'
+            : sousCategorie2026.categorie === 'remorque' ? 'Véhicule remorque'
+            : 'Bateau'
+            : formData.category;
 
         const newDeclaration: Declaration = {
             id,
@@ -72,15 +158,15 @@ export default function NewDeclarationPage() {
             updatedAt: dateIso,
             status: 'Payée',
             vehicle: {
-                category: formData.category,
-                type: 'N/A',        // ← TOUJOURS N/A, jamais de zombie
+                category: vehicleCategory,
+                type: 'N/A',
                 plate: formData.plate.toUpperCase(),
                 chassis: formData.chassis.toUpperCase(),
                 fiscalPower: formData.fiscalPower,
                 weight: formData.weight,
                 marque: (formData as any).marque?.toUpperCase() || '',
                 modele: (formData as any).modele?.toUpperCase() || '',
-                genre: 'N/A',       // ← TOUJOURS N/A, jamais de zombie
+                genre: 'N/A',
             },
             tax: {
                 baseRate,
@@ -91,11 +177,13 @@ export default function NewDeclarationPage() {
                 systemId: id,
                 reference: noteId.replace('NDP - 2026-', ''),
                 ndpId: noteId,
+                tariffMode,
+                tariffLabel: tariffMode === 'new2026' ? sousCategorie2026.label : undefined,
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),
                     nif: formData.nif.toUpperCase(),
-                    address: cleanAddress(formData.address.toUpperCase()), // ← Nettoyage adresse
-                    type: 'N/A',    // ← TOUJOURS N/A
+                    address: cleanAddress(formData.address.toUpperCase()),
+                    type: 'N/A',
                 }
             }
         } as any;
@@ -118,11 +206,23 @@ export default function NewDeclarationPage() {
         router.push(`/declarations/${id}/receipt`);
     };
 
+    // ── RENDU ─────────────────────────────────────────────────────────────────
+
+    const isNew2026 = tariffMode === 'new2026';
+
     return (
         <div className="max-w-3xl mx-auto py-8 px-4">
-            <div className="bg-red-600 text-white p-4 rounded-xl mb-4 font-bold text-center animate-pulse">
-                VERSION 2.0 - PROTECTION ZOMBIE ACTIVÉE
-            </div>
+            {/* Bandeau mode tarifaire */}
+            {isNew2026 ? (
+                <div className="bg-amber-500 text-white p-4 rounded-xl mb-4 font-bold text-center flex items-center justify-center gap-2">
+                    🆕 GRILLE 2026 ACTIVE — Arrêté HVK 30 Jan 2026
+                </div>
+            ) : (
+                <div className="bg-violet-600 text-white p-3 rounded-xl mb-4 text-center text-sm">
+                    📋 Grille Actuelle (Système existant)
+                </div>
+            )}
+
             <div className="flex items-center gap-4 mb-8">
                 <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                     <ArrowLeft className="h-5 w-5 text-gray-500" />
@@ -152,7 +252,6 @@ export default function NewDeclarationPage() {
                             />
                         </div>
 
-                        {/* NEW: Numéro d'Impôt Field - VERY IMPORTANT */}
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Numéro d'Impôt / NIF <span className="text-red-500">*</span>
@@ -197,27 +296,55 @@ export default function NewDeclarationPage() {
                 {/* Section 2: Véhicule */}
                 <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                     <div className="bg-gray-50/50 px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-                        <Car className="h-5 w-5 text-mint-600" />
+                        <Car className="h-5 w-5 text-indigo-600" />
                         <h2 className="font-semibold text-gray-900">Information Véhicule</h2>
                     </div>
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
-                            <select
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
-                                value={formData.category}
-                                onChange={(e) => setFormData({ ...formData, category: e.target.value as VehicleCategory })}
-                            >
-                                <option value="Vignette Automobile">Vignette Automobile</option>
-                                <option value="Véhicule utilitaire">Véhicule utilitaire (Standard)</option>
-                                <option value="Véhicule touristique">Véhicule touristique (Standard)</option>
-                                <option value="touristique_light">Touristique Light (0-10 CV)</option>
-                                <option value="touristique_updated">Touristique ($58.70)</option>
-                                <option value="touristique_medium">Touristique Medium ($63.10)</option>
-                                <option value="utilitaire_heavy">Utilitaire Heavy (Poids lourd)</option>
-                                <option value="Transport public">Transport public</option>
-                            </select>
-                        </div>
+
+                        {/* CATÉGORIE — adaptatif selon le mode */}
+                        {isNew2026 ? (
+                            <div className="col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Catégorie — Grille 2026 <span className="text-amber-500 text-xs font-normal">(Arrêté HVK)</span>
+                                </label>
+                                <select
+                                    className="w-full rounded-lg border-amber-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none text-gray-900 bg-amber-50/30"
+                                    value={SOUS_CATEGORIES_2026.indexOf(sousCategorie2026)}
+                                    onChange={(e) => setSousCategorie2026(SOUS_CATEGORIES_2026[parseInt(e.target.value)])}
+                                >
+                                    {SOUS_CATEGORIES_2026.map((sc, i) => (
+                                        <option key={i} value={i}>{sc.group} — {sc.label.replace(`${sc.group} — `, '').replace(sc.group + ' ', '')}</option>
+                                    ))}
+                                </select>
+                                {/* Preview du tarif */}
+                                {tarif2026Breakdown && (
+                                    <div className="mt-2 text-xs text-gray-500 flex gap-3 flex-wrap">
+                                        <span>Impôt: <strong>${tarif2026Breakdown.impot}</strong></span>
+                                        <span>TSC: <strong>${tarif2026Breakdown.tsc}</strong></span>
+                                        <span>Redevance: <strong>${tarif2026Breakdown.redevance}</strong></span>
+                                        <span>Imprimé: <strong>${tarif2026Breakdown.imprime}</strong></span>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+                                <select
+                                    className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
+                                    value={formData.category}
+                                    onChange={(e) => setFormData({ ...formData, category: e.target.value as VehicleCategory })}
+                                >
+                                    <option value="Vignette Automobile">Vignette Automobile</option>
+                                    <option value="Véhicule utilitaire">Véhicule utilitaire (Standard)</option>
+                                    <option value="Véhicule touristique">Véhicule touristique (Standard)</option>
+                                    <option value="touristique_light">Touristique Light (0-10 CV)</option>
+                                    <option value="touristique_updated">Touristique ($58.70)</option>
+                                    <option value="touristique_medium">Touristique Medium ($63.10)</option>
+                                    <option value="utilitaire_heavy">Utilitaire Heavy (Poids lourd)</option>
+                                    <option value="Transport public">Transport public</option>
+                                </select>
+                            </div>
+                        )}
 
                         <div className="col-span-2 md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Marque</label>
@@ -264,38 +391,56 @@ export default function NewDeclarationPage() {
                             />
                         </div>
 
-                        <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Puissance Fiscale <span className="text-xs text-gray-500">(Détermine le prix)</span></label>
-                            <input
-                                type="text"
-                                placeholder="Ex: 11 CV"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
-                                value={formData.fiscalPower}
-                                onChange={(e) => setFormData({ ...formData, fiscalPower: e.target.value })}
-                            />
-                        </div>
+                        {/* Puissance Fiscale — visible si besoin de CV */}
+                        {(!isNew2026 || sousCategorie2026.requireCV) && (
+                            <div className="col-span-2 md:col-span-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Puissance Fiscale <span className="text-xs text-gray-500">(Détermine le prix)</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Ex: 11 CV"
+                                    className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
+                                    value={formData.fiscalPower}
+                                    onChange={(e) => setFormData({ ...formData, fiscalPower: e.target.value })}
+                                />
+                            </div>
+                        )}
 
-                        <div className="col-span-2 md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Poids</label>
-                            <input
-                                type="text"
-                                placeholder="Ex: 1.5 tonnes"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
-                                value={formData.weight}
-                                onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                            />
-                        </div>
+                        {/* Poids — visible si besoin de tonnage */}
+                        {(!isNew2026 || sousCategorie2026.requireTonnage) && (
+                            <div className="col-span-2 md:col-span-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Poids {isNew2026 && sousCategorie2026.requireTonnage && <span className="text-xs text-amber-600">(Tonnage en T)</span>}
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder={isNew2026 && sousCategorie2026.requireTonnage ? "Ex: 7.5 (en tonnes)" : "Ex: 1.5 tonnes"}
+                                    className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-900"
+                                    value={formData.weight}
+                                    onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* LIVE ESTIMATION BANNER */}
-                    <div className="bg-indigo-50 px-6 py-4 border-t border-indigo-100 flex justify-between items-center">
+                    <div className={`px-6 py-4 border-t flex justify-between items-center ${isNew2026 ? 'bg-amber-50 border-amber-100' : 'bg-indigo-50 border-indigo-100'}`}>
                         <div>
-                            <p className="text-xs text-indigo-600 font-semibold uppercase tracking-wider">Montant Estimé à Payer</p>
-                            <p className="text-[10px] text-indigo-400">Basé sur {getCV(formData.fiscalPower)} CV et type {formData.category}</p>
+                            <p className={`text-xs font-semibold uppercase tracking-wider ${isNew2026 ? 'text-amber-700' : 'text-indigo-600'}`}>
+                                Montant Estimé à Payer
+                            </p>
+                            <p className={`text-[10px] ${isNew2026 ? 'text-amber-500' : 'text-indigo-400'}`}>
+                                {isNew2026 ? `Grille 2026 — ${sousCategorie2026.label}` : `Basé sur ${getCV(formData.fiscalPower)} CV et type ${formData.category}`}
+                            </p>
                         </div>
                         <div className="text-right">
-                            <p className="text-xl font-bold text-indigo-700">${currentTax.creditAmount.toFixed(2)} <span className="text-[10px] uppercase text-gray-400 font-medium">(Hors Frais)</span></p>
-                            <p className="text-xs text-indigo-500 font-mono">~ {currentAmountFC.toLocaleString()} FC</p>
+                            <p className={`text-xl font-bold ${isNew2026 ? 'text-amber-700' : 'text-indigo-700'}`}>
+                                ${currentAmountUSD.toFixed(2)} <span className="text-[10px] uppercase text-gray-400 font-medium">(Hors Frais Bancaires)</span>
+                            </p>
+                            <p className={`text-xs font-mono ${isNew2026 ? 'text-amber-500' : 'text-indigo-500'}`}>
+                                ~ {Math.round(currentAmountFC).toLocaleString()} FC
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -305,7 +450,11 @@ export default function NewDeclarationPage() {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg shadow-indigo-200 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                        className={`flex items-center gap-2 text-white px-8 py-3 rounded-xl font-semibold shadow-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed ${
+                            isNew2026
+                                ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-200'
+                                : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'
+                        }`}
                     >
                         {isSubmitting ? 'Traitement...' : 'Enregistrer & Imprimer'}
                         {!isSubmitting && <Save className="h-5 w-5" />}
