@@ -200,14 +200,18 @@ export default function LabelPage() {
                             </div>
                         </div>
 
-                        {/* ── SÉPARATEUR ────────────────────────────── */}
+                        {/* ── ENCADRÉ VÉHICULE (remplace le séparateur) ── */}
                         <div style={{
-                            width: '90%', height: '0.8px',
-                            background: BLUE, marginBottom: '3mm', flexShrink: 0,
-                        }} />
+                            width: '90%',
+                            border: `1.5px solid ${BLUE}`,
+                            borderRadius: '8px',
+                            display: 'flex', flexDirection: 'column', alignItems: 'center',
+                            padding: '3mm 2mm 1mm',
+                            marginBottom: '3mm', flexShrink: 0,
+                        }}>
 
-                        {/* ── BADGE ANNÉE ───────────────────── */}
-                        <div style={{
+                            {/* ── BADGE ANNÉE ───────────────────── */}
+                            <div style={{
                             background: BLUE, color: '#fff',
                             fontSize: '24px', fontWeight: 900,
                             letterSpacing: '0.06em',
@@ -222,7 +226,7 @@ export default function LabelPage() {
 
                         {/* ── PLAQUE ────────────────────────────────── */}
                         <div style={{
-                            width: '70mm',
+                            width: '64mm',
                             border: `3.5px solid ${BLUE}`,
                             borderRadius: '5px',
                             padding: '3mm 2mm',
@@ -255,6 +259,7 @@ export default function LabelPage() {
                                 {powerLabel} &nbsp;•&nbsp; {weightLabel}
                             </div>
                         </div>
+                        </div> {/* ── FIN ENCADRÉ VÉHICULE ── */}
 
                         {/* ── QR CODE — centré, grand, cadre blanc léger ── */}
                         <div style={{
