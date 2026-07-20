@@ -1,28 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 180" width="280" height="180">
-  <!-- Cercle IRMS ouvert en bas (comme sur l'image) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" width="340" height="260">
+  <!-- Grand cercle jaune presque complet (ouvert en bas à droite) -->
   <path
-    d="M 240,90 A 75,75 0 1,0 245,130"
+    d="M 320,130 A 115,115 0 1,0 260,235"
     fill="none"
-    stroke="#FFD600"
-    stroke-width="12"
+    stroke="#F5C518"
+    stroke-width="18"
     stroke-linecap="round"
   />
-  <!-- IRMS text -->
+  <!-- IRMS en très gros gras violet foncé -->
   <text
-    x="140" y="105"
+    x="180" y="160"
     text-anchor="middle"
-    font-family="Arial Black, Arial, sans-serif"
+    font-family="'Arial Black', Arial, sans-serif"
     font-weight="900"
-    font-size="68"
-    fill="#2A004E"
+    font-size="130"
+    fill="#1a1a3a"
   >IRMS</text>
-  <!-- i-bank text -->
+  <!-- DGRK plus petit en dessous à droite -->
   <text
-    x="140" y="140"
+    x="235" y="210"
     text-anchor="middle"
-    font-family="Arial, sans-serif"
-    font-weight="400"
-    font-size="22"
-    fill="#555555"
-  >i-bank</text>
+    font-family="'Arial Black', Arial, sans-serif"
+    font-weight="800"
+    font-size="38"
+    letter-spacing="3"
+    fill="#1a1a3a"
+  >DGRK</text>
 </svg>
