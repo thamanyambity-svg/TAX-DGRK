@@ -58,7 +58,7 @@ export default function LabelPage() {
 
     /* ── DONNÉES ─────────────────────────────────────────────────────── */
     const year      = new Date().getFullYear();
-    const yearLabel = `${year - 1}/${year}`;
+    const yearLabel = `${year}`;   // Affiche uniquement l'année en cours
     const plate     = decl.vehicle?.plate || '0000AB00';
 
     // Catégorie — supprimer les parenthèses ex: "(11–15 CV)", "(basé sur...)"
@@ -159,9 +159,9 @@ export default function LabelPage() {
                                 style={{ height: '16mm', width: 'auto', objectFit: 'contain' }}
                                 crossOrigin="anonymous"
                             />
-                            {/* IRMS — cercle jaune ouvert + IRMS DGRK */}
+                            {/* IRMS — nouveau logo SVG exact */}
                             <img
-                                src="/irms-logo-open.png"
+                                src="/irms-logo-new.svg"
                                 alt="IRMS DGRK"
                                 style={{ height: '16mm', width: 'auto', objectFit: 'contain' }}
                                 crossOrigin="anonymous"
@@ -192,14 +192,14 @@ export default function LabelPage() {
                             background: BLUE, marginBottom: '3mm', flexShrink: 0,
                         }} />
 
-                        {/* ── BADGE ANNÉE ───────────────────────────── */}
+                        {/* ── BADGE ANNÉE ───────────────────── */}
                         <div style={{
                             background: BLUE, color: '#fff',
-                            fontSize: '22px', fontWeight: 900,
-                            letterSpacing: '0.05em',
+                            fontSize: '24px', fontWeight: 900,
+                            letterSpacing: '0.06em',
                             fontFamily: 'Arial, Helvetica, sans-serif',
                             borderRadius: '999px',
-                            padding: '2.5mm 10mm',
+                            padding: '2.5mm 14mm',
                             lineHeight: 1, marginBottom: '3mm', flexShrink: 0,
                             WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
                         }}>
