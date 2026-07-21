@@ -81,16 +81,32 @@ export function generateDeclaration(sequence: number): Declaration {
     const plate = `${1000 + sequence}BA${sequence % 10}${Math.floor(sequence / 10) % 10}`;
     const chassis = `JNX${sequence}00${2026 + sequence}XYZ`; // Pseudo-VIN
 
-    // Tax calculation logic (Updated sync with tax-rules.ts)
-    const { calculateTax } = require('./tax-rules');
     const cvValue = 10 + (sequence % 20); // Generator range
     const weightStr = `${1 + (sequence % 15)} tonnes`; // Generate logical weight
-    const taxInfo = calculateTax(cvValue, category, weightStr);
 
-    // Consistent with Create Page: stored baseRate is Raw Price (creditAmount)
-    const baseRate = taxInfo.creditAmount;
+    // Use 2026 tariff grid
+    const { calculer2026 } = require('./tarif-2026');
+    const catLow = category.toLowerCase();
+
+    let c2026: { categorie: string; cv?: number; tonnage?: number };
+    if (catLow === 'motocycle') {
+        c2026 = { categorie: 'moto', cv: 0 };
+    } else if (catLow.includes('tracteur')) {
+        c2026 = { categorie: 'tracteur', cv: cvValue };
+    } else if (catLow.includes('remorque')) {
+        c2026 = { categorie: 'remorque', tonnage: 3 };
+    } else if (catLow.includes('utilitaire')) {
+        c2026 = { categorie: 'utilitaire', tonnage: 5 };
+    } else if (catLow.includes('bateau')) {
+        c2026 = { categorie: 'bateau', cv: 40 };
+    } else {
+        c2026 = { categorie: 'tourisme', cv: cvValue };
+    }
+
+    const taxInfo = calculer2026(c2026);
+    const baseRate = taxInfo.total;
     const EXCHANGE_RATE = 2414.93;
-    const totalAmount = (taxInfo.totalAmount) * EXCHANGE_RATE; // Pay Total in FC
+    const totalAmount = Math.round(baseRate * EXCHANGE_RATE);
 
     const declaration: Declaration = {
         id,
@@ -117,7 +133,9 @@ export function generateDeclaration(sequence: number): Declaration {
         },
         meta: {
             systemId: `SYS-${sequence.toString(16).toUpperCase()}`,
-            reference: `REF-${20260000 + sequence}`
+            reference: `REF-${20260000 + sequence}`,
+            tariffMode: 'new2026',
+            tariffLabel: taxInfo.categorie,
         }
     };
 
