@@ -225,7 +225,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="mt-auto pt-4 border-t border-indigo-100/50 flex justify-between items-center">
-                        <span className="text-sm font-bold text-gray-900">FC {totalAmountFC.toLocaleString()}</span>
+                        <span className="text-sm font-bold text-gray-900">FC {(totalAmountFC || 0).toLocaleString()}</span>
                         <div className="flex items-center text-sm font-medium text-indigo-600 group-hover:text-indigo-800">
                           Ouvrir le dossier <ArrowRight className="h-4 w-4 ml-1" />
                         </div>
@@ -288,7 +288,7 @@ export default function Home() {
                     </div>
                     <div className="mt-auto pt-4 border-t border-gray-50 flex justify-between items-center">
                       <span className="text-sm font-bold text-gray-900">
-                        FC {decl.tax.totalAmountFC.toLocaleString()}
+                        FC {(decl.tax?.totalAmountFC || 0).toLocaleString()}
                       </span>
                       <div className="flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700">
                         Voir <ArrowRight className="h-4 w-4 ml-1" />

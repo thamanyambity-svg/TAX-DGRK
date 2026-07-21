@@ -84,7 +84,7 @@ export default async function DossierSpecifiquePage({ params }: { params: Promis
                             <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm">
                                 <p className="text-sm text-gray-500 font-medium mb-1">Total à payer</p>
                                 <p className="text-2xl font-bold text-gray-900 font-mono tracking-tight">
-                                    {totalAmountFC.toLocaleString()} FC
+                                    {(totalAmountFC || 0).toLocaleString()} FC
                                 </p>
                                 <p className="text-xs text-gray-400 mt-1">
                                     ~ {totalAmountUSD.toFixed(2)} USD (Taxes) + {totalFees}$ (Frais Bancaires)
@@ -155,10 +155,10 @@ export default async function DossierSpecifiquePage({ params }: { params: Promis
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <span className="font-bold text-gray-900 font-mono block">
-                                                {decl.tax.totalAmountFC.toLocaleString()}
+                                                {(decl.tax?.totalAmountFC || 0).toLocaleString()}
                                             </span>
                                             <span className="text-xs text-gray-400 font-mono">
-                                                ${decl.tax.baseRate.toFixed(2)}
+                                                ${(decl.tax?.baseRate || 0).toFixed(2)}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center">

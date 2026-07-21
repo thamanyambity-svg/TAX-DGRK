@@ -187,7 +187,7 @@ export default function SocietesPage() {
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <p className="font-bold text-gray-900 font-mono">
-                                                    {comp.totalAmountFC.toLocaleString()} FC
+                                                    {(comp.totalAmountFC || 0).toLocaleString()} FC
                                                 </p>
                                             </td>
                                             <td className="px-6 py-4 text-right">
