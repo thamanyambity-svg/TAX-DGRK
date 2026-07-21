@@ -205,8 +205,12 @@ export default function ParametresPage() {
                                 {GRILLE_2026.map((ligne, i) => (
                                     <tr key={i} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-4 py-3 text-gray-800">{ligne.label}</td>
-                                        <td className="px-4 py-3 text-right text-gray-600">${ligne.tarif.impot.toFixed(2)}</td>
-                                        <td className="px-4 py-3 text-right text-gray-600">${ligne.tarif.tsc.toFixed(2)}</td>
+                                        <td className="px-4 py-3 text-right text-gray-600">
+                                            {ligne.tarif.ivh != null ? `$${ligne.tarif.ivh.toFixed(2)}` : `$${(ligne.tarif.impot ?? 0).toFixed(2)}`}
+                                        </td>
+                                        <td className="px-4 py-3 text-right text-gray-600">
+                                            {ligne.tarif.ivh != null ? '—' : `$${(ligne.tarif.tsc ?? 0).toFixed(2)}`}
+                                        </td>
                                         <td className="px-4 py-3 text-right text-gray-600">${ligne.tarif.redevance.toFixed(2)}</td>
                                         <td className="px-4 py-3 text-right text-gray-600">${ligne.tarif.imprime.toFixed(2)}</td>
                                         <td className="px-4 py-3 text-right font-bold text-violet-700 bg-violet-50">

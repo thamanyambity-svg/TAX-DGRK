@@ -12,6 +12,7 @@ import { calculateTax } from '@/lib/tax-rules';
 import {
     calculer2026,
     Categorie2026,
+    Tarif2026Breakdown,
     SOUS_CATEGORIES_2026,
     PRIMARY_CATEGORIES_2026,
     getCvFromLabel,
@@ -70,12 +71,12 @@ export default function NewDeclarationPage() {
 
     let currentAmountUSD = 0;
     let currentAmountFC = 0;
-    let tarif2026Breakdown: { impot: number; tsc: number; redevance: number; imprime: number; total: number; categorie: string } | null = null;
+    let tarif2026Breakdown: Tarif2026Breakdown | null = null;
 
     if (tariffMode === 'new2026') {
         const cvForCalc = getCvFromLabel(sousCategorie2026.label).min;
         const tonnageForCalc = getTonnageFromLabel(sousCategorie2026.label);
-        const result = calculer2026({ categorie: sousCategorie2026.categorie, cv: cvForCalc, tonnage: tonnageForCalc });
+        const result = calculer2026({ categorie: sousCategorie2026.categorie, cv: cvForCalc, tonnage: tonnageForCalc, sousCategorie: sousCategorie2026.label });
         tarif2026Breakdown = result;
         currentAmountUSD = result.total;
         currentAmountFC = Math.round(result.total * EXCHANGE_RATE);
@@ -112,7 +113,7 @@ export default function NewDeclarationPage() {
                 sousCategorie2026.categorie === 'moto' ? 'Motocycle'
                 : sousCategorie2026.categorie === 'tourisme' ? 'Vignette Automobile'
                 : sousCategorie2026.categorie === 'utilitaire' ? 'Véhicule utilitaire'
-                : sousCategorie2026.categorie === 'tracteur_agricole' || sousCategorie2026.categorie === 'tracteur_routier' ? 'Véhicule tracteur'
+                : sousCategorie2026.categorie === 'tracteur' ? 'Véhicule tracteur'
                 : sousCategorie2026.categorie === 'remorque' ? 'Véhicule remorque'
                 : 'Bateau';
         } else {
@@ -301,10 +302,17 @@ export default function NewDeclarationPage() {
                                 {/* Preview du tarif 2026 */}
                                 {tarif2026Breakdown && (
                                     <div className="mt-2 text-xs text-gray-500 flex gap-3 flex-wrap">
-                                        <span>Impôt: <strong>${tarif2026Breakdown.impot.toFixed(2)}</strong></span>
-                                        <span>TSC: <strong>${tarif2026Breakdown.tsc.toFixed(2)}</strong></span>
+                                        {tarif2026Breakdown.ivh != null ? (
+                                            <span>IVH: <strong>${tarif2026Breakdown.ivh.toFixed(2)}</strong></span>
+                                        ) : (
+                                            <>
+                                                <span>Impôt: <strong>${(tarif2026Breakdown.impot ?? 0).toFixed(2)}</strong></span>
+                                                <span>TSC: <strong>${(tarif2026Breakdown.tsc ?? 0).toFixed(2)}</strong></span>
+                                            </>
+                                        )}
                                         <span>Redevance: <strong>${tarif2026Breakdown.redevance.toFixed(2)}</strong></span>
                                         <span>Imprimé: <strong>${tarif2026Breakdown.imprime.toFixed(2)}</strong></span>
+                                        <span className="font-bold text-amber-700">Total: <strong>${tarif2026Breakdown.total.toFixed(2)}</strong></span>
                                     </div>
                                 )}
                             </div>
