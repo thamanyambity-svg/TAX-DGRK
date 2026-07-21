@@ -57,8 +57,8 @@ export default function LabelPage() {
     if (!decl)   return <div className="p-10 text-center text-red-600">Déclaration introuvable.</div>;
 
     /* ── DONNÉES ─────────────────────────────────────────────────────── */
-    const year      = new Date().getFullYear();
-    const yearLabel = `${year}`;   // Affiche uniquement l'année en cours
+    const validYear = (decl.meta as any)?.annee_fiscale || (decl.createdAt ? new Date(decl.createdAt).getFullYear() : new Date().getFullYear());
+    const yearLabel = `${validYear}`;
     const plate     = decl.vehicle?.plate || '0000AB00';
 
     // Catégorie — supprimer les parenthèses ex: "(11–15 CV)", "(basé sur...)"
@@ -89,8 +89,8 @@ export default function LabelPage() {
             : '0 T';
 
     const refId     = (decl.meta as any)?.ndpId || (decl.meta as any)?.reference || decl.id;
-    const createdAt = decl.createdAt ? new Date(decl.createdAt) : new Date(`${year}-01-01`);
-    const validTo   = new Date(`${year}-12-31`);
+    const createdAt = decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
+    const validTo   = new Date(`${validYear}-12-31`);
     const fmt       = (d: Date) =>
         `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
     const verifyUrl = `https://tax-portal-two.vercel.app/verify/${decl.id}`;
@@ -307,9 +307,10 @@ export default function LabelPage() {
                         <div style={{
                             textAlign: 'center',
                             fontSize: '9px', fontWeight: 700,
-                            color: BLUE, lineHeight: 1.6,
+                            color: BLUE, lineHeight: 1.3,
                             fontFamily: 'Arial, Helvetica, sans-serif',
                             flexShrink: 0,
+                            marginTop: '-1mm', // pull it up slightly to ensure visibility
                         }}>
                             <div>REF: {refId}</div>
                             <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>

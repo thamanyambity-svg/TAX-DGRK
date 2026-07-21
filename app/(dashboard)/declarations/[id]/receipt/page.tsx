@@ -911,7 +911,7 @@ export default function ReceiptPage() {
                         const userProvided = SPECIMEN_LABEL;
                         const declRef = (decl && (decl.reference || decl.id)) || id;
                         const categoryFromDecl = (decl && ((decl.meta && (decl.meta as any).manualMarqueType) || decl.category)) || note?.vehicle?.category || (note?.vehicle as any)?.manualMarqueType || 'Utilitaire light';
-                        const validYear = userProvided.annee_fiscale || new Date().getFullYear().toString();
+                        const validYear = (decl?.meta as any)?.annee_fiscale || (decl?.createdAt ? new Date(decl.createdAt).getFullYear().toString() : new Date().getFullYear().toString());
                         const validFrom = decl && decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
                         const validTo = new Date(`${validYear}-12-31`);
 
@@ -1168,9 +1168,10 @@ const LabelTemplate = ({ data }: { data: any }) => {
                 <div style={{
                     textAlign: 'center',
                     fontSize: '9px', fontWeight: 700,
-                    color: BLUE, lineHeight: 1.6,
+                    color: BLUE, lineHeight: 1.3,
                     fontFamily: 'Arial, Helvetica, sans-serif',
                     flexShrink: 0,
+                    marginTop: '-1mm', // pull it up slightly to ensure visibility
                 }}>
                     <div>REF: {refId}</div>
                     <div>Valide du {validFromStr} au {validToStr}</div>
