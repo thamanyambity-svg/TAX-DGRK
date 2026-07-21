@@ -11,6 +11,8 @@ import QRCode from 'react-qr-code';
 import { ArrowLeft, Download, Scissors, CalendarClock, Save, X, Printer, Edit3 } from 'lucide-react';
 import { updateDeclaration } from '@/lib/store';
 import { GRILLE_2026 } from '@/lib/tarif-2026';
+import { LEGACY_PRICES } from '@/lib/tax-rules';
+import { getTariffMode } from '@/lib/tariff-mode';
 
 import { numberToWords } from '@/lib/number-to-words';
 import SPECIMEN_LABEL from '@/lib/label-specimen';
@@ -328,6 +330,11 @@ export default function ReceiptPage() {
     const [editAnneeFab, setEditAnneeFab] = useState('');
     const [editAnneeImmat, setEditAnneeImmat] = useState('');
     const [isSavingDates, setIsSavingDates] = useState(false);
+
+    const basePrices = getTariffMode() === 'new2026'
+        ? Array.from(new Set(GRILLE_2026.map(g => g.tarif.total.toFixed(2))))
+        : LEGACY_PRICES.map(p => p.toFixed(2));
+    const sortedPrices = [...basePrices].sort((a, b) => parseFloat(a) - parseFloat(b));
 
     // --- Ajout du CSS d'impression ---
     useEffect(() => {
@@ -712,7 +719,7 @@ export default function ReceiptPage() {
                                 onChange={(e) => setEditBaseAmount(e.target.value)}
                             >
                                 <option value="">-- Sélectionner --</option>
-                                {Array.from(new Set(GRILLE_2026.map(g => g.tarif.total.toFixed(2)))).sort((a, b) => parseFloat(a) - parseFloat(b)).map(price => (
+                                {sortedPrices.map(price => (
                                     <option key={price} value={price}>{price}</option>
                                 ))}
                             </select>
@@ -726,10 +733,12 @@ export default function ReceiptPage() {
                             onChange={(e) => {
                                 const val = e.target.value;
                                 setEditMarqueType(val);
-                                // AUTOMATIC PRICE SELECTION
-                                const matchingGrille = GRILLE_2026.find(g => g.label === val);
-                                if (matchingGrille) {
-                                    setEditBaseAmount(matchingGrille.tarif.total.toFixed(2));
+                                // AUTOMATIC PRICE SELECTION (2026 only)
+                                if (getTariffMode() === 'new2026') {
+                                    const matchingGrille = GRILLE_2026.find(g => g.label === val);
+                                    if (matchingGrille) {
+                                        setEditBaseAmount(matchingGrille.tarif.total.toFixed(2));
+                                    }
                                 }
                             }}
                         >

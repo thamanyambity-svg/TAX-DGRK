@@ -10,6 +10,8 @@ import { ArrowLeft, Printer, Download, CalendarClock, Save } from 'lucide-react'
 import { calculateTax } from '@/lib/tax-rules';
 import { generateNote, DECL_BASE, CONGO_NAMES, generateRandomPhone } from '@/lib/generator';
 import { GRILLE_2026 } from '@/lib/tarif-2026';
+import { LEGACY_PRICES } from '@/lib/tax-rules';
+import { getTariffMode } from '@/lib/tariff-mode';
 import { numberToWords } from '@/lib/number-to-words';
 import { getPaymentDate } from '@/lib/business-calendar';
 import { formatKinshasaDateLong, formatKinshasaTime, clampBordereauDate } from '@/lib/utils';
@@ -54,6 +56,11 @@ export default function BordereauPage() {
     const [editAnneeFab, setEditAnneeFab] = useState('');
     const [editAnneeImmat, setEditAnneeImmat] = useState('');
     const [isSavingDates, setIsSavingDates] = useState(false);
+
+    const basePrices = getTariffMode() === 'new2026'
+        ? Array.from(new Set(GRILLE_2026.map(g => g.tarif.total.toFixed(2))))
+        : LEGACY_PRICES.map(p => p.toFixed(2));
+    const sortedPrices = [...basePrices].sort((a, b) => parseFloat(a) - parseFloat(b));
 
     useEffect(() => {
         // Charger les styles d'impression
@@ -383,7 +390,7 @@ export default function BordereauPage() {
                                 onChange={(e) => setEditBaseAmount(e.target.value)}
                             >
                                 <option value="">-- Sélectionner --</option>
-                                {Array.from(new Set(GRILLE_2026.map(g => g.tarif.total.toFixed(2)))).sort((a, b) => parseFloat(a) - parseFloat(b)).map(price => (
+                                {sortedPrices.map(price => (
                                     <option key={price} value={price}>{price}</option>
                                 ))}
                             </select>
@@ -397,9 +404,11 @@ export default function BordereauPage() {
                             onChange={(e) => {
                                 const val = e.target.value;
                                 setEditMarqueType(val);
-                                const matchingGrille = GRILLE_2026.find(g => g.label === val);
-                                if (matchingGrille) {
-                                    setEditBaseAmount(matchingGrille.tarif.total.toFixed(2));
+                                if (getTariffMode() === 'new2026') {
+                                    const matchingGrille = GRILLE_2026.find(g => g.label === val);
+                                    if (matchingGrille) {
+                                        setEditBaseAmount(matchingGrille.tarif.total.toFixed(2));
+                                    }
                                 }
                             }}
                         >

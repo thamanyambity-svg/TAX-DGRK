@@ -118,4 +118,8 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
     // Special Case: 63.10 handled via manual admin override
     return buildResult(70.10);
 };
+
+// Legacy prices for admin dropdown (unique creditAmount values from legacy calculateTax)
+export const LEGACY_PRICES = [58.20, 58.70, 63.10, 64.50, 68.20, 70.10];
+
 // Deployment trigger: Mon Mar  9 13:31:02 WAT 2026
