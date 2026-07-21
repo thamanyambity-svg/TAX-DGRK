@@ -55,9 +55,8 @@ const ReceiptView = ({
 
     // Dynamic Pricing Logic based on Fiscal Power
     const { calculateTax } = require('@/lib/tax-rules');
-    // Force rate to 2355 as per user requirement
     const principalUSD = note.payment.principalTaxUSD;
-    const RATE_FC = 2414.93;
+    const RATE_FC = 2244.76;
     const displayAmountFC_Num = principalUSD * RATE_FC;
 
     const displayAmountUSD = principalUSD;
@@ -540,7 +539,7 @@ export default function ReceiptPage() {
 
             // Tax
             if (newBaseAmount !== origBase) {
-                const exchangeRate = 2414.93;
+                const exchangeRate = 2244.76;
                 updates.tax = { ...decl.tax, baseRate: newBaseAmount, totalAmountFC: newBaseAmount * exchangeRate };
                 updates.meta.manualBaseAmount = newBaseAmount;
             }

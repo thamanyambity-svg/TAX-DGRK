@@ -67,7 +67,7 @@ export default function NewDeclarationPage() {
     const filteredSubCategories = SOUS_CATEGORIES_2026.filter(sc => sc.group === primaryCategory2026);
 
     // ── CALCUL TAXES ──────────────────────────────────────────────────────────
-    const EXCHANGE_RATE = 2414.93;
+    const EXCHANGE_RATE = 2244.76;
 
     let currentAmountUSD = 0;
     let currentAmountFC = 0;

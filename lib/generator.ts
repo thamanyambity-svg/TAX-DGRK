@@ -105,7 +105,7 @@ export function generateDeclaration(sequence: number): Declaration {
 
     const taxInfo = calculer2026(c2026);
     const baseRate = taxInfo.total;
-    const EXCHANGE_RATE = 2414.93;
+    const EXCHANGE_RATE = 2244.76;
     const totalAmount = Math.round(baseRate * EXCHANGE_RATE);
 
     const declaration: Declaration = {

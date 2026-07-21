@@ -84,7 +84,7 @@ async function runBulkRegistration() {
         console.log("Cleanup successful.");
     }
 
-    const EXCHANGE_RATE = 2414.93;
+    const EXCHANGE_RATE = 2244.76;
     const baseSequence = getSecureSequence();
     let currentSequence = baseSequence;
 

@@ -39,7 +39,7 @@ export default function NewBoatDeclarationPage() {
         const dateIso = getNowOrBusinessHours();
 
         const baseRate = parseFloat(formData.baseAmount) || 0;
-        const EXCHANGE_RATE = 2414.93;
+        const EXCHANGE_RATE = 2244.76;
         const totalAmountFC = baseRate * EXCHANGE_RATE;
 
         const newDeclaration: Declaration = {
