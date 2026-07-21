@@ -215,9 +215,9 @@ const ReceiptView = ({
                                             // Supprimer les chiffres, tirets, "CV", caractères spéciaux – garder uniquement les mots alphabétiques principaux
                                             const clean = rawLabel
                                                 .replace(/_/g, ' ')
-                                                .replace(/\d+\s*[–\-–—]\s*\d+\s*(cv|vc)?/gi, '') // ex: "11–15 CV"
-                                                .replace(/\b\d+\s*(cv|vc|t|kg|to?n?n?e?s?)\b/gi, '') // ex: "15 CV", "3.5 T"
-                                                .replace(/[–—\-\/\\|()\[\]{}#@!?*+<>]/g, ' ')
+                                                .replace(/\d+([.,]\d*)?\s*[–\-–—]\s*\d+([.,]\d*)?\s*(cv|vc|t|kg|to?n?n?e?s?)?/gi, '') // ex: "11–15 CV", "2,5-3,5 T"
+                                                .replace(/\d+([.,]\d*)?\s*(cv|vc|t|kg|to?n?n?e?s?)/gi, '') // ex: "15 CV", "3.5 T", "3,T"
+                                                .replace(/[–—\-\/\\|()\[\]{}#@!?*+<>,]/g, ' ')
                                                 .replace(/\s{2,}/g, ' ')
                                                 .trim();
                                             return clean || rawLabel;
