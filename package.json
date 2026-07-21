@@ -28,6 +28,8 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@next/swc-darwin-x64": "^16.2.10",
+    "@swc/core-darwin-x64": "^1.15.46",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

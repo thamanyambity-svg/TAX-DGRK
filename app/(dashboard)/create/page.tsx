@@ -56,6 +56,8 @@ const getTonnageFromLabel = (label: string): number => {
     return 1;
 };
 
+const PRIMARY_CATEGORIES_2026 = Array.from(new Set(SOUS_CATEGORIES_2026.map(sc => sc.group)));
+
 export default function NewDeclarationPage() {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,7 +89,21 @@ export default function NewDeclarationPage() {
     });
 
     // 2026 specific state
-    const [sousCategorie2026, setSousCategorie2026] = useState(SOUS_CATEGORIES_2026[0]);
+    const [primaryCategory2026, setPrimaryCategory2026] = useState(PRIMARY_CATEGORIES_2026[0]);
+    const [sousCategorie2026, setSousCategorie2026] = useState(
+        SOUS_CATEGORIES_2026.find(sc => sc.group === PRIMARY_CATEGORIES_2026[0]) || SOUS_CATEGORIES_2026[0]
+    );
+
+    const handlePrimaryCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newPrimary = e.target.value;
+        setPrimaryCategory2026(newPrimary);
+        const firstMatch = SOUS_CATEGORIES_2026.find(sc => sc.group === newPrimary);
+        if (firstMatch) {
+            setSousCategorie2026(firstMatch);
+        }
+    };
+
+    const filteredSubCategories = SOUS_CATEGORIES_2026.filter(sc => sc.group === primaryCategory2026);
 
     // ── CALCUL TAXES ──────────────────────────────────────────────────────────
 
@@ -105,8 +121,9 @@ export default function NewDeclarationPage() {
     let tarif2026Breakdown: { impot: number; tsc: number; redevance: number; imprime: number; total: number; categorie: string } | null = null;
 
     if (tariffMode === 'new2026') {
-        const cvForCalc = sousCategorie2026.requireCV ? getCV(formData.fiscalPower) || getCvFromLabel(sousCategorie2026.label).min : 0;
-        const tonnageForCalc = sousCategorie2026.requireTonnage ? parseFloat(formData.weight) || getTonnageFromLabel(sousCategorie2026.label) : 0;
+        // Le prix est strictement lié à la sélection, la saisie utilisateur n'influence plus le prix
+        const cvForCalc = getCvFromLabel(sousCategorie2026.label).min;
+        const tonnageForCalc = getTonnageFromLabel(sousCategorie2026.label);
         const result = calculer2026({ categorie: sousCategorie2026.categorie, cv: cvForCalc, tonnage: tonnageForCalc });
         tarif2026Breakdown = result;
         currentAmountUSD = result.total;
@@ -179,6 +196,7 @@ export default function NewDeclarationPage() {
                 ndpId: noteId,
                 tariffMode,
                 tariffLabel: tariffMode === 'new2026' ? sousCategorie2026.label : undefined,
+                manualBaseAmount: tariffMode === 'new2026' ? baseRate : undefined,
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),
                     nif: formData.nif.toUpperCase(),
@@ -305,24 +323,39 @@ export default function NewDeclarationPage() {
                         {isNew2026 ? (
                             <div className="col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Catégorie — Grille 2026 <span className="text-amber-500 text-xs font-normal">(Arrêté HVK)</span>
+                                    Catégorie Principale — Grille 2026 <span className="text-amber-500 text-xs font-normal">(Arrêté HVK)</span>
+                                </label>
+                                <select
+                                    className="w-full rounded-lg border-amber-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none text-gray-900 bg-amber-50/30 mb-4"
+                                    value={primaryCategory2026}
+                                    onChange={handlePrimaryCategoryChange}
+                                >
+                                    {PRIMARY_CATEGORIES_2026.map((cat, i) => (
+                                        <option key={i} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
+
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Sous-catégorie
                                 </label>
                                 <select
                                     className="w-full rounded-lg border-amber-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none text-gray-900 bg-amber-50/30"
                                     value={SOUS_CATEGORIES_2026.indexOf(sousCategorie2026)}
                                     onChange={(e) => setSousCategorie2026(SOUS_CATEGORIES_2026[parseInt(e.target.value)])}
                                 >
-                                    {SOUS_CATEGORIES_2026.map((sc, i) => (
-                                        <option key={i} value={i}>{sc.group} — {sc.label.replace(`${sc.group} — `, '').replace(sc.group + ' ', '')}</option>
+                                    {filteredSubCategories.map((sc, i) => (
+                                        <option key={i} value={SOUS_CATEGORIES_2026.indexOf(sc)}>
+                                            {sc.label.replace(`${sc.group} — `, '').replace(sc.group + ' ', '')}
+                                        </option>
                                     ))}
                                 </select>
                                 {/* Preview du tarif */}
                                 {tarif2026Breakdown && (
                                     <div className="mt-2 text-xs text-gray-500 flex gap-3 flex-wrap">
-                                        <span>Impôt: <strong>${tarif2026Breakdown.impot}</strong></span>
-                                        <span>TSC: <strong>${tarif2026Breakdown.tsc}</strong></span>
-                                        <span>Redevance: <strong>${tarif2026Breakdown.redevance}</strong></span>
-                                        <span>Imprimé: <strong>${tarif2026Breakdown.imprime}</strong></span>
+                                        <span>Impôt: <strong>${tarif2026Breakdown.impot.toFixed(2)}</strong></span>
+                                        <span>TSC: <strong>${tarif2026Breakdown.tsc.toFixed(2)}</strong></span>
+                                        <span>Redevance: <strong>${tarif2026Breakdown.redevance.toFixed(2)}</strong></span>
+                                        <span>Imprimé: <strong>${tarif2026Breakdown.imprime.toFixed(2)}</strong></span>
                                     </div>
                                 )}
                             </div>

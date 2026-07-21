@@ -138,7 +138,7 @@ export default function LabelPage() {
                         flexDirection:'column',
                         alignItems:   'center',
                         boxSizing:    'border-box',
-                        padding:      '5mm 4mm 1mm',
+                        padding:      '5mm 4mm 4mm',
                         overflow:     'hidden',
                     }}>
 
@@ -206,8 +206,8 @@ export default function LabelPage() {
                             border: `1.5px solid ${BLUE}`,
                             borderRadius: '8px',
                             display: 'flex', flexDirection: 'column', alignItems: 'center',
-                            padding: '2mm 2mm 1mm',
-                            marginBottom: '1.5mm', flexShrink: 0,
+                            padding: '3mm 2mm 1mm',
+                            marginBottom: '3mm', flexShrink: 0,
                         }}>
 
                             {/* ── BADGE ANNÉE ───────────────────── */}
@@ -269,8 +269,8 @@ export default function LabelPage() {
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            padding: '1mm',
-                            marginBottom: '1mm', flexShrink: 0,
+                            padding: '2mm',
+                            marginBottom: '2mm', flexShrink: 0,
                             position: 'relative',
                         }}>
                             <div style={{
