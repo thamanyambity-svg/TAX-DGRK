@@ -988,6 +988,9 @@ const LabelTemplate = ({ data }: { data: any }) => {
             background: '#fff',
             boxSizing: 'border-box',
         }}>
+            <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap');
+            `}</style>
             {/*
              * ═══════════════════════════════════════════════════
              *  ÉTIQUETTE — UNE SEULE BORDURE épaisse + arrondie
