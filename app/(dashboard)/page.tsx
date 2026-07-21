@@ -126,6 +126,38 @@ export default function Home() {
         </div>
       </div>
 
+      {/* COMPTE COMPTABILITÉ */}
+      {(() => {
+        const totalUSD = declarations.reduce((sum, d) => sum + (d.tax?.baseRate || 0), 0);
+        const totalFC = declarations.reduce((sum, d) => sum + (d.tax?.totalAmountFC || 0), 0);
+        const paidCount = declarations.filter(d => d.status === 'Payée').length;
+        const billedCount = declarations.filter(d => d.status === 'Facturée').length;
+        return (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Dossiers</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{declarations.length}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{paidCount} Payée · {billedCount} Facturée</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total USD</p>
+              <p className="text-2xl font-bold text-emerald-700 mt-1">$ {totalUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+              <p className="text-xs text-gray-400 mt-0.5">Base imposable brute</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total FC</p>
+              <p className="text-2xl font-bold text-blue-700 mt-1">FC {totalFC.toLocaleString('en-US')}</p>
+              <p className="text-xs text-gray-400 mt-0.5">TTC + Frais Bancaires</p>
+            </div>
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Taux de Change</p>
+              <p className="text-2xl font-bold text-amber-700 mt-1">2,244.76</p>
+              <p className="text-xs text-gray-400 mt-0.5">FC / USD</p>
+            </div>
+          </div>
+        );
+      })()}
+
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <h2 className="text-lg font-semibold text-gray-900">
           Aperçu Récent <span className="text-gray-400 text-sm font-normal">({filteredDeclarations.length} total)</span>
