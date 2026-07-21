@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, ScanLine, ShieldAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-import { getTariffMode, TariffMode } from '@/lib/tariff-mode';
+import { useState } from 'react';
 
 const navigation = [
     { name: 'Tableau de bord', href: '/', icon: LayoutDashboard },
@@ -18,16 +17,6 @@ const navigation = [
 
 export function AppSidebar() {
     const pathname = usePathname();
-    const [tariffMode, setTariffMode] = useState<TariffMode>('legacy');
-
-    useEffect(() => {
-        setTariffMode(getTariffMode());
-        const handleChange = (e: Event) => {
-            setTariffMode((e as CustomEvent<TariffMode>).detail);
-        };
-        window.addEventListener('tariffModeChanged', handleChange);
-        return () => window.removeEventListener('tariffModeChanged', handleChange);
-    }, []);
 
     return (
         <div className="flex flex-col w-64 border-r border-gray-200 h-screen bg-white fixed left-0 top-0 print:hidden">
@@ -62,12 +51,10 @@ export function AppSidebar() {
             <div className="px-4 pb-2">
                 <Link href="/parametres" className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors",
-                    tariffMode === 'new2026'
-                        ? "bg-amber-50 text-amber-700 border border-amber-200"
-                        : "bg-gray-50 text-gray-500 border border-gray-200"
+                    "bg-amber-50 text-amber-700 border border-amber-200"
                 )}>
                     <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                    {tariffMode === 'new2026' ? '🆕 Grille 2026 Active' : '📋 Grille Actuelle Active'}
+                    🆕 Grille 2026 Active
                 </Link>
             </div>
 

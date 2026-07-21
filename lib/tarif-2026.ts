@@ -24,6 +24,73 @@ export interface Tarif2026Breakdown {
     categorie: string;       // Libellé lisible pour les documents
 }
 
+// ─── TYPES D'ENTRÉE ──────────────────────────────────────────────────────────
+
+export type Categorie2026 =
+    | 'moto'
+    | 'tourisme'
+    | 'utilitaire'
+    | 'tracteur_agricole'
+    | 'tracteur_routier'
+    | 'remorque'
+    | 'bateau_baleiniere'
+    | 'bateau_plaisance'
+    | 'bateau_transport';
+
+export interface Calcul2026Input {
+    categorie: Categorie2026;
+    cv?: number;           // Pour véhicules de tourisme
+    tonnage?: number;      // Pour utilitaires et remorques
+}
+
+// ─── Sous-catégories 2026 ─────────────────────────────────────────────────────
+export const SOUS_CATEGORIES_2026: {
+    categorie: Categorie2026;
+    label: string;
+    requireCV?: boolean;
+    requireTonnage?: boolean;
+    group: string;
+}[] = [
+    { categorie: 'moto', label: 'Motocycle (toutes cylindrées)', group: 'Motocycles' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (1–7 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (8–10 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (11–15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme (> 15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire ≤ 3,5 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire 3,5–10 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire 10–20 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire > 20 T', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'tracteur_agricole', label: 'Tracteur Agricole', group: 'Tracteurs & Remorques' },
+    { categorie: 'tracteur_routier', label: 'Tracteur Routier', group: 'Tracteurs & Remorques' },
+    { categorie: 'remorque', label: 'Remorque ≤ 5 T', requireTonnage: true, group: 'Tracteurs & Remorques' },
+    { categorie: 'remorque', label: 'Remorque > 5 T', requireTonnage: true, group: 'Tracteurs & Remorques' },
+    { categorie: 'bateau_baleiniere', label: 'Baleinière à moteur', group: 'Unités Flottantes' },
+    { categorie: 'bateau_plaisance', label: 'Bateau de plaisance', group: 'Unités Flottantes' },
+    { categorie: 'bateau_transport', label: 'Bateau de transport', group: 'Unités Flottantes' },
+];
+
+export const PRIMARY_CATEGORIES_2026 = Array.from(new Set(SOUS_CATEGORIES_2026.map(sc => sc.group)));
+
+// Helper to determine CV from label
+export const getCvFromLabel = (label: string): { min: number; max: number } => {
+    if (label.includes('1–7')) return { min: 1, max: 7 };
+    if (label.includes('8–10')) return { min: 8, max: 10 };
+    if (label.includes('11–15')) return { min: 11, max: 15 };
+    if (label.includes('> 15')) return { min: 16, max: 99 };
+    return { min: 0, max: 99 };
+};
+
+// Helper to determine tonnage from label
+export const getTonnageFromLabel = (label: string): number => {
+    if (label.includes('≤ 3,5')) return 3;
+    if (label.includes('3,5–10')) return 7;
+    if (label.includes('10–20')) return 15;
+    if (label.includes('> 20')) return 25;
+    if (label.includes('≤ 5')) return 4;
+    if (label.includes('> 5')) return 10;
+    return 1;
+};
+
 // ─── MOTOCYCLES ──────────────────────────────────────────────────────────────
 const MOTO: Tarif2026Breakdown = {
     impot: 7.50,
@@ -172,25 +239,6 @@ const BATEAU_TRANSPORT: Tarif2026Breakdown = {
     total: 150.00,
     categorie: 'Bateau de transport de personnes/marchandises',
 };
-
-// ─── TYPES D'ENTRÉE ──────────────────────────────────────────────────────────
-
-export type Categorie2026 =
-    | 'moto'
-    | 'tourisme'
-    | 'utilitaire'
-    | 'tracteur_agricole'
-    | 'tracteur_routier'
-    | 'remorque'
-    | 'bateau_baleiniere'
-    | 'bateau_plaisance'
-    | 'bateau_transport';
-
-export interface Calcul2026Input {
-    categorie: Categorie2026;
-    cv?: number;           // Pour véhicules de tourisme
-    tonnage?: number;      // Pour utilitaires et remorques
-}
 
 // ─── FONCTION PRINCIPALE DE CALCUL ──────────────────────────────────────────
 
