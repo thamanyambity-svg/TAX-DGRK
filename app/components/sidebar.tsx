@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, ScanLine, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, ScanLine, ShieldAlert, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -12,6 +12,7 @@ const navigation = [
     { name: 'Scan IA', href: '/scan', icon: ScanLine },
     { name: 'Déclarations', href: '/declarations', icon: FileText },
     { name: 'Dossiers Entreprises', href: '/societes', icon: Briefcase },
+    { name: 'Statistiques', href: '/statistiques', icon: BarChart3 },
     { name: 'Paramètres', href: '/parametres', icon: Settings },
 ];
 
