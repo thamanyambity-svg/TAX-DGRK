@@ -966,228 +966,217 @@ export default function ReceiptPage() {
 }
 
 const LabelTemplate = ({ data }: { data: any }) => {
-    const year = data.year || new Date().getFullYear().toString();
+    const BLUE = '#1d4ed8';
+    const BLACK = '#111827';
+
+    const yearLabel = data.year || new Date().getFullYear().toString();
     const plate = data.plate || '0000AB00';
     const category = data.category || data.vehicleType || 'Utilitaire light';
-    const powerText = data.power || '7 CV';
-    const weightText = data.weight || '1630 T';
-    const refText = data.reference || 'VIG-2026-000123';
-    const declarationNumber = data.declarationNumber || 'DECL-2026-XXXXXX';
-    const validFrom = data.validFrom || `01/01/${year}`;
-    const validTo = data.validTo || `31/12/${year}`;
-    const verifyUrlLabel = data.qrValue || '';
-
-    const labelStyle: React.CSSProperties = {
-        width: '105mm',
-        height: '148.5mm',
-        padding: '1.5mm',
-        boxSizing: 'border-box',
-        background: '#f9fbff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    };
-
-    const cardStyle: React.CSSProperties = {
-        width: '100%',
-        height: '100%',
-        border: '3mm solid #1d4ed8',
-        borderRadius: '7mm',
-        padding: '3mm',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        background: '#ffffff',
-        boxSizing: 'border-box',
-    };
-
-    const topHeader: React.CSSProperties = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: '4mm',
-        marginBottom: '1.5mm',
-    };
-
-    const logoBox: React.CSSProperties = {
-        width: '24mm',
-        minWidth: '24mm',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    };
-
-    const titleBlock: React.CSSProperties = {
-        flex: 1,
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        gap: '0.5mm',
-    };
-
-    const titleText: React.CSSProperties = {
-        fontSize: '7px',
-        fontWeight: 800,
-        color: '#1d4ed8',
-        textTransform: 'uppercase',
-        letterSpacing: '0.18em',
-        lineHeight: 1.1,
-    };
-
-    const subtitleText: React.CSSProperties = {
-        fontSize: '6px',
-        fontWeight: 700,
-        color: '#111827',
-        textTransform: 'uppercase',
-        letterSpacing: '0.12em',
-    };
-
-    const separatorStyle: React.CSSProperties = {
-        height: '0.6mm',
-        width: '100%',
-        background: '#1d4ed8',
-        margin: '2mm 0',
-    };
-
-    const yearStyle: React.CSSProperties = {
-        width: '56%',
-        margin: '0 auto',
-        borderRadius: '999px',
-        background: '#1d4ed8',
-        color: '#fff',
-        fontSize: '22px',
-        fontWeight: 900,
-        textAlign: 'center',
-        padding: '3mm 0',
-        letterSpacing: '0.16em',
-    };
-
-    const plateStyle: React.CSSProperties = {
-        width: '100%',
-        border: '4px solid #111',
-        borderRadius: '6px',
-        padding: '4.5mm 3mm',
-        marginTop: '4mm',
-        textAlign: 'center',
-        fontSize: '34px',
-        fontWeight: 900,
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
-        background: '#ffffff',
-    };
-
-    const categoryStyle: React.CSSProperties = {
-        marginTop: '3mm',
-        fontSize: '9px',
-        fontWeight: 800,
-        color: '#1d4ed8',
-        textTransform: 'capitalize',
-        letterSpacing: '0.08em',
-    };
-
-    const infoStyle: React.CSSProperties = {
-        fontSize: '8.5px',
-        color: '#1d4ed8',
-        fontWeight: 700,
-        textAlign: 'center',
-        marginTop: '1mm',
-    };
-
-    const middleGrid: React.CSSProperties = {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '4mm',
-        marginTop: '5mm',
-    };
-
-    const squareBox: React.CSSProperties = {
-        width: '100%',
-        minHeight: '35mm',
-        background: '#f8fafc',
-        borderRadius: '5px',
-        border: '0.75mm solid #d1d5db',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    };
-
-    const hologramStyle: React.CSSProperties = {
-        width: '100%',
-        minHeight: '35mm',
-        borderRadius: '5px',
-        border: '0.75mm dashed #9ca3af',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        padding: '2mm',
-        color: '#9ca3af',
-        fontSize: '8px',
-        fontWeight: 700,
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        lineHeight: 1.2,
-    };
-
-    const footerRow: React.CSSProperties = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        gap: '4mm',
-        marginTop: '4mm',
-        fontSize: '7.5px',
-        lineHeight: 1.3,
-        color: '#111827',
-        fontWeight: 700,
-    };
-
-    const footerLeft: React.CSSProperties = {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.5mm',
-    };
+    const powerLabel = data.power || '7 CV';
+    const weightLabel = data.weight || '1630 T';
+    const refId = data.reference || 'VIG-2026-000123';
+    const validFromStr = data.validFrom || `01/01/${yearLabel}`;
+    const validToStr = data.validTo || `31/12/${yearLabel}`;
+    const verifyUrl = data.qrValue || '';
 
     return (
-        <div className="printable-label-card" style={labelStyle}>
-            <div style={cardStyle}>
-                <div style={topHeader}>
-                    <div style={logoBox}>
-                        <img src={data.logoLeft || '/logo-dgrk-form.jpg'} alt="DGRK" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
+        <div className="printable-label-card" style={{
+            width: '105mm',
+            height: '148.5mm',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#fff',
+            boxSizing: 'border-box',
+        }}>
+            {/*
+             * ═══════════════════════════════════════════════════
+             *  ÉTIQUETTE — UNE SEULE BORDURE épaisse + arrondie
+             * ═══════════════════════════════════════════════════
+             */}
+            <div style={{
+                width: '90mm',
+                height: '127mm',
+                border: `10px solid ${BLUE}`,   /* épaisse, unique */
+                borderRadius: '8mm',
+                background: 'white',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                boxSizing: 'border-box',
+                padding: '5mm 4mm 4mm',
+                overflow: 'hidden',
+            }}>
+
+                {/* ── LOGOS ─────────────────────────────────── */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5mm',
+                    width: '100%',
+                    marginBottom: '1.5mm',
+                    flexShrink: 0,
+                }}>
+                    {/* DGRK — Nouveau blason avec texte en dessous */}
+                    <div style={{
+                        display: 'flex', flexDirection: 'column',
+                        alignItems: 'center', justifyContent: 'center'
+                    }}>
+                        <img
+                            src="/kinshasa-coat.webp"
+                            alt="Kinshasa"
+                            style={{ height: '12mm', width: 'auto', objectFit: 'contain' }}
+                            crossOrigin="anonymous"
+                        />
+                        <div style={{
+                            fontSize: '9px', fontWeight: 900, color: BLACK,
+                            fontFamily: 'Arial, Helvetica, sans-serif', marginTop: '1mm',
+                            letterSpacing: '0.05em'
+                        }}>
+                            DGRK
+                        </div>
                     </div>
-                    <div style={titleBlock}>
-                        <span style={titleText}>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</span>
-                        <span style={subtitleText}>VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES</span>
+                    {/* IRMS — nouveau logo SVG exact */}
+                    <img
+                        src="/irms-logo-new.svg"
+                        alt="IRMS DGRK"
+                        style={{ height: '19mm', width: 'auto', objectFit: 'contain' }}
+                        crossOrigin="anonymous"
+                    />
+                </div>
+
+                {/* ── TITRES ────────────────────────────────── */}
+                <div style={{ textAlign: 'center', lineHeight: 1.3, marginBottom: '1.5mm', flexShrink: 0 }}>
+                    <div style={{
+                        fontSize: '9px', fontWeight: 900, color: BLACK,
+                        textTransform: 'uppercase', letterSpacing: '0.05em',
+                        fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
+                        whiteSpace: 'nowrap',
+                    }}>
+                        RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
                     </div>
-                    <div style={logoBox}>
-                        <img src={data.logoRight || '/irms-logo-open.png'} alt="IRMS" style={{ width: '100%', height: 'auto' }} crossOrigin="anonymous" />
+                    <div style={{
+                        fontSize: '8.5px', fontWeight: 300, color: BLACK,
+                        textTransform: 'uppercase', letterSpacing: '0.04em',
+                        fontFamily: '"Abadi MT Light", "Abadi MT", Arial, sans-serif',
+                        whiteSpace: 'nowrap',
+                    }}>
+                        VILLE DE KINSHASA/DGRK - TAXE VEHICULE
                     </div>
                 </div>
 
-                <div style={separatorStyle} />
+                {/* ── ENCADRÉ VÉHICULE ── */}
+                <div style={{
+                    width: '90%',
+                    border: `1.5px solid ${BLUE}`,
+                    borderRadius: '8px',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    padding: '3mm 2mm 1mm',
+                    marginBottom: '3mm', flexShrink: 0,
+                }}>
 
-                <div style={yearStyle}>{year}</div>
-                <div style={plateStyle}>{plate}</div>
-                <div style={categoryStyle}>{category}</div>
-                <div style={infoStyle}>{powerText} • {weightText}</div>
-
-                <div style={middleGrid}>
-                    <div style={squareBox}>
-                        {verifyUrlLabel ? <QRCode value={verifyUrlLabel} size={110} /> : <div style={{ width: '86px', height: '86px', background: '#fff' }} />}
+                    {/* ── BADGE ANNÉE ───────────────────── */}
+                    <div style={{
+                        background: BLUE, color: '#fff',
+                        fontSize: '24px', fontWeight: 900,
+                        letterSpacing: '0.06em',
+                        fontFamily: 'Arial, Helvetica, sans-serif',
+                        borderRadius: '999px',
+                        padding: '2.5mm 14mm',
+                        lineHeight: 1, marginBottom: '3mm', flexShrink: 0,
+                        WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
+                    }}>
+                        {yearLabel}
                     </div>
-                    <div style={hologramStyle}>HOLOGRAMME<br />ZONE</div>
+
+                    {/* ── PLAQUE ────────────────────────────────── */}
+                    <div style={{
+                        width: '64mm',
+                        border: `3.5px solid ${BLUE}`,
+                        borderRadius: '5px',
+                        padding: '3mm 2mm',
+                        textAlign: 'center',
+                        fontSize: '30px', fontWeight: 900,
+                        fontFamily: '"Cousine", "Courier New", monospace',
+                        letterSpacing: '0.12em',
+                        textTransform: 'uppercase',
+                        color: BLACK, lineHeight: 1,
+                        background: 'white',
+                        marginBottom: '2mm', flexShrink: 0,
+                    }}>
+                        {plate}
+                    </div>
+
+                    {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
+                    <div style={{ textAlign: 'center', marginBottom: '2mm', lineHeight: 1.4, flexShrink: 0 }}>
+                        <div style={{
+                            fontSize: '8.5px', fontWeight: 600, color: '#222',
+                            fontFamily: 'Arial, Helvetica, sans-serif',
+                        }}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                        </div>
+                        <div style={{
+                            fontSize: '8.5px', fontWeight: 700, color: BLUE,
+                            fontFamily: 'Arial, Helvetica, sans-serif',
+                        }}>
+                            {powerLabel} &nbsp;•&nbsp; {weightLabel}
+                        </div>
+                    </div>
+                </div> {/* ── FIN ENCADRÉ VÉHICULE ── */}
+
+                {/* ── ENCADRÉ SÉCURITÉ (QR + POL) ── */}
+                <div style={{
+                    width: '90%',
+                    border: `1.5px solid ${BLUE}`,
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '2mm',
+                    marginBottom: '2mm', flexShrink: 0,
+                    position: 'relative',
+                }}>
+                    <div style={{
+                        background: 'white',
+                        padding: '4px',
+                        border: '1.5px solid #d0d0d0',
+                        borderRadius: '3px',
+                        lineHeight: 0,
+                    }}>
+                        {verifyUrl ? <QRCode value={verifyUrl} size={104} /> : <div style={{ width: '104px', height: '104px', background: '#f3f4f6' }} />}
+                    </div>
+
+                    {/* ── POL. ─ */}
+                    <div style={{
+                        position: 'absolute',
+                        right: '4mm',
+                        top: '50%',
+                        transform: 'translateY(-50%) rotate(-90deg)',
+                        transformOrigin: 'center',
+                        color: BLACK,
+                        fontSize: '12px', fontWeight: 900,
+                        letterSpacing: '0.06em',
+                        fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
+                    }}>
+                        POL.
+                    </div>
                 </div>
 
-                <div style={footerRow}>
-                    <div style={footerLeft}>
-                        <span>N° Déclaration: {declarationNumber}</span>
-                        <span>REF: {refText}</span>
-                        <span>{`Valide du ${validFrom}`}</span>
-                        <span>{`au ${validTo}`}</span>
-                    </div>
-                    <div style={{ textAlign: 'right', color: '#1d4ed8', fontSize: '7.5px' }}>{category}</div>
+                {/* ── FOOTER — dans le flux, juste sous l'encadré sécurité ───────── */}
+                <div style={{
+                    textAlign: 'center',
+                    fontSize: '9px', fontWeight: 700,
+                    color: BLUE, lineHeight: 1.6,
+                    fontFamily: 'Arial, Helvetica, sans-serif',
+                    flexShrink: 0,
+                }}>
+                    <div>REF: {refId}</div>
+                    <div>Valide du {validFromStr} au {validToStr}</div>
                 </div>
-            </div>
+
+            </div>{/* fin étiquette */}
         </div>
     );
 };
