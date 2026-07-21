@@ -68,7 +68,11 @@ export default function LabelPage() {
         || 'Vignette Automobile';
     const category = rawCat
         .replace(/_/g, ' ')
+        .replace(/\d+\s*[–\-–—]\s*\d+\s*(cv|vc)?/gi, '') // ex: "11–15 CV"
+        .replace(/\b\d+\s*(cv|vc|t|kg|to?n?n?e?s?)\b/gi, '') // ex: "15 CV"
         .replace(/\s*\(.*?\)\s*/g, ' ')   // supprime tout ce qui est entre parenthèses
+        .replace(/[–—\-\/\\|()\[\]{}#@!?*+<>]/g, ' ')
+        .replace(/\s{2,}/g, ' ')
         .trim();
 
     // Puissance fiscale — ex: "11 CV" → "11 CV" ; si vide → "— CV"

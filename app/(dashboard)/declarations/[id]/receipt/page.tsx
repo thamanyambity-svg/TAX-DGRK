@@ -211,8 +211,16 @@ const ReceiptView = ({
                                     <span className="font-bold text-gray-600 whitespace-nowrap">Catégorie:</span>
                                     <span className="font-medium text-gray-800 truncate">
                                         {(() => {
-                                            const catRaw = String((note.vehicle as any).manualMarqueType || note.vehicle.category || '-');
-                                            return catRaw.includes('_') ? catRaw.replace(/_/g, ' ').toLowerCase() : catRaw;
+                                            const rawLabel = String((note.meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-');
+                                            // Supprimer les chiffres, tirets, "CV", caractères spéciaux – garder uniquement les mots alphabétiques principaux
+                                            const clean = rawLabel
+                                                .replace(/_/g, ' ')
+                                                .replace(/\d+\s*[–\-–—]\s*\d+\s*(cv|vc)?/gi, '') // ex: "11–15 CV"
+                                                .replace(/\b\d+\s*(cv|vc|t|kg|to?n?n?e?s?)\b/gi, '') // ex: "15 CV", "3.5 T"
+                                                .replace(/[–—\-\/\\|()\[\]{}#@!?*+<>]/g, ' ')
+                                                .replace(/\s{2,}/g, ' ')
+                                                .trim();
+                                            return clean || rawLabel;
                                         })()}
                                     </span>
                                 </div>
