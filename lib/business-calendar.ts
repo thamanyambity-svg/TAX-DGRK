@@ -59,15 +59,11 @@ export function getNowOrBusinessHours(): string {
 }
 
 /**
- * Calculates the bordereau date: same day as creation, 1 to 40 minutes after receipt.
- * Receipt always comes first, bordereau follows within max 40 min.
+ * Calculates the bordereau date: exactly 60 minutes after creation.
+ * Receipt always comes first, bordereau follows exactly 60 min later.
  */
 export function getPaymentDate(creationDateStr: string): string {
     const date = new Date(creationDateStr);
-
-    // Random offset between 1 and 40 minutes
-    const offsetMinutes = Math.floor(Math.random() * 40) + 1;
-    date.setMinutes(date.getMinutes() + offsetMinutes);
-
+    date.setMinutes(date.getMinutes() + 60);
     return date.toISOString();
 }

@@ -97,7 +97,7 @@ export default function ScanPage() {
             const id = generateDeclarationId(sequence);
             const noteId = generateNoteId(sequence);
             const now = new Date();
-            const bordereau = new Date(now.getTime() + (Math.floor(Math.random() * 40) + 1) * 60000);
+            const bordereau = new Date(now.getTime() + 60 * 60000);
             const totalFC = montantFC(prixBase);
 
             const nom = (donnees.nom || 'INCONNU').toUpperCase();

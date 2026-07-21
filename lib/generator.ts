@@ -113,7 +113,7 @@ export function generateDeclaration(sequence: number): Declaration {
         createdAt: getStableDate(sequence), // Deterministic date
         updatedAt: (() => {
             const created = new Date(getStableDate(sequence));
-            const offsetMin = (sequence * 7 + 13) % 40 + 1; // deterministic 1-40 min
+            const offsetMin = 60; // exactly 60 min after receipt
             created.setMinutes(created.getMinutes() + offsetMin);
             return created.toISOString();
         })(),
