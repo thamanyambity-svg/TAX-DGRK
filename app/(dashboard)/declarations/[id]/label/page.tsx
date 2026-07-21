@@ -133,7 +133,7 @@ export default function LabelPage() {
                      */}
                     <div style={{
                         width:        '90mm',
-                        height:       '127mm',
+                        height:       '130mm',
                         border:       `10px solid ${BLUE}`,   /* épaisse, unique */
                         borderRadius: '8mm',
                         background:   'white',
