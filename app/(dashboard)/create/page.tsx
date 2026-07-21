@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, FileText, Car, User, AlertCircle } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
+import { saveDeclaration } from '@/lib/store';
+import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
 import {
     calculer2026,
