@@ -211,7 +211,7 @@ const ReceiptView = ({
                                     <span className="font-bold text-gray-600 whitespace-nowrap">Catégorie:</span>
                                     <span className="font-medium text-gray-800 truncate">
                                         {(() => {
-                                            const rawLabel = String((note.meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-');
+                                            const rawLabel = String(((note as any).meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-');
                                             // Supprimer les chiffres, tirets, "CV", caractères spéciaux – garder uniquement les mots alphabétiques principaux
                                             const clean = rawLabel
                                                 .replace(/_/g, ' ')
