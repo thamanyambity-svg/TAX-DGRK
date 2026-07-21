@@ -15,6 +15,7 @@ import { GRILLE_2026 } from '@/lib/tarif-2026';
 import { numberToWords } from '@/lib/number-to-words';
 import SPECIMEN_LABEL from '@/lib/label-specimen';
 import { clampBordereauDate } from '@/lib/utils';
+import { mapCategoryToDisplayLabel } from '@/lib/category-display';
 
 // --- Label data shape (user-provided JSON) ---
 type LabelData = {
@@ -210,18 +211,9 @@ const ReceiptView = ({
                                 <div className="flex gap-1 min-w-0 pt-0.5">
                                     <span className="font-bold text-gray-600 whitespace-nowrap">Catégorie:</span>
                                     <span className="font-medium text-gray-800 truncate">
-                                        {(() => {
-                                            const rawLabel = String(((note as any).meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-');
-                                            // Supprimer les chiffres, tirets, "CV", caractères spéciaux – garder uniquement les mots alphabétiques principaux
-                                            const clean = rawLabel
-                                                .replace(/_/g, ' ')
-                                                .replace(/\d+([.,]\d*)?\s*[–\-–—]\s*\d+([.,]\d*)?\s*(cv|vc|t|kg|to?n?n?e?s?)?/gi, '') // ex: "11–15 CV", "2,5-3,5 T"
-                                                .replace(/\d+([.,]\d*)?\s*(cv|vc|t|kg|to?n?n?e?s?)/gi, '') // ex: "15 CV", "3.5 T", "3,T"
-                                                .replace(/[–—\-\/\\|()\[\]{}#@!?*+<>,]/g, ' ')
-                                                .replace(/\s{2,}/g, ' ')
-                                                .trim();
-                                            return clean || rawLabel;
-                                        })()}
+                                        {mapCategoryToDisplayLabel(
+                                            String(((note as any).meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-')
+                                        )}
                                     </span>
                                 </div>
                             </div>
@@ -910,7 +902,14 @@ export default function ReceiptPage() {
                     {(() => {
                         const userProvided = SPECIMEN_LABEL;
                         const declRef = (decl && (decl.reference || decl.id)) || id;
-                        const categoryFromDecl = (decl && ((decl.meta && (decl.meta as any).manualMarqueType) || decl.category)) || note?.vehicle?.category || (note?.vehicle as any)?.manualMarqueType || 'Utilitaire light';
+                        const categoryFromDecl = mapCategoryToDisplayLabel(
+                            (decl?.meta as any)?.tariffLabel ||
+                            (decl?.meta as any)?.manualMarqueType ||
+                            decl?.category ||
+                            note?.vehicle?.category ||
+                            (note?.vehicle as any)?.manualMarqueType ||
+                            'Utilitaire light'
+                        );
                         const validYear = (decl?.meta as any)?.annee_fiscale || (decl?.createdAt ? new Date(decl.createdAt).getFullYear().toString() : new Date().getFullYear().toString());
                         const validFrom = decl && decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
                         const validTo = new Date(`${validYear}-12-31`);

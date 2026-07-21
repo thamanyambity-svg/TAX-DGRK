@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Printer } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { Declaration } from '@/types';
+import { mapCategoryToDisplayLabel } from '@/lib/category-display';
 
 const BLUE  = '#2472b6';
 const BLACK = '#111111';
@@ -66,14 +67,8 @@ export default function LabelPage() {
         || (decl.meta as any)?.manualMarqueType
         || decl.vehicle?.category
         || 'Vignette Automobile';
-    const category = rawCat
-        .replace(/_/g, ' ')
-        .replace(/\d+([.,]\d*)?\s*[–\-–—]\s*\d+([.,]\d*)?\s*(cv|vc|t|kg|to?n?n?e?s?)?/gi, '') // ex: "11–15 CV", "2,5-3,5 T"
-        .replace(/\d+([.,]\d*)?\s*(cv|vc|t|kg|to?n?n?e?s?)/gi, '') // ex: "15 CV", "3.5 T", "3,T"
-        .replace(/\s*\(.*?\)\s*/g, ' ')   // supprime tout ce qui est entre parenthèses
-        .replace(/[–—\-\/\\|()\[\]{}#@!?*+<>,]/g, ' ') // inclus la virgule pour effacer les restes
-        .replace(/\s{2,}/g, ' ')
-        .trim();
+    // Mapper vers un libellé lisible (Touristique light, Utilitaire Medium, etc.)
+    const category = mapCategoryToDisplayLabel(rawCat);
 
     // Puissance fiscale — ex: "11 CV" → "11 CV" ; si vide → "— CV"
     const rawPower    = decl.vehicle?.fiscalPower || '';
