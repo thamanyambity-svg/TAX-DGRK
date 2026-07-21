@@ -128,31 +128,57 @@ export default function Home() {
 
       {/* COMPTE COMPTABILITÉ */}
       {(() => {
+        const isLegacy = (d: Declaration) => (d.meta as any)?.tariffMode !== 'new2026';
+        const isNew2026 = (d: Declaration) => (d.meta as any)?.tariffMode === 'new2026';
+
+        const legacy = declarations.filter(isLegacy);
+        const new2026 = declarations.filter(isNew2026);
+
         const totalUSD = declarations.reduce((sum, d) => sum + (d.tax?.baseRate || 0), 0);
         const totalFC = declarations.reduce((sum, d) => sum + (d.tax?.totalAmountFC || 0), 0);
+        const legacyUSD = legacy.reduce((sum, d) => sum + (d.tax?.baseRate || 0), 0);
+        const legacyFC = legacy.reduce((sum, d) => sum + (d.tax?.totalAmountFC || 0), 0);
+        const newUSD = new2026.reduce((sum, d) => sum + (d.tax?.baseRate || 0), 0);
+        const newFC = new2026.reduce((sum, d) => sum + (d.tax?.totalAmountFC || 0), 0);
+
         const paidCount = declarations.filter(d => d.status === 'Payée').length;
         const billedCount = declarations.filter(d => d.status === 'Facturée').length;
+
         return (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Dossiers</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{declarations.length}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{paidCount} Payée · {billedCount} Facturée</p>
+          <div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Dossiers</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{declarations.length}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{paidCount} Payée · {billedCount} Facturée</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total USD</p>
+                <p className="text-2xl font-bold text-emerald-700 mt-1">$ {totalUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-gray-400 mt-0.5">Base imposable brute</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total FC</p>
+                <p className="text-2xl font-bold text-blue-700 mt-1">FC {totalFC.toLocaleString('en-US')}</p>
+                <p className="text-xs text-gray-400 mt-0.5">TTC + Frais Bancaires</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Taux de Change</p>
+                <p className="text-2xl font-bold text-amber-700 mt-1">2,244.76</p>
+                <p className="text-xs text-gray-400 mt-0.5">FC / USD</p>
+              </div>
             </div>
-            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total USD</p>
-              <p className="text-2xl font-bold text-emerald-700 mt-1">$ {totalUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-              <p className="text-xs text-gray-400 mt-0.5">Base imposable brute</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total FC</p>
-              <p className="text-2xl font-bold text-blue-700 mt-1">FC {totalFC.toLocaleString('en-US')}</p>
-              <p className="text-xs text-gray-400 mt-0.5">TTC + Frais Bancaires</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Taux de Change</p>
-              <p className="text-2xl font-bold text-amber-700 mt-1">2,244.76</p>
-              <p className="text-xs text-gray-400 mt-0.5">FC / USD</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm bg-gradient-to-br from-orange-50 to-white">
+                <p className="text-[10px] uppercase font-bold text-orange-600 tracking-wider">Session Legacy</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{legacy.length} dossiers</p>
+                <p className="text-xs text-orange-700 mt-0.5 font-medium">$ {legacyUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })} · FC {legacyFC.toLocaleString('en-US')}</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm bg-gradient-to-br from-violet-50 to-white">
+                <p className="text-[10px] uppercase font-bold text-violet-600 tracking-wider">Session 2026</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{new2026.length} dossiers</p>
+                <p className="text-xs text-violet-700 mt-0.5 font-medium">$ {newUSD.toLocaleString('en-US', { minimumFractionDigits: 2 })} · FC {newFC.toLocaleString('en-US')}</p>
+              </div>
             </div>
           </div>
         );
