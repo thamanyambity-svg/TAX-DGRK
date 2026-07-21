@@ -8,11 +8,8 @@ import { getDeclarationById } from '@/lib/store';
 import { generateNote } from '@/lib/generator';
 import { NoteDePerception } from '@/types';
 import QRCode from 'react-qr-code';
-import { Download, Printer, ArrowLeft, Send, CheckCircle, Clock, Save, Edit3, X } from 'lucide-react';
-import { jsPDF } from 'jspdf';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { updateDeclarationAdmin, updateDeclarationAdminDates } from '@/lib/store';
+import { ArrowLeft, Download, Scissors, CalendarClock, Save, X, Printer, Edit3 } from 'lucide-react';
+import { updateDeclaration } from '@/lib/store';
 import { GRILLE_2026 } from '@/lib/tarif-2026';
 
 import { numberToWords } from '@/lib/number-to-words';
