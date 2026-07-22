@@ -116,7 +116,7 @@ const ReceiptView = ({
                 </div>
 
                 {/* Main Grid Layout - Ultra Compact Gap (gap-2) */}
-                <div className="grid grid-cols-[1fr_210px] gap-2">
+                <div className="grid grid-cols-[1fr_170px] gap-2">
 
                     {/* LEFT COLUMN: Data Fields */}
                     <div className="space-y-2">
@@ -246,8 +246,8 @@ const ReceiptView = ({
 
                     {/* RIGHT COLUMN: Bank & QR - Super Compacted */}
                     <div className="flex flex-col h-full justify-between gap-2">
-                        {/* Bank Box - Standard 4x4.5cm for stamp + signature */}
-                        <div className="border border-[#E0E0E0] rounded-lg h-[170px] bg-[#FAFAFA] flex items-center justify-center mb-0 inner-shadow-sm">
+                        {/* Bank Box - Standard 3.2cm height for stamp + signature */}
+                        <div className="border border-[#E0E0E0] rounded-lg h-[125px] bg-[#FAFAFA] flex items-center justify-center mb-0 inner-shadow-sm">
                             <p className="text-[8px] text-gray-300 font-bold uppercase text-center leading-tight tracking-wider">
                                 CADRE RÉSERVÉ <br /> À LA BANQUE
                             </p>
@@ -257,22 +257,22 @@ const ReceiptView = ({
                         <div className="border border-[#E0E0E0] rounded-lg p-2 bg-white flex flex-col items-center flex-1 justify-center min-h-[120px]">
                             <div className="bg-white p-1 mb-1">
                                 {verifyUrl ? (
-                                    <QRCode value={verifyUrl} size={80} viewBox={`0 0 256 256`} />
+                                    <QRCode value={verifyUrl} size={65} viewBox={`0 0 256 256`} />
                                 ) : (
-                                    <div className="w-[80px] h-[80px] bg-gray-100" />
+                                    <div className="w-[65px] h-[65px] bg-gray-100" />
                                 )}
                             </div>
                             <p className="text-[7px] text-gray-500 italic mb-1 font-medium">Scan pour vérifier</p>
                         </div>
-
-                        {/* Timestamp - Added below QR Box */}
-                        <div className="text-center mt-1">
-                            <p className="text-[8px] text-gray-400 font-medium">
-                                Généré le: {dateStr} {timeStr}
-                            </p>
-                        </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Timestamp - Outside dashed border, matching model */}
+            <div className="text-center mt-2">
+                <p className="text-[8px] text-gray-400 font-medium">
+                    Généré le: {dateStr} {timeStr}
+                </p>
             </div>
         </div >
     );
