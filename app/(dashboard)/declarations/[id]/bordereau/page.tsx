@@ -589,19 +589,19 @@ export default function BordereauPage() {
                         {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
                         <div className="mb-6 mt-8 text-[10pt] leading-[1.4]">
                             <div className="flex">
-                                <span className="inline-block w-[175px]">Nom du remettant.      :</span>
+                                <span className="inline-block w-[180px]">Nom du remettant.      :</span>
                                 <span>{remettantDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
-                                <span className="inline-block w-[175px]">Adresse ........   :</span>
+                                <span className="inline-block w-[180px]">Adresse ............   :</span>
                                 <span>{motifDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
-                                <span className="inline-block w-[175px]"></span>
+                                <span className="inline-block w-[180px]"></span>
                                 <span>310 - REP DEM CONGO</span>
                             </div>
                             <div className="flex mt-1">
-                                <span className="inline-block w-[175px]">Motif .............   :</span>
+                                <span className="inline-block w-[180px]">Motif ..............   :</span>
                                 <span>{motifDisplay.toUpperCase()}</span>
                             </div>
                         </div>
