@@ -564,7 +564,7 @@ export default function BordereauPage() {
                             </div>
                             <div className="flex">
                                 <div className="w-[500px]">Guichetier  ..: VNGOMBA</div>
-                                <div>     GOMBE</div>
+                                <div>GOMBE</div>
                             </div>
                             <div className="flex">
                                 <div className="w-[500px]">Gestionnaire  : DIRECTEUR GENERAL</div>
