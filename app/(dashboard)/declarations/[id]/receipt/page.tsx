@@ -265,8 +265,8 @@ const ReceiptView = ({
                             <p className="text-[7px] text-gray-500 italic mb-1 font-medium">Scan pour vérifier</p>
                         </div>
 
-                        {/* Timestamp - Just below QR box */}
-                        <div className="text-center -mt-1">
+                        {/* Timestamp Box - Same dimensions as stamp box, empty with text */}
+                        <div className="h-[80px] flex items-center justify-center">
                             <p className="text-[8px] text-gray-400 font-medium">
                                 Généré le: {dateStr} {timeStr}
                             </p>
