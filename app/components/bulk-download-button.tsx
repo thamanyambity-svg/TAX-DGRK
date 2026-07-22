@@ -102,7 +102,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
             </div>
 
             {/* Main Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px', gap: '6px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 210px', gap: '6px' }}>
                 {/* Left column */}
                 <div>
                     {/* Contribuable */}
@@ -158,12 +158,12 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                 {/* Right column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {/* Bank box */}
-                    <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', height: '70px', background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', height: '170px', background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span style={{ fontSize: '7px', color: '#ccc', fontWeight: 'bold', textAlign: 'center', lineHeight: '1.4', textTransform: 'uppercase', letterSpacing: '0.5px' }}>CADRE RÉSERVÉ<br />À LA BANQUE</span>
                     </div>
                     {/* QR */}
                     <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', padding: '6px', background: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                        <QRCode value={verifyUrl} size={60} />
+                        <QRCode value={verifyUrl} size={80} />
                         <div style={{ fontSize: '7px', color: '#888', marginTop: '4px', fontStyle: 'italic' }}>Scan pour vérifier</div>
                     </div>
                     {/* Timestamp */}
