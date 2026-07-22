@@ -549,28 +549,33 @@ export default function BordereauPage() {
                         </div>
 
                         {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE (RECALIBRÉ) */}
-                        <div className="relative mb-6 text-[10pt] leading-[1.3] whitespace-pre">
-                            <div className="flex">
-                                <span>Agence      ....: 00010 AGENCE GOMBE</span>
-                                <span></span>
+                        <div className="relative mb-6 text-[10pt] leading-[1.3]">
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[230px] text-right">Agence      ....:</span>
+                                <span> 00010 AGENCE GOMBE</span>
                             </div>
-                            <div className="flex">
-                                <span>Devise      ....: USD   DOLLAR USA</span>
-                                <span>VILLE DE KINSHASA</span>
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[230px] text-right">Devise      ....:</span>
+                                <span> USD   DOLLAR USA</span>
+                                <span className="ml-auto">VILLE DE KINSHASA</span>
                             </div>
-                            <div className="flex">
-                                <span>Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</span>
-                                <span>COLONEL EBEYA</span>
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[230px] text-right">Caisse      ....:</span>
+                                <span> 140   CAISSE SEC. GOMBE USD - 140</span>
+                                <span className="ml-auto">COLONEL EBEYA</span>
                             </div>
-                            <div className="flex">
-                                <span>Guichetier  ...: VNGOMBA</span>
-                                <span>GOMBE</span>
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[230px] text-right">Guichetier  ..:</span>
+                                <span> VNGOMBA</span>
+                                <span className="ml-auto">GOMBE</span>
                             </div>
-                            <div className="flex">
-                                <span>Gestionnaire ..: DIRECTEUR GENERAL</span>
-                                <span>KINSHASA</span>
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[230px] text-right">Gestionnaire  :</span>
+                                <span> DIRECTEUR GENERAL</span>
+                                <span className="ml-auto">KINSHASA</span>
                             </div>
-                            <div className="flex">
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[230px]"></span>
                                 <span></span>
                                 <span className="ml-auto">KINSHASA</span>
                             </div>
