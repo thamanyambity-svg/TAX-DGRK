@@ -588,9 +588,10 @@ export default function BordereauPage() {
 
                         {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
                         <div className="mb-6 mt-8 whitespace-pre text-[10pt]">
-                            <div>Nom du remettant ..: {remettantDisplay.toUpperCase()}</div>
+                            <div>Nom du remettant. : {remettantDisplay.toUpperCase()}</div>
+                            <div>Adresse ...........: {motifDisplay.toUpperCase()}</div>
                             <div className="ml-[185px]">310 - REP DEM CONGO</div>
-                            <div className="mt-1">Motif             : {motifDisplay.toUpperCase()}</div>
+                            <div className="mt-1">Motif .............: {motifDisplay.toUpperCase()}</div>
                         </div>
 
                         {/* MONTANTS */}
@@ -681,7 +682,7 @@ export default function BordereauPage() {
 
                             {/* Montant en lettres - Ver: 1.0.1 */}
                             <div className="mt-2 text-gray-800">
-                                <span>soit montant {numberToWords(Math.round(displayCredit)).toLowerCase()} usd</span>
+                                <span>Soit {numberToWords(Math.round(displayCredit)).toLowerCase()} USD</span>
                             </div>
 
                             {/* Matrice de signatures */}
