@@ -590,7 +590,7 @@ export default function BordereauPage() {
                         <div className="mb-6 mt-8 whitespace-pre text-[10pt]">
                             <div>Nom du remettant. : {remettantDisplay.toUpperCase()}</div>
                             <div>Adresse ...........: {motifDisplay.toUpperCase()}</div>
-                            <div className="ml-[20px]">310 - REP DEM CONGO</div>
+                            <div>  310 - REP DEM CONGO</div>
                             <div className="mt-1">Motif .............: {motifDisplay.toUpperCase()}</div>
                         </div>
 
