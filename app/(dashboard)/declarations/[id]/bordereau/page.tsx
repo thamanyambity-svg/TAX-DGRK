@@ -587,22 +587,22 @@ export default function BordereauPage() {
                         </div>
 
                         {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
-                        <div className="mb-6 mt-8 whitespace-pre text-[10pt] leading-[1.4]">
-                            <div className="flex">
-                                <span className="inline-block w-[190px]">Nom du remettant. :</span>
-                                <span>{remettantDisplay.toUpperCase()}</span>
+                        <div className="mb-6 mt-8 text-[10pt] leading-[1.4]">
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[148px] text-right">Nom du remettant. :</span>
+                                <span> {remettantDisplay.toUpperCase()}</span>
                             </div>
-                            <div className="flex">
-                                <span className="inline-block w-[190px]">Adresse ...........:</span>
-                                <span>{motifDisplay.toUpperCase()}</span>
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[148px] text-right">Adresse ...........:</span>
+                                <span> {motifDisplay.toUpperCase()}</span>
                             </div>
-                            <div className="flex">
-                                <span className="inline-block w-[190px]"></span>
-                                <span>310 - REP DEM CONGO</span>
+                            <div className="flex whitespace-pre">
+                                <span className="inline-block w-[148px]"></span>
+                                <span> 310 - REP DEM CONGO</span>
                             </div>
-                            <div className="flex mt-1">
-                                <span className="inline-block w-[190px]">Motif .............:</span>
-                                <span>{motifDisplay.toUpperCase()}</span>
+                            <div className="flex mt-1 whitespace-pre">
+                                <span className="inline-block w-[148px] text-right">Motif .............:</span>
+                                <span> {motifDisplay.toUpperCase()}</span>
                             </div>
                         </div>
 
