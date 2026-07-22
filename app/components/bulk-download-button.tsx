@@ -158,7 +158,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                 {/* Right column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {/* Bank box */}
-                    <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', height: '125px', background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ border: '1px solid #e0e0e0', borderRadius: '6px', height: '80px', background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span style={{ fontSize: '7px', color: '#ccc', fontWeight: 'bold', textAlign: 'center', lineHeight: '1.4', textTransform: 'uppercase', letterSpacing: '0.5px' }}>CADRE RÉSERVÉ<br />À LA BANQUE</span>
                     </div>
                     {/* QR */}
