@@ -549,35 +549,30 @@ export default function BordereauPage() {
                         </div>
 
                         {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE (RECALIBRÉ) */}
-                        <div className="relative mb-6 text-[10pt] leading-[1.3]">
-                            <div className="flex whitespace-pre">
-                                <span className="inline-block w-[230px] text-right">Agence      ....:</span>
-                                <span> 00010 AGENCE GOMBE</span>
+                        <div className="relative mb-6 text-[10pt] leading-[1.3] whitespace-pre">
+                            <div className="flex">
+                                <div className="w-[500px]">Agence      ....: 00010 AGENCE GOMBE</div>
+                                <div></div>
                             </div>
-                            <div className="flex whitespace-pre">
-                                <span className="inline-block w-[230px] text-right">Devise      ....:</span>
-                                <span> USD   DOLLAR USA</span>
-                                <span className="ml-auto">VILLE DE KINSHASA</span>
+                            <div className="flex">
+                                <div className="w-[500px]">Devise      ....: USD   DOLLAR USA</div>
+                                <div>VILLE DE KINSHASA</div>
                             </div>
-                            <div className="flex whitespace-pre">
-                                <span className="inline-block w-[230px] text-right">Caisse      ....:</span>
-                                <span> 140   CAISSE SEC. GOMBE USD - 140</span>
-                                <span className="ml-auto">COLONEL EBEYA</span>
+                            <div className="flex">
+                                <div className="w-[500px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</div>
+                                <div>COLONEL EBEYA</div>
                             </div>
-                            <div className="flex whitespace-pre">
-                                <span className="inline-block w-[230px] text-right">Guichetier  ..:</span>
-                                <span> VNGOMBA</span>
-                                <span className="ml-auto">GOMBE</span>
+                            <div className="flex">
+                                <div className="w-[500px]">Guichetier  ..: VNGOMBA</div>
+                                <div>GOMBE</div>
                             </div>
-                            <div className="flex whitespace-pre">
-                                <span className="inline-block w-[230px] text-right">Gestionnaire  :</span>
-                                <span> DIRECTEUR GENERAL</span>
-                                <span className="ml-auto">KINSHASA</span>
+                            <div className="flex">
+                                <div className="w-[500px]">Gestionnaire  : DIRECTEUR GENERAL</div>
+                                <div>KINSHASA</div>
                             </div>
-                            <div className="flex whitespace-pre">
-                                <span className="inline-block w-[230px]"></span>
-                                <span></span>
-                                <span className="ml-auto">KINSHASA</span>
+                            <div className="flex">
+                                <div className="w-[500px]"></div>
+                                <div>KINSHASA</div>
                             </div>
 
                             {/* Symbole rouge banque (reproduction exacte image 834) */}
