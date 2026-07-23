@@ -601,7 +601,7 @@ export default function BordereauPage() {
                                 <span>Adresse ..........: {motifDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
-                                <span> 310 - REP DEM CONGO</span>
+                                <span>                   310 - REP DEM CONGO</span>
                             </div>
                             <div className="flex mt-1">
                                 <span>Motif ............: {motifDisplay.toUpperCase()}</span>
