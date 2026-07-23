@@ -547,7 +547,7 @@ export default function BordereauPage() {
 
                         {/* REF ET DATE - ALIGNEMENT GRID */}
                         <div className="whitespace-pre mb-8 pl-10">
-                            <span>33000061711-79             {dateStr} a <u className="underline">{timeStr}</u></span>
+                            <span>33000061711-79             {dateStr} a {timeStr}</span>
                         </div>
 
                         {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE (RECALIBRÉ) */}
@@ -601,7 +601,7 @@ export default function BordereauPage() {
                                 <span>Adresse ..........: {motifDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
-                                <span>                   310 - REP DEM CONGO</span>
+                                <span>                     310 - REP DEM CONGO</span>
                             </div>
                             <div className="flex mt-1">
                                 <span>Motif ............: {motifDisplay.toUpperCase()}</span>
@@ -617,7 +617,7 @@ export default function BordereauPage() {
                             <div className="flex">
                                 <span className="w-[180px]">Timbre ...........:</span>
                                 <span className="ml-4 w-[160px]">               {timbre.toFixed(2)} USD</span>
-                                <span>Taxe ......:                   {taxes.toFixed(2).replace('.', ',')} USD</span>
+                                <span>Taxe ......:                          {taxes.toFixed(2).replace('.', ',')} USD</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[180px]">Frais ............:</span>
