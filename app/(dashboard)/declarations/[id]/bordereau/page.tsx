@@ -612,16 +612,17 @@ export default function BordereauPage() {
                         <div className="mb-4 mt-6 whitespace-pre">
                             <div className="flex">
                                 <span className="w-[180px]">Montant versement :</span>
-                                <span className="ml-4">              {displayTotal.toFixed(2)} USD</span>
+                                <span className="text-right w-[120px]">{displayTotal.toFixed(2)} USD</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[180px]">Timbre ...........:</span>
-                                <span className="w-[160px]">{timbre.toFixed(2)} USD</span>
-                                <span>Taxe ......:                          {taxes.toFixed(2).replace('.', ',')} USD</span>
+                                <span className="text-right w-[120px]">{timbre.toFixed(2)} USD</span>
+                                <span className="ml-12">Taxe ......:</span>
+                                <span className="ml-4">{taxes.toFixed(2).replace('.', ',')} USD</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[180px]">Frais ............:</span>
-                                <span className="ml-4">               0.00 USD</span>
+                                <span className="text-right w-[120px]">0.00 USD</span>
                             </div>
                         </div>
 
