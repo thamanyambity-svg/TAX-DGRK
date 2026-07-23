@@ -167,8 +167,8 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                         <div style={{ fontSize: '7px', color: '#888', marginTop: '4px', fontStyle: 'italic' }}>Scan pour vérifier</div>
                     </div>
                     {/* Timestamp */}
-                    <div style={{ textAlign: 'center' }}>
-                        <span style={{ fontSize: '7px', color: '#aaa' }}>Généré le: {dateStr} {timeStr}</span>
+                    <div style={{ textAlign: 'center', marginTop: '-8px' }}>
+                        <span style={{ fontSize: '7px', color: '#aaa', fontFamily: 'Mulish, sans-serif', fontWeight: 'bold' }}>Généré le: {dateStr} {timeStr}</span>
                     </div>
                 </div>
             </div>

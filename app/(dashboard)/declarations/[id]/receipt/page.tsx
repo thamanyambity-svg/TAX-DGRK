@@ -266,8 +266,8 @@ const ReceiptView = ({
                         </div>
 
                         {/* Timestamp Box - Reduced by 0.5cm */}
-                        <div className="h-[60px] flex items-center justify-center">
-                            <p className="text-[8px] text-gray-400 font-medium">
+                        <div className="h-[30px] flex items-center justify-center">
+                            <p className="text-[8px] text-gray-400 font-bold" style={{ fontFamily: 'Mulish, sans-serif' }}>
                                 Généré le: {dateStr} {timeStr}
                             </p>
                         </div>
