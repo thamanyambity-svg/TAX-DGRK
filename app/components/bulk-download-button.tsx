@@ -14,6 +14,17 @@ import QRCode from 'react-qr-code';
 // Full inline receipt renderer – mirrors the real receipt page UI
 // ─────────────────────────────────────────────────────────────────
 function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId: string }) {
+    // Load fonts for receipt
+    if (typeof document !== 'undefined') {
+        const link1 = document.createElement('link');
+        link1.rel = 'stylesheet';
+        link1.href = 'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap';
+        document.head.appendChild(link1);
+        const link2 = document.createElement('link');
+        link2.rel = 'stylesheet';
+        link2.href = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap';
+        document.head.appendChild(link2);
+    }
     const note = generateNote(decl);
     if (decl.meta?.manualTaxpayer) {
         note.taxpayer = (decl.meta as any).manualTaxpayer;
@@ -76,7 +87,10 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
     };
 
     const labelStyle: React.CSSProperties = { fontWeight: 'bold', color: '#555' };
-    const valueStyle: React.CSSProperties = { fontWeight: '600', color: '#222', textTransform: 'uppercase' };
+    const valueStyle: React.CSSProperties = { fontWeight: '400', color: '#222', textTransform: 'uppercase' };
+
+    // Format NDP - 2026 - 1579A471 (with spaces around both dashes)
+    const formattedRef = note.id ? note.id.replace(/^NDP\s*-\s*(\d{4})\s*-?\s*/, 'NDP - $1 - ') : note.id;
 
     const Ticket = ({ copyType }: { copyType: 'BANQUE' | 'CONTRIBUABLE' }) => (
         <div style={ticketStyle}>
@@ -97,7 +111,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
 
             {/* Reference */}
             <div style={{ background: '#f5f5f5', textAlign: 'center', padding: '4px', borderRadius: '3px', marginBottom: '6px', border: '1px solid #eee' }}>
-                <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2C5EB5', letterSpacing: '2px' }}>{note.id}</div>
+                <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2C5EB5', letterSpacing: '2px', fontFamily: '"Source Code Pro", monospace' }}>{formattedRef}</div>
                 <div style={{ fontSize: '7px', color: '#888', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>N° DE RÉFÉRENCE (À MENTIONNER AU PAIEMENT)</div>
             </div>
 
@@ -113,26 +127,19 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                         <div style={{ ...rowStyle, borderBottom: 'none' }}><span style={labelStyle}>Adresse:</span><span style={{ ...valueStyle, fontSize: '8px' }}>{address}</span></div>
                     </div>
 
-                    {/* Véhicule */}
+                    {/* Véhicule - 2 columns matching reference */}
                     <div style={sectionStyle}>
                         <div style={sectionHeader}>VÉHICULE &amp; TAXATION</div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 8px', gap: '2px 6px', fontSize: '8px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', padding: '4px 8px', gap: '2px 12px', fontSize: '8px' }}>
                             {/* Ligne 1 */}
                             <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Chassis:</span><span style={valueStyle}>{note.vehicle.chassis || '-'}</span></div>
                             <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Plaque:</span><span style={valueStyle}>{note.vehicle.plate || '-'}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Usage:</span><span style={{ ...valueStyle, textTransform: 'none' }}>N/A</span></div>
                             {/* Ligne 2 */}
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Marque:</span><span style={valueStyle}>{decl.vehicle?.marque || '-'}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Modèle:</span><span style={valueStyle}>{decl.vehicle?.modele || '-'}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Couleur:</span><span style={valueStyle}>{decl.vehicle?.couleur || '-'}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Marque/Type:</span><span style={valueStyle}>{cat.includes('_') ? cat.replace(/_/g, ' ').toLowerCase() : cat}</span></div>
+                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Puissance:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{fiscalPower}</span></div>
                             {/* Ligne 3 */}
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>N° Moteur:</span><span style={valueStyle}>{(decl.vehicle as any)?.moteur || '0000'}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Année Fab.:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{decl.vehicle?.annee || '-'}</span></div>
-                            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #f5f5f5', paddingBottom: '2px' }}><span style={labelStyle}>Année Immat.:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{(decl.vehicle as any)?.anneeImmat || '-'}</span></div>
-                            {/* Ligne 4 */}
-                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Puissance:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{fiscalPower}</span></div>
+                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Usage:</span><span style={{ ...valueStyle, textTransform: 'none' }}>N/A</span></div>
                             <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Poids:</span><span style={{ ...valueStyle, textTransform: 'none' }}>{decl.vehicle?.weight || '0 T'}</span></div>
-                            <div style={{ display: 'flex', gap: '4px' }}><span style={labelStyle}>Catégorie:</span><span style={{ ...valueStyle, textTransform: 'lowercase' }}>{cat.includes('_') ? cat.replace(/_/g, ' ').toLowerCase() : cat}</span></div>
                         </div>
                     </div>
 
@@ -142,7 +149,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                         <div style={{ padding: '4px 8px', fontSize: '9px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f5f5f5', paddingBottom: '4px', marginBottom: '4px' }}>
                                 <span style={{ fontWeight: 'bold', color: '#555' }}>Taxe Principale (USD):</span>
-                                <span style={{ fontWeight: 'bold' }}>${usdFormatted}</span>
+                                <span>${usdFormatted}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontWeight: 'bold', color: '#D32F2F', textTransform: 'uppercase', fontSize: '9px', letterSpacing: '0.5px' }}>MONTANT TOTAL DÛ:</span>
@@ -168,7 +175,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
                     </div>
                     {/* Timestamp */}
                     <div style={{ textAlign: 'center', marginTop: '-8px' }}>
-                        <span style={{ fontSize: '7px', color: '#aaa', fontFamily: 'Mulish, sans-serif', fontWeight: 'bold' }}>Généré le: {dateStr} {timeStr}</span>
+                        <span style={{ fontSize: '7px', color: '#aaa' }}>Généré le: {dateStr} {timeStr}</span>
                     </div>
                 </div>
             </div>

@@ -55,7 +55,7 @@ export function generateDeclarationId(sequence: number): string {
 export function generateNoteId(sequence: number): string {
     const currentId = NDP_BASE + sequence;
     const hexSuffix = currentId.toString(16).toUpperCase();
-    return `NDP - 2026-${hexSuffix}`;
+    return `NDP - 2026 - ${hexSuffix}`;
 }
 
 // Deterministic random helper (simple LCG or just modulo for demo)
@@ -161,7 +161,7 @@ export function generateNote(declaration: Declaration): NoteDePerception {
         hexSuffix = stableId.toString(16).toUpperCase();
     }
 
-    // 2. Format the Reference strictly: NDP - 2026-XXXXXXXX
+    // 2. Format the Reference strictly: NDP - 2026 - XXXXXXXX
     // This uses the declaration suffix to ensure absolute uniqueness per vehicle
     const referenceId = `NDP - 2026-${hexSuffix}`;
 

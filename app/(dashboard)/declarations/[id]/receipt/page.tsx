@@ -60,7 +60,7 @@ const ReceiptView = ({
     const displayAmountFC_Num = principalUSD * RATE_FC;
 
     const displayAmountUSD = principalUSD;
-    const displayAmountFC = displayAmountFC_Num.toLocaleString('fr-FR', {
+    const displayAmountFC = displayAmountFC_Num.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
@@ -72,74 +72,73 @@ const ReceiptView = ({
     const dateStr = formatKinshasaDate(creationDate);
     const timeStr = formatKinshasaTime(creationDate);
 
-    // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
-    // User requested format: NDP-2026-1579A471 (No Name)
-    const formattedRef = note.id;
+    // Format NDP-2026-1579A471 (exact reference model with hyphen formatting)
+    const formattedRef = note.id ? note.id.replace(/^NDP\s*-\s*(\d{4})\s*-?\s*/, 'NDP-$1-') : '';
 
     return (
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
 
-            {/* Main Container - ULTRA COMPACT MODE */}
+            {/* Main Ticket Container with dashed border matching reference */}
             <div className="p-3 border-2 border-dashed border-gray-300 rounded-lg relative overflow-hidden bg-white">
 
-                {/* Header Section - Minimal Margin (mb-1) */}
-                <div className="flex items-center justify-between border-b-2 border-[#2C5EB5] pb-1 mb-1">
+                {/* Header Section */}
+                <div className="flex items-center justify-between pb-1.5 mb-1.5">
                     {/* Logo Area */}
-                    <div className="w-[110px] -ml-2 flex justify-center items-center">
+                    <div className="w-[120px] -ml-1 flex justify-start items-center">
                         <img
                             src="/logo-dgrk-form.jpg"
                             alt="Logo DGRK"
-                            className="w-full h-auto object-contain"
+                            className="w-full h-auto object-contain max-h-[46px]"
                         />
                     </div>
 
                     {/* Title Area */}
                     <div className="text-center flex-1 leading-tight">
-                        <h1 className="text-lg font-bold uppercase text-[#333333] tracking-wide">RÉCÉPISSÉ</h1>
-                        <p className="text-[9px] text-gray-500 mt-0 font-medium tracking-wide">
+                        <h1 className="text-xl font-bold uppercase text-[#1F2937] tracking-wider">RÉCÉPISSÉ</h1>
+                        <p className="text-[10px] text-gray-500 mt-0.5 font-medium tracking-wide">
                             {note.vehicle.category === 'Bateau' ? 'Vignette Bateaux' : 'Vignette Automobile'} | Exercice 2026
                         </p>
                     </div>
 
                     {/* Copy Badge */}
-                    <div className="w-auto min-w-[120px] flex justify-end">
-                        <span className="border border-gray-400 text-gray-500 text-[8px] font-bold px-2 py-0.5 rounded uppercase bg-white tracking-tight whitespace-nowrap">
+                    <div className="w-auto min-w-[130px] flex justify-end">
+                        <span className="border border-gray-400 text-gray-600 text-[9px] font-bold px-2.5 py-0.5 rounded uppercase bg-white tracking-wider whitespace-nowrap">
                             COPIE {type === 'BANQUE' ? 'BANQUE' : 'CONTRIBUABLE'}
                         </span>
                     </div>
                 </div>
 
-                {/* Reference Banner - Minimal Margin (mb-2) */}
-                <div className="bg-[#F5F5F5] py-1 mb-2 text-center rounded-sm mx-auto w-full border border-gray-100">
-                    <h2 className="text-base font-bold text-[#2C5EB5] tracking-widest leading-none">{formattedRef}</h2>
-                    <p className="text-[7px] text-gray-500 uppercase font-bold mt-0 tracking-wider">N° DE RÉFÉRENCE (À MENTIONNER AU PAIEMENT)</p>
+                {/* Reference Banner */}
+                <div className="bg-[#F3F4F6] py-1.5 mb-2.5 text-center rounded-md mx-auto w-full">
+                    <h2 className="text-lg text-[#1D4ED8] tracking-widest leading-none font-extrabold" style={{ fontFamily: 'var(--font-source-code-pro), monospace' }}>{formattedRef}</h2>
+                    <p className="text-[8px] text-gray-500 uppercase font-bold mt-1 tracking-wider">N° DE RÉFÉRENCE (À MENTIONNER AU PAIEMENT)</p>
                 </div>
 
-                {/* Main Grid Layout - Ultra Compact Gap (gap-2) */}
-                <div className="grid grid-cols-[1fr_170px] gap-2">
+                {/* Main Grid Layout */}
+                <div className="grid grid-cols-[1fr_185px] gap-2.5 items-stretch">
 
                     {/* LEFT COLUMN: Data Fields */}
                     <div className="space-y-2">
 
-                        {/* CONTRIBUABLE - Styled exactly like the user image (Vertical List, Wide Label) */}
+                        {/* CONTRIBUABLE */}
                         <div className="border border-[#E0E0E0] rounded-sm bg-white overflow-hidden">
                             <div className="px-2 py-0.5 bg-white border-b border-[#E0E0E0]">
-                                <h3 className="font-bold text-[#333333] text-[8px] uppercase tracking-wide">CONTRIBUABLE</h3>
+                                <h3 className="font-bold text-[#333333] text-[9px] uppercase tracking-wide">CONTRIBUABLE</h3>
                             </div>
                             <div className="px-2 py-1 space-y-0.5 text-[9px]">
-                                <div className="grid grid-cols-[180px_1fr] border-b border-[#F0F0F0] pb-0.5">
+                                <div className="grid grid-cols-[160px_1fr] border-b border-[#F0F0F0] pb-0.5">
                                     <span className="font-bold text-gray-600">Noms/Raison Sociale:</span>
-                                    <span className="uppercase font-bold text-gray-800 break-words leading-tight truncate">{note.taxpayer.name}</span>
+                                    <span className="uppercase text-gray-900 break-words leading-tight truncate">{note.taxpayer.name}</span>
                                 </div>
-                                <div className="grid grid-cols-[180px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
+                                <div className="grid grid-cols-[160px_1fr] border-b border-[#F0F0F0] pb-0.5 pt-0.5">
                                     <span className="font-bold text-gray-600">N° Impôt/NIF:</span>
-                                    <span className="font-medium text-gray-800">
+                                    <span className="text-gray-900">
                                         {note.taxpayer.name.includes('SOCIMEX') ? 'N/A' : (note.taxpayer.nif || '-')}
                                     </span>
                                 </div>
-                                <div className="grid grid-cols-[180px_1fr] pt-0.5">
+                                <div className="grid grid-cols-[160px_1fr] pt-0.5">
                                     <span className="font-bold text-gray-600">Adresse:</span>
-                                    <span className="font-medium text-gray-800 text-[9px] break-words leading-tight truncate">
+                                    <span className="text-gray-900 text-[9px] break-words leading-tight truncate">
                                         {(note.taxpayer.address || 'KINSHASA')
                                             .replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '')
                                             .replace(/^[,/\s-]+/, '')
@@ -150,72 +149,42 @@ const ReceiptView = ({
                             </div>
                         </div>
 
-                        {/* VÉHICULE & TAXATION - 3 Columns Grid (complet, identique au document officiel) */}
+                        {/* VÉHICULE & TAXATION */}
                         <div className="border border-[#E0E0E0] rounded-sm bg-white overflow-hidden">
                             <div className="px-2 py-0.5 bg-white border-b border-[#E0E0E0]">
-                                <h3 className="font-bold text-[#333333] text-[8px] uppercase tracking-wide">
+                                <h3 className="font-bold text-[#333333] text-[9px] uppercase tracking-wide">
                                     {note.vehicle.category === 'Bateau' ? 'BATEAUX & TAXATION' : 'VÉHICULE & TAXATION'}
                                 </h3>
                             </div>
-                            <div className="px-2 py-1 grid grid-cols-3 gap-x-2 gap-y-0.5 text-[8px]">
-                                {/* Ligne 1 : Chassis | Plaque | Usage */}
+                            <div className="px-2 py-1 grid grid-cols-2 gap-x-4 gap-y-0.5 text-[8.5px]">
+                                {/* Ligne 1 : Chassis | Plaque */}
                                 <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
                                     <span className="font-bold text-gray-600 whitespace-nowrap">{note.vehicle.category === 'Bateau' ? 'Embarcation:' : 'Chassis:'}</span>
-                                    <span className="uppercase font-bold text-gray-800 truncate">{note.vehicle.chassis || '-'}</span>
+                                    <span className="uppercase text-gray-900 truncate">{note.vehicle.chassis || '-'}</span>
                                 </div>
                                 <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
                                     <span className="font-bold text-gray-600 whitespace-nowrap">Plaque:</span>
-                                    <span className="uppercase font-bold text-gray-800 truncate">{note.vehicle.plate || '-'}</span>
-                                </div>
-                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Usage:</span>
-                                    <span className="font-medium text-gray-800 truncate">N/A</span>
+                                    <span className="uppercase text-gray-900 truncate">{note.vehicle.plate || '-'}</span>
                                 </div>
 
-                                {/* Ligne 2 : Marque | Modèle | Couleur */}
+                                {/* Ligne 2 : Marque/Type | Puissance */}
                                 <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Marque:</span>
-                                    <span className="uppercase font-medium text-gray-800 truncate">{note.vehicle.marque || '-'}</span>
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Marque/Type:</span>
+                                    <span className="text-gray-900 truncate">{mapCategoryToDisplayLabel(String(((note as any).meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-'))}</span>
                                 </div>
                                 <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Modèle:</span>
-                                    <span className="uppercase font-medium text-gray-800 truncate">{note.vehicle.modele || '-'}</span>
-                                </div>
-                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Couleur:</span>
-                                    <span className="uppercase font-medium text-gray-800 truncate">{note.vehicle.couleur || '-'}</span>
-                                </div>
-
-                                {/* Ligne 3 : N° Moteur | Année Fab. | Année Immat. */}
-                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">N° Moteur:</span>
-                                    <span className="uppercase font-medium text-gray-800 truncate">{(note.vehicle as any).moteur || '0000'}</span>
-                                </div>
-                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Année Fab.:</span>
-                                    <span className="font-medium text-gray-800 truncate">{note.vehicle.annee || '-'}</span>
-                                </div>
-                                <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Année Immat.:</span>
-                                    <span className="font-medium text-gray-800 truncate">{(note.vehicle as any).anneeImmat || (note.vehicle as any).manualAnneeImmat || '-'}</span>
-                                </div>
-
-                                {/* Ligne 4 : Puissance | Poids | Catégorie */}
-                                <div className="flex gap-1 min-w-0 pt-0.5">
                                     <span className="font-bold text-gray-600 whitespace-nowrap">Puissance:</span>
-                                    <span className="font-medium text-gray-800 truncate">{note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV'}</span>
+                                    <span className="text-gray-900 truncate">{note.vehicle.fiscalPower ? `${String(note.vehicle.fiscalPower).replace(/(cv|vc)/gi, '').trim()} CV` : '- CV'}</span>
+                                </div>
+
+                                {/* Ligne 3 : Usage | Poids */}
+                                <div className="flex gap-1 min-w-0 pt-0.5">
+                                    <span className="font-bold text-gray-600 whitespace-nowrap">Usage:</span>
+                                    <span className="text-gray-900 truncate">N/A</span>
                                 </div>
                                 <div className="flex gap-1 min-w-0 pt-0.5">
                                     <span className="font-bold text-gray-600 whitespace-nowrap">Poids:</span>
-                                    <span className="font-medium text-gray-800 truncate">{note.vehicle.weight || '-'}</span>
-                                </div>
-                                <div className="flex gap-1 min-w-0 pt-0.5">
-                                    <span className="font-bold text-gray-600 whitespace-nowrap">Catégorie:</span>
-                                    <span className="font-medium text-gray-800 truncate">
-                                        {mapCategoryToDisplayLabel(
-                                            String(((note as any).meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-')
-                                        )}
-                                    </span>
+                                    <span className="text-gray-900 truncate">{note.vehicle.weight || '-'}</span>
                                 </div>
                             </div>
                         </div>
@@ -223,58 +192,57 @@ const ReceiptView = ({
                         {/* DÉTAIL DU PAIEMENT */}
                         <div className="border border-[#E0E0E0] rounded-sm bg-white overflow-hidden">
                             <div className="px-2 py-0.5 bg-white border-b border-[#E0E0E0]">
-                                <h3 className="font-bold text-[#333333] text-[8px] uppercase tracking-wide">DÉTAIL DU PAIEMENT</h3>
+                                <h3 className="font-bold text-[#333333] text-[9px] uppercase tracking-wide">DÉTAIL DU PAIEMENT</h3>
                             </div>
                             <div className="px-2 py-1.5 text-[9px]">
-                                <div className="flex justify-between mb-1.5 border-b border-[#F0F0F0] pb-1">
+                                <div className="flex justify-between mb-1 border-b border-[#F0F0F0] pb-1">
                                     <span className="text-gray-600 font-bold">Taxe Principale (USD):</span>
-                                    <span className="font-bold text-[#333333]">${displayAmountUSD.toFixed(2)}</span>
+                                    <span className="text-gray-900 font-bold">${displayAmountUSD.toFixed(2)}</span>
                                 </div>
-                                <div className="flex flex-col gap-0.5">
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-bold text-[#D32F2F] uppercase text-[9px] tracking-wide whitespace-nowrap">MONTANT TOTAL DÛ:</span>
-                                        <span className="text-base font-extrabold text-[#D32F2F] tracking-tight whitespace-nowrap">FC {displayAmountFC}</span>
+                                <div className="flex justify-between items-end pt-0.5">
+                                    <div>
+                                        <span className="font-extrabold text-[#DC2626] uppercase text-[9px] tracking-wide block">MONTANT TOTAL DÛ:</span>
+                                        <p className="text-[7.5px] text-gray-500 italic leading-tight mt-0.5">
+                                            (Payable en Francs Congolais au taux du jour)
+                                        </p>
                                     </div>
-                                    <p className="text-[7px] text-gray-500 italic font-medium leading-none">
-                                        (Payable en Francs Congolais au taux du jour)
-                                    </p>
-
+                                    <span className="text-lg font-black text-[#DC2626] tracking-tight whitespace-nowrap">FC {displayAmountFC}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: Bank & QR - Super Compacted */}
+                    {/* RIGHT COLUMN: Bank & QR */}
                     <div className="flex flex-col h-full justify-between gap-2">
-                        {/* Bank Box - 4.5cm × 2cm for stamp + signature */}
-                        <div className="border border-[#E0E0E0] rounded-lg h-[80px] bg-[#FAFAFA] flex items-center justify-center mb-0 inner-shadow-sm">
-                            <p className="text-[8px] text-gray-300 font-bold uppercase text-center leading-tight tracking-wider">
+                        {/* Bank Box */}
+                        <div className="border border-[#E0E0E0] rounded-lg h-[85px] bg-[#F9FAFB] flex items-center justify-center">
+                            <p className="text-[9px] text-gray-400 font-bold uppercase text-center leading-tight tracking-widest">
                                 CADRE RÉSERVÉ <br /> À LA BANQUE
                             </p>
                         </div>
 
                         {/* QR Code Block */}
-                        <div className="border border-[#E0E0E0] rounded-lg p-2 bg-white flex flex-col items-center flex-1 justify-center min-h-[100px]">
-                            <div className="bg-white p-1 mb-1">
+                        <div className="border border-[#E0E0E0] rounded-lg p-2 bg-white flex flex-col items-center flex-1 justify-center min-h-[110px]">
+                            <div className="bg-white p-1 mb-0.5">
                                 {verifyUrl ? (
-                                    <QRCode value={verifyUrl} size={65} viewBox={`0 0 256 256`} />
+                                    <QRCode value={verifyUrl} size={80} viewBox={`0 0 256 256`} />
                                 ) : (
-                                    <div className="w-[65px] h-[65px] bg-gray-100" />
+                                    <div className="w-[80px] h-[80px] bg-gray-100" />
                                 )}
                             </div>
-                            <p className="text-[7px] text-gray-500 italic mb-1 font-medium">Scan pour vérifier</p>
+                            <p className="text-[8px] text-gray-500 italic font-medium">Scan pour verifier</p>
                         </div>
 
-                        {/* Timestamp Box - Reduced by 0.5cm */}
-                        <div className="h-[30px] flex items-center justify-center">
-                            <p className="text-[8px] text-gray-400 font-bold" style={{ fontFamily: 'Mulish, sans-serif' }}>
+                        {/* Timestamp Box */}
+                        <div className="text-center pt-0.5">
+                            <p className="text-[8.5px] text-gray-500 font-medium">
                                 Généré le: {dateStr} {timeStr}
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 
