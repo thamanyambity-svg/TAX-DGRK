@@ -617,7 +617,7 @@ export default function BordereauPage() {
                             <div className="flex">
                                 <span className="w-[180px]">Timbre ...........:</span>
                                 <span className="ml-4 w-[160px]">               {timbre.toFixed(2)} USD</span>
-                                <span>Taxe ......:                          {taxes.toFixed(2).replace('.', ',')} USD</span>
+                                <span>Taxe ......:                   {taxes.toFixed(2).replace('.', ',')} USD</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[180px]">Frais ............:</span>
