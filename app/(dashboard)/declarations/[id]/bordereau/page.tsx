@@ -240,7 +240,9 @@ export default function BordereauPage() {
     const rawBordereauDate = manualDate || decl.updatedAt || decl.createdAt;
     const bordereauDate = new Date(rawBordereauDate);
     const dateStr = formatKinshasaDateLong(bordereauDate);
-    const timeStr = formatKinshasaTime(bordereauDate).replace(':', 'H');
+    const timeStr = formatKinshasaTime(bordereauDate);
+    const padNum = (n: number) => String(n).padStart(2, '0');
+    const dateNumericStr = `${padNum(bordereauDate.getDate())}/${padNum(bordereauDate.getMonth() + 1)}/${bordereauDate.getFullYear()}`;
 
     // Tax calculation
     let displayTotal = 0;
@@ -310,12 +312,12 @@ export default function BordereauPage() {
 
     const facilitatorPhone = generateRandomPhone(safeSequence);
 
-    const remettantDisplay = `${facilitatorName} ${facilitatorLastName} / ${facilitatorPhone}`.replace(/\/ $/, '');
+    const remettantDisplay = `Mr ${facilitatorName}/${facilitatorPhone}`;
     // --- ADMINISTRATIVE MODIFICATION (POUR TOUS) ---
     // User requested format for Bordereau: NAME /1579A471 (ID Suffix)
     const ownerFullName = (note.taxpayer.name || 'CLIENT').trim().toUpperCase();
     const noteSuffix = note.id.split('-').pop() || '';
-    const motifDisplay = `${ownerFullName} /${noteSuffix}`;
+    const motifDisplay = `${ownerFullName}/${noteSuffix}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 text-black" data-version="2026-02-23-14-50">
@@ -545,29 +547,33 @@ export default function BordereauPage() {
 
                         {/* REF ET DATE - ALIGNEMENT GRID */}
                         <div className="whitespace-pre mb-8 pl-10">
-                            <span>33000061711-79                                     {dateStr} a {timeStr}</span>
+                            <span>33000061711-79             {dateStr} a <u className="underline">{timeStr}</u></span>
                         </div>
 
                         {/* BLOC INFO - FORMAT TERMINAL BANCAIRE AVEC TRIANGLE ROUGE (RECALIBRÉ) */}
                         <div className="relative mb-6 text-[10pt] leading-[1.3] whitespace-pre">
                             <div className="flex">
-                                <div className="w-[500px]">Agence      ....: 00010 AGENCE GOMBE</div>
+                                <div className="w-[500px]">Agence  ....: 00010 AGENCE GOMBE</div>
                                 <div></div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]">Devise      ....: USD   DOLLAR USA</div>
+                                <div className="w-[500px]">Devise  ....: USD   DOLLAR USA</div>
+                                <div></div>
+                            </div>
+                            <div className="flex">
+                                <div className="w-[500px]">Caisse  ....: 140   CAISSE SEC. GOMBE USD - 140</div>
                                 <div>VILLE DE KINSHASA</div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]">Caisse      ....: 140   CAISSE SEC. GOMBE USD - 140</div>
+                                <div className="w-[500px]">Guichetier.: VNGOMBA</div>
                                 <div>COLONEL EBEYA</div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]">Guichetier  ..: VNGOMBA</div>
+                                <div className="w-[500px]"></div>
                                 <div>GOMBE</div>
                             </div>
                             <div className="flex">
-                                <div className="w-[500px]">Gestionnaire  : DIRECTEUR GENERAL</div>
+                                <div className="w-[500px]">Gestionnaire: DIRECTEUR GENERAL</div>
                                 <div>KINSHASA</div>
                             </div>
                             <div className="flex">
@@ -589,92 +595,87 @@ export default function BordereauPage() {
                         {/* REMETTANT & MOTIF - POINTS ALIGNÉS */}
                         <div className="mb-6 mt-8 text-[10pt] leading-[1.4] whitespace-pre">
                             <div className="flex">
-                                <span className="inline-block w-[180px] text-right">Nom du remettant.      :</span>
-                                <span> {remettantDisplay.toUpperCase()}</span>
+                                <span>Nom du remettant. : {remettantDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
-                                <span className="inline-block w-[180px] text-right">Adresse ............   :</span>
-                                <span> {motifDisplay.toUpperCase()}</span>
+                                <span>Adresse ..........: {motifDisplay.toUpperCase()}</span>
                             </div>
                             <div className="flex">
-                                <span className="inline-block w-[180px]"></span>
                                 <span> 310 - REP DEM CONGO</span>
                             </div>
                             <div className="flex mt-1">
-                                <span className="inline-block w-[180px] text-right">Motif ..............   :</span>
-                                <span> {motifDisplay.toUpperCase()}</span>
+                                <span>Motif ............: {motifDisplay.toUpperCase()}</span>
                             </div>
                         </div>
 
                         {/* MONTANTS */}
-                        <div className="mb-4 mt-6">
+                        <div className="mb-4 mt-6 whitespace-pre">
                             <div className="flex">
                                 <span className="w-[180px]">Montant versement :</span>
-                                <span className="ml-4">{displayTotal.toFixed(2)} USD</span>
+                                <span className="ml-4">              {displayTotal.toFixed(2)} USD</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[180px]">Timbre ...........:</span>
-                                <span className="ml-4 w-[80px]">{timbre.toFixed(2)} USD</span>
-                                <span className="ml-8">Taxe ......:</span>
-                                <span className="ml-4">{taxes.toFixed(2)} USD</span>
+                                <span className="ml-4 w-[160px]">               {timbre.toFixed(2)} USD</span>
+                                <span>Taxe ......:                   {taxes.toFixed(2).replace('.', ',')} USD</span>
                             </div>
                             <div className="flex">
                                 <span className="w-[180px]">Frais ............:</span>
-                                <span className="ml-4">0.00 USD</span>
+                                <span className="ml-4">               0.00 USD</span>
                             </div>
                         </div>
 
                         {/* GRILLE DE CALCUL */}
-                        <div className="mb-6 mt-6">
+                        <div className="mb-6 mt-6 whitespace-pre">
                             {/* Headers */}
                             <div className="flex text-[9pt]">
-                                <span className="w-[60px]">Valeur</span>
-                                <span className="w-[60px] text-center">Nombre</span>
-                                <span className="w-[80px] text-right">Montant</span>
-                                <span className="w-[80px]"></span>
-                                <span className="w-[60px] text-center">Nombre</span>
-                                <span className="w-[80px] text-right">Montant</span>
+                                <span className="w-[70px]"> Valeur</span>
+                                <span className="w-[70px] text-center">Nombre</span>
+                                <span className="w-[100px] text-right">Montant</span>
+                                <span className="w-[100px]"></span>
+                                <span className="w-[70px] text-center">Nombre</span>
+                                <span className="w-[100px] text-right">Montant</span>
                             </div>
-                            <div className="flex text-[9pt] text-gray-600">
-                                <span className="w-[60px]"></span>
-                                <span className="w-[60px] text-center">recu</span>
-                                <span className="w-[80px] text-right">recu</span>
-                                <span className="w-[80px]"></span>
-                                <span className="w-[60px] text-center">rendu</span>
-                                <span className="w-[80px] text-right">rendu</span>
+                            <div className="flex text-[9pt] text-gray-800">
+                                <span className="w-[70px]"></span>
+                                <span className="w-[70px] text-center">recu</span>
+                                <span className="w-[100px] text-right">recu</span>
+                                <span className="w-[100px]"></span>
+                                <span className="w-[70px] text-center">rendu</span>
+                                <span className="w-[100px] text-right">rendu</span>
                             </div>
 
                             <div className="mt-2">
                                 {/* Dynamic bill rows */}
                                 {taxInfo.billBreakdown.map((row: any, i: number) => (
                                     <div key={i} className="flex text-[9pt]">
-                                        <span className="w-[60px]">{row.value.toFixed(2).replace('.', ',')}</span>
-                                        <span className="w-[60px] text-center">{row.count}</span>
-                                        <span className="w-[80px] text-right">{row.total.toFixed(2)}</span>
-                                        <span className="w-[80px]"></span>
-                                        <span className="w-[60px] text-center">0</span>
-                                        <span className="w-[80px] text-right">0.00</span>
+                                        <span className="w-[70px] text-right pr-2">{row.value.toFixed(2).replace('.', ',')}</span>
+                                        <span className="w-[70px] text-center">{row.count}</span>
+                                        <span className="w-[100px] text-right">{row.total.toFixed(2)}</span>
+                                        <span className="w-[100px]"></span>
+                                        <span className="w-[70px] text-center">0</span>
+                                        <span className="w-[100px] text-right">0.00</span>
                                     </div>
                                 ))}
                             </div>
 
-                            {/* Separators - Tirets réduits (CORRECTION MAINTENUE) */}
+                            {/* Separators */}
                             <div className="flex text-[9pt] mt-2">
-                                <span className="w-[60px]"></span>
-                                <span className="w-[140px]">------------------</span>
-                                <span className="w-[80px]"></span>
-                                <span className="w-[140px]">------------------</span>
+                                <span className="w-[70px]"></span>
+                                <span className="w-[170px]">------------------</span>
+                                <span className="w-[100px]"></span>
+                                <span className="w-[170px]">------------------</span>
                             </div>
 
-                            {/* Totals - Ajoutés pour compléter la grille comme demandé dans l'exemple */}
+                            {/* Totals */}
                             <div className="flex text-[9pt]">
-                                <span className="w-[60px]">Total recu</span>
-                                <span className="w-[60px]"></span>
-                                <span className="w-[80px] text-right">{displayTotal.toFixed(2)}</span>
-                                <span className="w-[40px]"></span>
-                                <span className="w-[40px]">Rendu</span>
-                                <span className="w-[60px]"></span>
-                                <span className="w-[80px] text-right">0.00</span>
+                                <span className="w-[70px]">Total</span>
+                                <span className="w-[70px]">recu</span>
+                                <span className="w-[100px] text-right">{displayTotal.toFixed(2)}</span>
+                                <span className="w-[20px]"></span>
+                                <span className="w-[80px]">Rendu</span>
+                                <span className="w-[70px]"></span>
+                                <span className="w-[100px] text-right">0.00</span>
                             </div>
                         </div>
 
@@ -682,14 +683,12 @@ export default function BordereauPage() {
                         <div className="mt-10 text-[10pt] leading-[1.4] text-gray-800" style={{ fontFamily: '"Courier New", Courier, monospace', fontWeight: 400 }}>
                             {/* Ligne Crédit & USD - Alignement millimétré des deux-points */}
                             <div className="whitespace-pre">
-                                <span className="inline-block">Nous portons au credit du compte no 33000061711-79   USD :</span>
-                                <span className="inline-block w-[140px] text-right">{displayCredit.toFixed(2)}</span>
+                                <span className="inline-block">Nous portons au credit du compte no 33000061711-79     USD :               {displayCredit.toFixed(2)}</span>
                             </div>
 
                             {/* Ligne Valeur - Alignement parfait (50 espaces + Valeur :) */}
                             <div className="whitespace-pre">
-                                <span className="inline-block">                                                  Valeur :</span>
-                                <span className="inline-block w-[140px] text-right">{dateStr}</span>
+                                <span className="inline-block">                                                   Valeur :          {dateNumericStr}</span>
                             </div>
 
                             {/* Montant en lettres - Ver: 1.0.1 */}
@@ -704,7 +703,7 @@ export default function BordereauPage() {
                                 <div>      CLIENT       !    GUICHETIER    !</div>
                                 <div>                   !                  !</div>
                                 <div>                   !                  !</div>
-                                <div>                   !                  !  OPERATION EFFECTUEE</div>
+                                <div>                   !                  !        OPERATION EFFECTUEE</div>
                             </div>
                         </div>
 
