@@ -93,11 +93,16 @@ async function updateExisting2026Declarations() {
         const newTotalFC = Math.round(newBaseUSD * TAUX_FC);
         const displayLabel = mapCategoryToDisplayLabel(breakdown.categorie);
 
-        // Check if values changed
+        // Check if values changed or if manualMarqueType is missing
         const currentBase = d.tax?.baseRate;
         const currentMetaLabel = d.meta?.tariffLabel;
+        const currentManualMarqueType = d.meta?.manualMarqueType;
 
-        const needsUpdate = currentBase !== newBaseUSD || currentMetaLabel !== breakdown.categorie;
+        const needsUpdate =
+            currentBase !== newBaseUSD ||
+            currentMetaLabel !== breakdown.categorie ||
+            currentManualMarqueType !== breakdown.categorie ||
+            !d.vehicle?.manualMarqueType;
 
         if (needsUpdate) {
             const updatedTax = {
@@ -107,10 +112,16 @@ async function updateExisting2026Declarations() {
                 totalAmountFC: newTotalFC,
             };
 
+            const updatedVehicle = {
+                ...d.vehicle,
+                manualMarqueType: breakdown.categorie,
+            };
+
             const updatedMeta = {
                 ...d.meta,
                 tariffMode: 'new2026',
                 tariffLabel: breakdown.categorie,
+                manualMarqueType: breakdown.categorie,
                 manualBaseAmount: newBaseUSD,
             };
 
@@ -118,6 +129,7 @@ async function updateExisting2026Declarations() {
                 .from('declarations')
                 .update({
                     tax: updatedTax,
+                    vehicle: updatedVehicle,
                     meta: updatedMeta,
                 })
                 .eq('id', d.id);
@@ -125,7 +137,7 @@ async function updateExisting2026Declarations() {
             if (updateErr) {
                 console.error(`❌ Failed to update declaration ${d.id}:`, updateErr);
             } else {
-                console.log(`   ✅ ${d.id}: ${currentMetaLabel || 'Old'} (${currentBase} USD) -> ${breakdown.categorie} (${newBaseUSD} USD)`);
+                console.log(`   ✅ ${d.id}: Set manualMarqueType -> ${breakdown.categorie} (${newBaseUSD} USD)`);
                 updatedCount++;
             }
         }
