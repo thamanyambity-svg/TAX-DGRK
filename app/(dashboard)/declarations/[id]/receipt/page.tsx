@@ -127,15 +127,12 @@ const ReceiptView = ({
                 {/* Blue separator line under header */}
                 <div className="bg-[#2C5EB5]" style={{ marginLeft: '1.5mm', marginRight: '1.5mm', height: '2px' }} />
 
-                {/* ── REFERENCE BANNER (Gris incrusté avec coins arrondis) ── */}
-                <div className="bg-[#F3F4F6] py-2 px-3 my-2 mx-3 text-center rounded-md">
-                    <h2
-                        className="text-[15px] text-[#1D4ED8] font-black tracking-[0.18em] leading-none"
-                        style={{ fontFamily: 'var(--font-source-code-pro), "Courier New", monospace' }}
-                    >
+                {/* ── REFERENCE BANNER (Gris incrusté avec coins arrondis et police sans-serif géométrique) ── */}
+                <div className="bg-[#F3F4F6] py-2.5 px-4 my-2 mx-3 text-center rounded-lg">
+                    <h2 className="text-[18px] text-[#1D4ED8] font-extrabold tracking-[0.12em] leading-none font-sans">
                         {formattedRefDisplay}
                     </h2>
-                    <p className="text-[8px] text-gray-500 uppercase font-semibold mt-1 tracking-wider">
+                    <p className="text-[8.5px] text-[#6B7280] uppercase font-semibold mt-1.5 tracking-[0.10em]">
                         N° DE RÉFÉRENCE (À MENTIONNER AU PAIEMENT)
                     </p>
                 </div>
