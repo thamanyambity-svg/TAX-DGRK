@@ -141,7 +141,7 @@ const ReceiptView = ({
                 </div>
 
                 {/* ── MAIN GRID: Left column + Right column ──────────── */}
-                <div className="grid px-3 pb-2 gap-2.5" style={{ gridTemplateColumns: '1fr 45mm' }}>
+                <div className="grid px-3 pb-2 gap-2.5" style={{ gridTemplateColumns: '1fr 52mm' }}>
 
                     {/* ═══ LEFT COLUMN ════════════════════════════════ */}
                     <div className="space-y-2">
@@ -286,31 +286,34 @@ const ReceiptView = ({
                     </div>
                     {/* ═══ END LEFT COLUMN ════════════════════════════ */}
 
-                    {/* ═══ RIGHT COLUMN: Banque + QR ══════════════════ */}
-                    <div className="flex flex-col gap-2 items-center w-[45mm]">
+                    {/* ═══ RIGHT COLUMN: Banque + QR (Conforme à l'image de référence) ══════════════════ */}
+                    <div className="flex flex-col gap-2 items-center w-[52mm]">
 
-                        {/* Bank Box — gray text, light border, rounded-lg (Height: 37mm) */}
-                        <div className="border border-[#D1D5DB] bg-[#F9FAFB] flex items-center justify-center w-full rounded-lg" style={{ height: '37mm' }}>
-                            <p className="text-[8px] text-gray-400 font-bold uppercase text-center leading-snug tracking-widest">
+                        {/* 1. Cadre Banque (35mm de hauteur, fond gris clair, coins rounded-xl) */}
+                        <div
+                            className="border border-[#D1D5DB] bg-[#F9FAFB] flex items-center justify-center w-full rounded-xl shrink-0"
+                            style={{ height: '35mm' }}
+                        >
+                            <p className="text-[8.5px] text-gray-400 font-bold uppercase text-center leading-snug tracking-widest">
                                 CADRE RÉSERVÉ<br />À LA BANQUE
                             </p>
                         </div>
 
-                        {/* QR Code block (Strictly 45mm x 45mm square box with rounded-lg) */}
+                        {/* 2. Cadre QR Code (40mm de hauteur, fond blanc, QR centré, coins rounded-xl) */}
                         <div
-                            className="border border-[#D1D5DB] p-1 bg-white flex flex-col items-center justify-center w-full shrink-0 rounded-lg"
-                            style={{ width: '45mm', height: '45mm' }}
+                            className="border border-[#D1D5DB] p-1 bg-white flex flex-col items-center justify-center w-full shrink-0 rounded-xl"
+                            style={{ height: '40mm' }}
                         >
                             {verifyUrl ? (
-                                <QRCode value={verifyUrl} size={82} viewBox={`0 0 256 256`} />
+                                <QRCode value={verifyUrl} size={78} viewBox={`0 0 256 256`} />
                             ) : (
-                                <div className="w-[82px] h-[82px] bg-gray-100" />
+                                <div className="w-[78px] h-[78px] bg-gray-100" />
                             )}
-                            <p className="text-[7px] text-gray-500 italic font-medium mt-0.5">Scan pour verifier</p>
+                            <p className="text-[7.5px] text-gray-500 italic font-medium mt-1">Scan pour verifier</p>
                         </div>
 
-                        {/* Timestamp */}
-                        <div className="text-center w-full">
+                        {/* 3. Horodatage sous les 2 cadrans */}
+                        <div className="text-center w-full mt-0.5">
                             <p className="text-[7.5px] text-gray-500 font-medium">
                                 Généré le: {dateStr} {timeStr}
                             </p>
