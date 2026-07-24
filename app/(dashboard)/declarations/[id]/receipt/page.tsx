@@ -95,7 +95,7 @@ const ReceiptView = ({
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
 
             {/* Main Ticket Container with dashed border matching PDF reference */}
-            <div className="border border-dashed border-gray-400 bg-white" style={{ borderRadius: '2px' }}>
+            <div className="border-2 border-dashed border-gray-400 bg-white rounded-none">
 
                 {/* ── HEADER ──────────────────────────────────────────── */}
                 <div className="flex items-center justify-between px-3 pt-2.5 pb-2">
