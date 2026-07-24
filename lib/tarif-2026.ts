@@ -61,10 +61,10 @@ export const SOUS_CATEGORIES_2026: {
     { categorie: 'tourisme', label: 'Véhicule de Tourisme (1–10 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
     { categorie: 'tourisme', label: 'Véhicule de Tourisme (11–15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
     { categorie: 'tourisme', label: 'Véhicule de Tourisme (> 15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
-    // Utilitaires
-    { categorie: 'utilitaire', label: 'Véhicule Utilitaire < 2.500 kg', requireTonnage: true, group: 'Véhicules Utilitaires' },
-    { categorie: 'utilitaire', label: 'Véhicule Utilitaire 2.500–10.000 kg', requireTonnage: true, group: 'Véhicules Utilitaires' },
-    { categorie: 'utilitaire', label: 'Véhicule Utilitaire > 10.000 kg', requireTonnage: true, group: 'Véhicules Utilitaires' },
+    // Utilitaires (Nouvelle grille 2026: Tonnage + CV)
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire Light (≤ 2.500 kg, 1–10 CV)', requireTonnage: true, requireCV: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire Medium (2.500–10.000 kg, 11–15 CV)', requireTonnage: true, requireCV: true, group: 'Véhicules Utilitaires' },
+    { categorie: 'utilitaire', label: 'Véhicule Utilitaire Heavy (> 10.000 kg, > 15 CV)', requireTonnage: true, requireCV: true, group: 'Véhicules Utilitaires' },
     // Tracteurs
     { categorie: 'tracteur', label: 'Tracteur (1–10 CV)', requireCV: true, group: 'Tracteurs' },
     { categorie: 'tracteur', label: 'Tracteur (11–15 CV)', requireCV: true, group: 'Tracteurs' },
@@ -153,15 +153,15 @@ const TOURISME_PLUS15: Tarif2026Breakdown = {
 // ─── VÉHICULES UTILITAIRES ───────────────────────────────────────────────────
 const UTIL_M2K5: Tarif2026Breakdown = {
     impot: 28.00, tsc: 31.60, redevance: 6.00, imprime: 5.00, total: 70.60,
-    categorie: 'Véhicule Utilitaire — Moins de 2.500 kg',
+    categorie: 'Véhicule Utilitaire Light (≤ 2.500 kg, 1–10 CV)',
 };
 const UTIL_2K5_10K: Tarif2026Breakdown = {
     impot: 32.00, tsc: 30.40, redevance: 6.00, imprime: 5.00, total: 73.40,
-    categorie: 'Véhicule Utilitaire — 2.500 à 10.000 kg',
+    categorie: 'Véhicule Utilitaire Medium (2.500–10.000 kg, 11–15 CV)',
 };
 const UTIL_P10K: Tarif2026Breakdown = {
     impot: 35.10, tsc: 34.90, redevance: 6.00, imprime: 5.00, total: 81.00,
-    categorie: 'Véhicule Utilitaire — Plus de 10.000 kg',
+    categorie: 'Véhicule Utilitaire Heavy (> 10.000 kg, > 15 CV)',
 };
 
 // ─── TRACTEURS ────────────────────────────────────────────────────────────────
@@ -243,9 +243,13 @@ export function calculer2026(input: Calcul2026Input): Tarif2026Breakdown {
         }
 
         case 'utilitaire': {
-            if (tonnage <= 2.5) return UTIL_M2K5;
-            if (tonnage <= 10) return UTIL_2K5_10K;
-            return UTIL_P10K;
+            // Règle Utilitaires Système 2026 (Tonnage + CV) :
+            // Heavy  : > 10.000 kg (> 10T) ou > 15 CV
+            // Medium : 2.500 kg à 10.000 kg (2.5T–10T) ou 11 CV à 15 CV
+            // Light  : ≤ 2.500 kg (≤ 2.5T) ou 1 CV à 10 CV
+            if (tonnage > 10 || cv > 15) return UTIL_P10K;
+            if (tonnage > 2.5 || cv >= 11) return UTIL_2K5_10K;
+            return UTIL_M2K5;
         }
 
         case 'tracteur': {

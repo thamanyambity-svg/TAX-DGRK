@@ -30,11 +30,36 @@ export function mapCategoryToDisplayLabel(raw: string): string {
 
     // ── Utilitaire ────────────────────────────────────────────────────────
     if (s.includes('utilitaire')) {
-        // Heavy : > 20T ou "heavy"
-        if (s.includes('heavy') || (s.includes('>') && s.includes('20'))) return 'Utilitaire Heavy';
-        // Light : ≤ 3,5T ou "light"
-        if (s.includes('light') || s.includes('≤') || s.includes('3,5') || s.includes('3.5')) return 'Utilitaire light';
-        // Medium : tout le reste (3,5–10T et 10–20T)
+        // Heavy : > 10.000 kg (> 10T), > 15 CV, ou "heavy"
+        if (
+            s.includes('heavy') ||
+            s.includes('> 10') ||
+            s.includes('>10') ||
+            s.includes('10.000') ||
+            s.includes('> 15') ||
+            s.includes('>15')
+        ) return 'Utilitaire Heavy';
+
+        // Medium : 2.500–10.000 kg (2.5T–10T), 11–15 CV, ou "medium"
+        if (
+            s.includes('medium') ||
+            s.includes('2.500–10') ||
+            s.includes('2.500-10') ||
+            s.includes('11–15') ||
+            s.includes('11-15')
+        ) return 'Utilitaire Medium';
+
+        // Light : ≤ 2.500 kg (≤ 2.5T), 1–10 CV, ou "light"
+        if (
+            s.includes('light') ||
+            s.includes('2.500') ||
+            s.includes('2500') ||
+            s.includes('1–10') ||
+            s.includes('1-10') ||
+            s.includes('≤ 2') ||
+            s.includes('< 2')
+        ) return 'Utilitaire light';
+
         return 'Utilitaire Medium';
     }
 
