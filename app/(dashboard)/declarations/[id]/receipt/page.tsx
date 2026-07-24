@@ -154,17 +154,17 @@ const ReceiptView = ({
                             <div className="px-2 py-1 space-y-[3px] text-[8.5px]">
                                 <div className="grid border-b border-[#F0F0F0] pb-[3px]" style={{ gridTemplateColumns: '130px 1fr' }}>
                                     <span className="font-bold text-gray-600">Noms/Raison Sociale:</span>
-                                    <span className="uppercase text-gray-900 break-words leading-tight">{note.taxpayer.name}</span>
+                                    <span className="uppercase text-gray-900 break-words leading-tight pl-8">{note.taxpayer.name}</span>
                                 </div>
                                 <div className="grid border-b border-[#F0F0F0] pb-[3px] pt-[3px]" style={{ gridTemplateColumns: '130px 1fr' }}>
                                     <span className="font-bold text-gray-600">N° Impôt/NIF:</span>
-                                    <span className="text-gray-900">
+                                    <span className="text-gray-900 pl-8">
                                         {note.taxpayer.name.includes('SOCIMEX') ? 'N/A' : (note.taxpayer.nif || '-')}
                                     </span>
                                 </div>
                                 <div className="grid pt-[3px]" style={{ gridTemplateColumns: '130px 1fr' }}>
                                     <span className="font-bold text-gray-600">Adresse:</span>
-                                    <span className="text-gray-900 break-words leading-tight">
+                                    <span className="text-gray-900 break-words leading-tight pl-8">
                                         {(note.taxpayer.address || 'KINSHASA')
                                             .replace(/PERSONNE\s+(PHYSIQUE|MORALE|PHYSOU|MORAL)/gi, '')
                                             .replace(/^[,/\s-]+/, '')
