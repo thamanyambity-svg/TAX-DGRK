@@ -373,6 +373,8 @@ export default function ReceiptPage() {
     const [editBaseAmount, setEditBaseAmount] = useState('');
     const [editMarqueType, setEditMarqueType] = useState(''); // NEW: Marque Override
     const [editPlate, setEditPlate] = useState('');
+    const [editMarque, setEditMarque] = useState('');
+    const [editModele, setEditModele] = useState('');
     const [editNIF, setEditNIF] = useState('');
     const [editName, setEditName] = useState('');
     const [editAddress, setEditAddress] = useState('');
@@ -476,6 +478,8 @@ export default function ReceiptPage() {
                         const currentName = (manualDecl.meta as any)?.manualTaxpayerName || manualDecl.taxpayer?.name || '';
                         const currentAddress = (manualDecl.meta as any)?.manualTaxpayerAddress || manualDecl.taxpayer?.address || '';
                         setEditPlate(currentPlate);
+                        setEditMarque(manualDecl.vehicle?.marque || '');
+                        setEditModele(manualDecl.vehicle?.modele || '');
                         setEditNIF(currentNIF);
                         setEditName(currentName);
                         setEditAddress(currentAddress);
@@ -599,10 +603,14 @@ export default function ReceiptPage() {
 
             // Vehicle
             const origFiscalPower = decl.vehicle?.fiscalPower || '';
-            const vehicleChanged = editPlate !== origPlate || editCouleur !== origCouleur || editFiscalPower !== origFiscalPower || editAnneeFab !== origAnnee || editAnneeImmat !== origAnneeImmat;
+            const origMarque = decl.vehicle?.marque || '';
+            const origModele = decl.vehicle?.modele || '';
+            const vehicleChanged = editPlate !== origPlate || editMarque !== origMarque || editModele !== origModele || editCouleur !== origCouleur || editFiscalPower !== origFiscalPower || editAnneeFab !== origAnnee || editAnneeImmat !== origAnneeImmat;
             if (vehicleChanged) {
-                updates.vehicle = { ...decl.vehicle, plate: editPlate, couleur: editCouleur, fiscalPower: editFiscalPower, annee: editAnneeFab, anneeImmat: editAnneeImmat };
+                updates.vehicle = { ...decl.vehicle, plate: editPlate, marque: editMarque.toUpperCase(), modele: editModele.toUpperCase(), couleur: editCouleur, fiscalPower: editFiscalPower, annee: editAnneeFab, anneeImmat: editAnneeImmat };
                 if (editPlate !== origPlate) updates.meta.manualPlate = editPlate;
+                if (editMarque !== origMarque) updates.meta.manualMarque = editMarque.toUpperCase();
+                if (editModele !== origModele) updates.meta.manualModele = editModele.toUpperCase();
                 if (editCouleur !== origCouleur) updates.meta.manualCouleur = editCouleur;
                 if (editFiscalPower !== origFiscalPower) updates.meta.manualFiscalPower = editFiscalPower;
                 if (editAnneeFab !== origAnnee) updates.meta.manualAnneeFab = editAnneeFab;
@@ -810,6 +818,26 @@ export default function ReceiptPage() {
                             placeholder="1234AB01"
                             value={editPlate}
                             onChange={(e) => setEditPlate(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Marque</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-28 uppercase"
+                            placeholder="TOYOTA"
+                            value={editMarque}
+                            onChange={(e) => setEditMarque(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">Modèle</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-28 uppercase"
+                            placeholder="HILUX"
+                            value={editModele}
+                            onChange={(e) => setEditModele(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col gap-1">
