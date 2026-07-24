@@ -881,49 +881,47 @@ export default function ReceiptPage() {
                 </div>
             )}
 
-            {/* Receipt Container - SINGLE RECEIPT PER PAGE FORMAT */}
+            {/* Receipt Container - TWO COPIES ON ONE A4 PAGE */}
 
             {/* WRAPPER pour print.css: ID = printable-root */}
             <div
                 id="printable-root"
                 className="mx-auto bg-white relative overflow-hidden"
-                style={{ width: '210mm', minHeight: '320mm' }}
+                style={{ width: '210mm', minHeight: '296.5mm' }}
             >
                 <div
-                    id="printable-receipt" // L'ID cible du CSS
+                    id="printable-receipt"
                     ref={receiptRef}
-                    className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border"
+                    className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col box-border"
                     style={{
                         width: '210mm',
-                        height: '320mm',
+                        height: '296.5mm',
                         WebkitPrintColorAdjust: 'exact',
                         printColorAdjust: 'exact'
                     }}
                 >
-
-                    {/* 1. TOP COPY (BANQUE) - Full height */}
-                    <div className="flex-1 flex flex-col justify-start">
+                    {/* 1. TOP COPY (BANQUE) */}
+                    <div className="flex-1 flex flex-col justify-center">
                         <ReceiptView type="BANQUE" note={note} verifyUrl={verifyUrl} />
                     </div>
-                </div>
 
-                {/* 2. SECOND PAGE: BOTTOM COPY (CONTRIBUABLE) */}
-                <div
-                    className="bg-white shadow-xl print:shadow-none w-full h-full p-[10mm] relative flex flex-col justify-between box-border"
-                    style={{
-                        width: '210mm',
-                        height: '320mm',
-                        WebkitPrintColorAdjust: 'exact',
-                        printColorAdjust: 'exact'
-                    }}
-                >
-                    <div className="flex-1 flex flex-col justify-start">
+                    {/* COUPER ICI */}
+                    <div className="h-[10mm] flex items-center justify-center gap-4 text-gray-400 shrink-0">
+                        <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+                        <Scissors className="h-3 w-3 text-gray-400 transform rotate-180" />
+                        <span className="text-[8px] uppercase font-bold tracking-[0.2em] text-gray-400 whitespace-nowrap">COUPER ICI</span>
+                        <Scissors className="h-3 w-3 text-gray-400" />
+                        <div className="h-px w-full border-t border-dashed border-gray-400"></div>
+                    </div>
+
+                    {/* 2. BOTTOM COPY (CONTRIBUABLE) */}
+                    <div className="flex-1 flex flex-col justify-center">
                         <ReceiptView type="CONTRIBUABLE" note={note} verifyUrl={verifyUrl} />
                     </div>
                 </div>
 
                 <p className="no-print text-center text-[10px] text-gray-400 mt-6 mb-12 select-none">
-                    Format: 210 x 320 mm (1 récépissé par page). Ajustez l'échelle à 100% lors de l'impression.
+                    Format A4 Standard (210 x 297 mm). 2 récépissés par page. Ajustez l'échelle à 100% lors de l'impression.
                 </p>
             </div>
 
