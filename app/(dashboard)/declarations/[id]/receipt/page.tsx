@@ -127,9 +127,12 @@ const ReceiptView = ({
                 {/* Blue separator line under header */}
                 <div className="bg-[#2C5EB5]" style={{ marginLeft: '1.5mm', marginRight: '1.5mm', height: '2px' }} />
 
-                {/* ── REFERENCE BANNER (Gris incrusté avec coins arrondis et police sans-serif géométrique) ── */}
+                {/* ── REFERENCE BANNER (Gris incrusté avec coins arrondis et police Source Code Pro Bold) ── */}
                 <div className="bg-[#F3F4F6] py-2.5 px-4 my-2 mx-3 text-center rounded-lg">
-                    <h2 className="text-[18px] text-[#1D4ED8] font-extrabold tracking-[0.12em] leading-none font-sans">
+                    <h2
+                        className="text-[18px] text-[#1D4ED8] font-bold tracking-[0.12em] leading-none"
+                        style={{ fontFamily: 'var(--font-source-code-pro), monospace', fontWeight: 700 }}
+                    >
                         {formattedRefDisplay}
                     </h2>
                     <p className="text-[8.5px] text-[#6B7280] uppercase font-semibold mt-1.5 tracking-[0.10em]">
