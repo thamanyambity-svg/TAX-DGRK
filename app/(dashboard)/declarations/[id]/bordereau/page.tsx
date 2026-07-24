@@ -7,7 +7,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { getDeclarationById } from '@/lib/store';
 import { Declaration } from '@/types';
 import { ArrowLeft, Printer, Download, CalendarClock, Save } from 'lucide-react';
-import { calculateTax } from '@/lib/tax-rules';
+import { calculateTax, calculateAccountingBilletage } from '@/lib/tax-rules';
 import { generateNote, DECL_BASE, CONGO_NAMES, generateRandomPhone } from '@/lib/generator';
 import { GRILLE_2026 } from '@/lib/tarif-2026';
 import { LEGACY_PRICES } from '@/lib/tax-rules';
@@ -265,13 +265,10 @@ export default function BordereauPage() {
         timbre = 3.45;
         taxes = 0.55; // 3.45 + 0.55 = 4.00
 
-        // Build taxInfo for bill breakdown
+        // Build taxInfo for accounting bill breakdown
         taxInfo = {
             textAmount: numberToWords(Math.round(displayTotal)),
-            billBreakdown: [
-                { value: roundedBase, count: 1, total: roundedBase },
-                { value: 4.00, count: 1, total: 4.00 }
-            ]
+            billBreakdown: calculateAccountingBilletage(displayTotal)
         };
     } else {
         // Calcul automatique standard
@@ -284,6 +281,7 @@ export default function BordereauPage() {
         displayCredit = taxInfo.roundedBase ?? taxInfo.creditAmount; // Montant arrondi
         timbre = taxInfo.timbre;                     // 3.45
         taxes = taxInfo.taxe;                        // 0.55
+        taxInfo.billBreakdown = calculateAccountingBilletage(displayTotal);
     }
 
     // --- AUTOMATION: REMETTANT & MOTIF ---

@@ -38,6 +38,39 @@ const getNumberText = (totalInt: number): string => {
     return numberToWords(totalInt);
 };
 
+// Fonction comptable de billetage automatique (décomposition monétaire en billets de banque USD)
+export function calculateAccountingBilletage(amount: number): { value: number; count: number; total: number }[] {
+    const total = Math.round(amount * 100) / 100;
+    const bills = [100, 50, 20, 10, 5, 2, 1];
+    let remaining = total;
+    const breakdown: { value: number; count: number; total: number }[] = [];
+
+    for (const bill of bills) {
+        if (remaining >= bill - 0.001) {
+            const count = Math.floor((remaining + 0.0001) / bill);
+            if (count > 0) {
+                const subTotal = Math.round(count * bill * 100) / 100;
+                breakdown.push({
+                    value: bill,
+                    count: count,
+                    total: subTotal
+                });
+                remaining = Math.round((remaining - subTotal) * 100) / 100;
+            }
+        }
+    }
+
+    if (remaining > 0.001) {
+        breakdown.push({
+            value: remaining,
+            count: 1,
+            total: remaining
+        });
+    }
+
+    return breakdown;
+}
+
 export const calculateTax = (fiscalPower: number, vehicleType: string, weightInput?: string | number): TaxCalculation => {
     const cv = fiscalPower || 0;
     const type = (vehicleType || '').toLowerCase();
@@ -48,21 +81,6 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
         const total = rounded + BANK_FEE;      // ex: 65 + 4 = 69
         const totalInt = Math.round(total);
 
-        // Génerer un breakdown réaliste en billets
-        let breakdown: { value: number; count: number; total: number }[] = [];
-        let remaining = rounded;
-
-        for (const bill of [50, 20, 10, 5, 2, 1]) {
-            if (remaining <= 0) break;
-            const count = Math.floor(remaining / bill);
-            if (count > 0) {
-                breakdown.push({ value: bill, count, total: count * bill });
-                remaining = Math.round((remaining - count * bill) * 100) / 100;
-            }
-        }
-        // Ajouter le billet pour les frais bancaires
-        breakdown.push({ value: BANK_FEE, count: 1, total: BANK_FEE });
-
         return {
             totalAmount: total,
             creditAmount: base,     // Valeur brute affichée sur le récépissé
@@ -71,7 +89,7 @@ export const calculateTax = (fiscalPower: number, vehicleType: string, weightInp
             timbre: TIMBRE,
             taxe: TAXE,
             textAmount: getNumberText(totalInt),
-            billBreakdown: breakdown,
+            billBreakdown: calculateAccountingBilletage(total),
         };
     };
 
