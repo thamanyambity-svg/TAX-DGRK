@@ -606,15 +606,31 @@ export default function ReceiptPage() {
             }
 
             // Marque
-            if (editMarqueType !== origMarque) updates.meta.manualMarqueType = editMarqueType;
+            if (editMarqueType !== origMarque) {
+                updates.meta.manualMarqueType = editMarqueType;
+                updates.meta.tariffLabel = editMarqueType;
+            }
 
             // Taxpayer
             const taxpayerChanged = editNIF !== origNIF || editName !== origName || editAddress !== origAddress;
             if (taxpayerChanged) {
-                updates.taxpayer = { ...decl.taxpayer, nif: editNIF, name: editName, address: editAddress, type: decl.taxpayer?.type || 'N/A' };
-                if (editNIF !== origNIF) { updates.meta.manualNIF = editNIF; }
-                if (editName !== origName) { updates.meta.manualTaxpayerName = editName; updates.meta.manualTaxpayer = { name: editName, nif: editNIF, address: editAddress }; updates.meta.taxpayerData = { name: editName, nif: editNIF, address: editAddress }; }
-                if (editAddress !== origAddress) { updates.meta.manualTaxpayerAddress = editAddress; }
+                const cleanNif = editNIF.toUpperCase().trim();
+                const cleanName = editName.toUpperCase().trim();
+                const cleanAddr = editAddress.trim();
+
+                const taxpayerObj = {
+                    name: cleanName,
+                    nif: cleanNif,
+                    address: cleanAddr,
+                    type: 'N/A'
+                };
+
+                updates.taxpayer = taxpayerObj;
+                updates.meta.manualNIF = cleanNif;
+                updates.meta.manualTaxpayerName = cleanName;
+                updates.meta.manualTaxpayerAddress = cleanAddr;
+                updates.meta.manualTaxpayer = taxpayerObj;
+                updates.meta.taxpayerData = taxpayerObj;
             }
 
             // Check if anything actually changed
