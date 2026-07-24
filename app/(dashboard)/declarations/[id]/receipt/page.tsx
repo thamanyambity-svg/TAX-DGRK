@@ -130,8 +130,8 @@ const ReceiptView = ({
                 {/* ── REFERENCE BANNER (Gris incrusté avec coins arrondis et police Source Code Pro Bold) ── */}
                 <div className="bg-[#F3F4F6] py-2.5 px-4 my-2 mx-3 text-center rounded-lg">
                     <h2
-                        className="text-[18px] text-[#1D4ED8] font-bold tracking-[0.12em] leading-none"
-                        style={{ fontFamily: 'var(--font-source-code-pro), monospace', fontWeight: 700 }}
+                        className="text-[17px] text-[#1D4ED8] font-bold tracking-[0.14em] leading-none"
+                        style={{ fontFamily: 'var(--font-source-code-pro), "Source Code Pro", monospace', fontWeight: 700 }}
                     >
                         {formattedRefDisplay}
                     </h2>
