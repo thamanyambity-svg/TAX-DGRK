@@ -125,7 +125,7 @@ const ReceiptView = ({
                 </div>
 
                 {/* Blue separator line under header */}
-                <div className="w-full h-[2px] bg-[#2C5EB5]" />
+                <div className="bg-[#2C5EB5]" style={{ marginLeft: '1.5mm', marginRight: '1.5mm', height: '2px' }} />
 
                 {/* ── REFERENCE BANNER ─────────────────────────────── */}
                 <div className="text-center py-2 px-3">
