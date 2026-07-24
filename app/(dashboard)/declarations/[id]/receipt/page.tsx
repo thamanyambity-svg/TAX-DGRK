@@ -141,7 +141,7 @@ const ReceiptView = ({
                 </div>
 
                 {/* ── MAIN GRID: Left column + Right column ──────────── */}
-                <div className="grid px-3 pb-2 gap-2.5" style={{ gridTemplateColumns: '1fr 55mm' }}>
+                <div className="grid px-3 pb-2 gap-2.5" style={{ gridTemplateColumns: '1fr 45mm' }}>
 
                     {/* ═══ LEFT COLUMN ════════════════════════════════ */}
                     <div className="space-y-2">
@@ -287,26 +287,26 @@ const ReceiptView = ({
                     {/* ═══ END LEFT COLUMN ════════════════════════════ */}
 
                     {/* ═══ RIGHT COLUMN: Banque + QR ══════════════════ */}
-                    <div className="flex flex-col gap-2 items-center w-[55mm]">
+                    <div className="flex flex-col gap-2 items-center w-[45mm]">
 
                         {/* Bank Box — gray text, light border */}
-                        <div className="border border-[#D1D5DB] flex items-center justify-center w-full" style={{ minHeight: '70px' }}>
-                            <p className="text-[8.5px] text-gray-400 font-bold uppercase text-center leading-snug tracking-widest">
+                        <div className="border border-[#D1D5DB] flex items-center justify-center w-full" style={{ minHeight: '65px' }}>
+                            <p className="text-[8px] text-gray-400 font-bold uppercase text-center leading-snug tracking-widest">
                                 CADRE RÉSERVÉ<br />À LA BANQUE
                             </p>
                         </div>
 
-                        {/* QR Code block (Strictly 55mm x 55mm square box) */}
+                        {/* QR Code block (Strictly 45mm x 45mm square box) */}
                         <div
-                            className="border border-[#D1D5DB] p-1.5 bg-white flex flex-col items-center justify-center w-full shrink-0"
-                            style={{ width: '55mm', height: '55mm' }}
+                            className="border border-[#D1D5DB] p-1 bg-white flex flex-col items-center justify-center w-full shrink-0"
+                            style={{ width: '45mm', height: '45mm' }}
                         >
                             {verifyUrl ? (
-                                <QRCode value={verifyUrl} size={90} viewBox={`0 0 256 256`} />
+                                <QRCode value={verifyUrl} size={82} viewBox={`0 0 256 256`} />
                             ) : (
-                                <div className="w-[90px] h-[90px] bg-gray-100" />
+                                <div className="w-[82px] h-[82px] bg-gray-100" />
                             )}
-                            <p className="text-[7.5px] text-gray-500 italic font-medium mt-1">Scan pour verifier</p>
+                            <p className="text-[7px] text-gray-500 italic font-medium mt-0.5">Scan pour verifier</p>
                         </div>
 
                         {/* Timestamp */}
