@@ -39,6 +39,9 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
         weight: '',
         marque: '',
         modele: '',
+        couleur: '',        // Couleur du véhicule
+        annee: '',          // Année de fabrication
+        anneeImmat: '',     // Année d'immatriculation
         status: 'En attente', // Can edit status
         paymentDate: '', // Field for updatedAt
         baseAmount: ''
@@ -76,6 +79,9 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     weight: decl?.vehicle?.weight || '',
                     marque: decl?.vehicle?.marque || '',
                     modele: decl?.vehicle?.modele || '',
+                    couleur: (decl?.vehicle as any)?.couleur || '',
+                    annee: (decl?.vehicle as any)?.annee || '',
+                    anneeImmat: (decl?.vehicle as any)?.anneeImmat || '',
                     status: decl?.status || 'En attente',
                     baseAmount: (decl?.meta as any)?.manualBaseAmount || '',
                     paymentDate: (() => {
@@ -154,8 +160,9 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     modele: formData.modele.toUpperCase(),
                     type: 'N/A',  // ← TOUJOURS N/A, jamais taxpayerType
                     genre: 'N/A', // ← TOUJOURS N/A
-                    couleur: '',
-                    annee: ''
+                    couleur: formData.couleur.toUpperCase(),
+                    annee: formData.annee,
+                    anneeImmat: formData.anneeImmat
                 },
                 tax: {
                     baseRate: currentTax.creditAmount, // Use the correct base rate (creditAmount)
@@ -366,6 +373,41 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                                     onChange={handleChange}
                                     className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
                                     placeholder="ex: 5 T"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Couleur</label>
+                                <input
+                                    type="text"
+                                    name="couleur"
+                                    value={formData.couleur}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-lg uppercase text-gray-900"
+                                    placeholder="ex: BLANC, ROUGE..."
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Année de Fabrication</label>
+                                <input
+                                    type="text"
+                                    name="annee"
+                                    value={formData.annee}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
+                                    placeholder="ex: 2019"
+                                    maxLength={4}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Année d'Immatriculation</label>
+                                <input
+                                    type="text"
+                                    name="anneeImmat"
+                                    value={formData.anneeImmat}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
+                                    placeholder="ex: 2020"
+                                    maxLength={4}
                                 />
                             </div>
                             <div>
