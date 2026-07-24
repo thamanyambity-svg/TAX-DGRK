@@ -17,15 +17,18 @@
 export function mapCategoryToDisplayLabel(raw: string): string {
     const s = (raw || '').toLowerCase().trim();
 
-    // ── Touristique ───────────────────────────────────────────────────────
-    if (s.includes('tourisme') || s.includes('touristique')) {
-        // 1–7 CV ou "light" → Touristique light
-        if (
-            s.includes('light') ||
-            (s.includes('1') && (s.includes('–7') || s.includes('-7') || s.includes('7')))
-        ) return 'Touristique light';
-        // Tout le reste → Medium
-        return 'Touristique Medium';
+    // ── Touristique (Voitures & Jeeps) ──────────────────────────────────
+    if (s.includes('tourisme') || s.includes('touristique') || s.includes('voiture') || s.includes('jeep')) {
+        // Heavy : > 15 CV, "heavy", ou "plus de 15"
+        if (s.includes('heavy') || s.includes('> 15') || s.includes('>15') || s.includes('plus de 15')) {
+            return 'Touristique Heavy';
+        }
+        // Medium : 11–15 CV ou "medium"
+        if (s.includes('medium') || s.includes('11–15') || s.includes('11-15')) {
+            return 'Touristique Medium';
+        }
+        // Light : 1–10 CV, "light", ou par défaut
+        return 'Touristique light';
     }
 
     // ── Utilitaire ────────────────────────────────────────────────────────

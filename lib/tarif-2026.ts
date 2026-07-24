@@ -57,10 +57,10 @@ export const SOUS_CATEGORIES_2026: {
     // Motocycles
     { categorie: 'moto', label: 'Bicycle — Toutes cylindrées', group: 'Motocycles' },
     { categorie: 'moto', label: 'Tricycle', group: 'Motocycles' },
-    // Tourisme
-    { categorie: 'tourisme', label: 'Véhicule de Tourisme (1–10 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
-    { categorie: 'tourisme', label: 'Véhicule de Tourisme (11–15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
-    { categorie: 'tourisme', label: 'Véhicule de Tourisme (> 15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    // Tourisme (Nouvelle grille 2026: Voiture & Jeep)
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme Light (1–10 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme Medium (11–15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
+    { categorie: 'tourisme', label: 'Véhicule de Tourisme Heavy (> 15 CV)', requireCV: true, group: 'Véhicules de Tourisme' },
     // Utilitaires (Nouvelle grille 2026: Tonnage + CV)
     { categorie: 'utilitaire', label: 'Véhicule Utilitaire Light (≤ 2.500 kg, 1–10 CV)', requireTonnage: true, requireCV: true, group: 'Véhicules Utilitaires' },
     { categorie: 'utilitaire', label: 'Véhicule Utilitaire Medium (2.500–10.000 kg, 11–15 CV)', requireTonnage: true, requireCV: true, group: 'Véhicules Utilitaires' },
@@ -139,15 +139,15 @@ const TRICYCLE: Tarif2026Breakdown = {
 // ─── VÉHICULES DE TOURISME ───────────────────────────────────────────────────
 const TOURISME_1_10: Tarif2026Breakdown = {
     impot: 35.60, tsc: 30.40, redevance: 6.00, imprime: 5.00, total: 77.00,
-    categorie: 'Véhicule de Tourisme — 1 à 10 CV',
+    categorie: 'Véhicule de Tourisme Light (1–10 CV)',
 };
 const TOURISME_11_15: Tarif2026Breakdown = {
     impot: 39.20, tsc: 34.90, redevance: 6.00, imprime: 5.00, total: 85.10,
-    categorie: 'Véhicule de Tourisme — 11 à 15 CV',
+    categorie: 'Véhicule de Tourisme Medium (11–15 CV)',
 };
 const TOURISME_PLUS15: Tarif2026Breakdown = {
     impot: 44.00, tsc: 39.40, redevance: 6.00, imprime: 5.00, total: 94.40,
-    categorie: 'Véhicule de Tourisme — Plus de 15 CV',
+    categorie: 'Véhicule de Tourisme Heavy (> 15 CV)',
 };
 
 // ─── VÉHICULES UTILITAIRES ───────────────────────────────────────────────────
