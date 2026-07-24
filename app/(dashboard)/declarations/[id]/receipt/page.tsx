@@ -582,7 +582,7 @@ export default function ReceiptPage() {
             const origCouleur = decl.vehicle?.couleur || '';
             const origAnnee = decl.vehicle?.annee || '';
             const origAnneeImmat = (decl.vehicle as any)?.anneeImmat || (decl.meta as any)?.manualAnneeImmat || '';
-            const origMarque = (decl.meta as any)?.manualMarqueType || '';
+            const origMarqueType = (decl.meta as any)?.manualMarqueType || '';
             const origNIF = (decl.meta as any)?.manualNIF || decl.taxpayer?.nif || '';
             const origName = (decl.meta as any)?.manualTaxpayerName || decl.taxpayer?.name || '';
             const origAddress = (decl.meta as any)?.manualTaxpayerAddress || decl.taxpayer?.address || '';
@@ -618,7 +618,7 @@ export default function ReceiptPage() {
             }
 
             // Marque
-            if (editMarqueType !== origMarque) updates.meta.manualMarqueType = editMarqueType;
+            if (editMarqueType !== origMarqueType) updates.meta.manualMarqueType = editMarqueType;
 
             // Taxpayer
             const taxpayerChanged = editNIF !== origNIF || editName !== origName || editAddress !== origAddress;
