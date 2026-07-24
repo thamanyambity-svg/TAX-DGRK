@@ -95,7 +95,7 @@ const ReceiptView = ({
         <div className="w-full bg-white text-[#333333] font-sans text-sm relative">
 
             {/* Main Ticket Container with dashed border matching PDF reference */}
-            <div className="border-2 border-dashed border-gray-400 bg-white rounded-none">
+            <div className="border-2 border-dashed border-gray-300 bg-white rounded-lg overflow-hidden">
 
                 {/* ── HEADER ──────────────────────────────────────────── */}
                 <div className="flex items-center justify-between px-3 pt-2.5 pb-2">
@@ -118,7 +118,7 @@ const ReceiptView = ({
 
                     {/* COPIE BANQUE badge (right) */}
                     <div className="flex-shrink-0 flex justify-end w-[100px]">
-                        <span className="border border-gray-400 text-gray-600 text-[8px] font-bold px-2 py-0.5 uppercase tracking-widest whitespace-nowrap bg-white">
+                        <span className="border border-gray-400 text-gray-600 text-[8px] font-bold px-2 py-0.5 uppercase tracking-widest whitespace-nowrap bg-white rounded">
                             COPIE {type === 'BANQUE' ? 'BANQUE' : 'CONTRIBUABLE'}
                         </span>
                     </div>
@@ -127,8 +127,8 @@ const ReceiptView = ({
                 {/* Blue separator line under header */}
                 <div className="bg-[#2C5EB5]" style={{ marginLeft: '1.5mm', marginRight: '1.5mm', height: '2px' }} />
 
-                {/* ── REFERENCE BANNER ─────────────────────────────── */}
-                <div className="text-center py-2 px-3">
+                {/* ── REFERENCE BANNER (Gris incrusté avec coins arrondis) ── */}
+                <div className="bg-[#F3F4F6] py-2 px-3 my-2 mx-3 text-center rounded-md">
                     <h2
                         className="text-[15px] text-[#1D4ED8] font-black tracking-[0.18em] leading-none"
                         style={{ fontFamily: 'var(--font-source-code-pro), "Courier New", monospace' }}
@@ -147,7 +147,7 @@ const ReceiptView = ({
                     <div className="space-y-2">
 
                         {/* ── CONTRIBUABLE ── */}
-                        <div className="border border-[#D1D5DB]">
+                        <div className="border border-[#D1D5DB] rounded-md overflow-hidden bg-white">
                             <div className="px-2 py-[3px] border-b border-[#D1D5DB] bg-white">
                                 <h3 className="font-black text-[#1F2937] text-[9px] uppercase tracking-wide">CONTRIBUABLE</h3>
                             </div>
@@ -176,7 +176,7 @@ const ReceiptView = ({
                         </div>
 
                         {/* ── VÉHICULE & TAXATION ── 3 colonnes × 4 lignes comme PDF */}
-                        <div className="border border-[#D1D5DB]">
+                        <div className="border border-[#D1D5DB] rounded-md overflow-hidden bg-white">
                             <div className="px-2 py-[3px] border-b border-[#D1D5DB] bg-white">
                                 <h3 className="font-black text-[#1F2937] text-[9px] uppercase tracking-wide">
                                     {vehicleIsBoat ? 'BATEAUX & TAXATION' : 'VÉHICULE & TAXATION'}
@@ -245,7 +245,7 @@ const ReceiptView = ({
                         </div>
 
                         {/* ── DÉTAIL DU PAIEMENT ── */}
-                        <div className="border border-[#D1D5DB]">
+                        <div className="border border-[#D1D5DB] rounded-md overflow-hidden bg-white">
                             <div className="px-2 py-[3px] border-b border-[#D1D5DB] bg-white">
                                 <h3 className="font-black text-[#1F2937] text-[9px] uppercase tracking-wide">DÉTAIL DU PAIEMENT</h3>
                             </div>
@@ -267,7 +267,7 @@ const ReceiptView = ({
                         </div>
 
                         {/* ── INSTRUCTIONS DE PAIEMENT ── */}
-                        <div className="border border-[#E5C96A] bg-[#FFFBEB]">
+                        <div className="border border-[#E5C96A] bg-[#FFFBEB] rounded-md overflow-hidden">
                             <div className="px-2 py-[3px] border-b border-[#E5C96A]">
                                 <h3 className="font-black text-[#92400E] text-[9px] uppercase tracking-wide">INSTRUCTIONS DE PAIEMENT</h3>
                             </div>
@@ -289,16 +289,16 @@ const ReceiptView = ({
                     {/* ═══ RIGHT COLUMN: Banque + QR ══════════════════ */}
                     <div className="flex flex-col gap-2 items-center w-[45mm]">
 
-                        {/* Bank Box — gray text, light border */}
-                        <div className="border border-[#D1D5DB] flex items-center justify-center w-full" style={{ minHeight: '65px' }}>
+                        {/* Bank Box — gray text, light border, rounded-lg */}
+                        <div className="border border-[#D1D5DB] bg-[#F9FAFB] flex items-center justify-center w-full rounded-lg" style={{ minHeight: '65px' }}>
                             <p className="text-[8px] text-gray-400 font-bold uppercase text-center leading-snug tracking-widest">
                                 CADRE RÉSERVÉ<br />À LA BANQUE
                             </p>
                         </div>
 
-                        {/* QR Code block (Strictly 45mm x 45mm square box) */}
+                        {/* QR Code block (Strictly 45mm x 45mm square box with rounded-lg) */}
                         <div
-                            className="border border-[#D1D5DB] p-1 bg-white flex flex-col items-center justify-center w-full shrink-0"
+                            className="border border-[#D1D5DB] p-1 bg-white flex flex-col items-center justify-center w-full shrink-0 rounded-lg"
                             style={{ width: '45mm', height: '45mm' }}
                         >
                             {verifyUrl ? (
