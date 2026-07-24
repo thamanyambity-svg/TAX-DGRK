@@ -56,11 +56,17 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                 }
 
                 // Populate form
+                // Taxpayer data is stored in meta.manualTaxpayer (or meta.taxpayerData as fallback)
+                const taxpayerData =
+                    (decl?.meta as any)?.manualTaxpayer ||
+                    (decl?.meta as any)?.taxpayerData ||
+                    decl?.taxpayer ||
+                    {};
                 setFormData({
                     taxpayerType: 'N/A', // Force N/A as per user request
-                    name: decl?.taxpayer?.name || '',
-                    nif: decl?.taxpayer?.nif || '',
-                    address: decl?.taxpayer?.address || '',
+                    name: taxpayerData?.name || '',
+                    nif: taxpayerData?.nif || '',
+                    address: taxpayerData?.address || '',
                     city: 'Kinshasa',
 
                     category: (decl?.vehicle?.category || 'Vignette Automobile') as VehicleCategory,
@@ -157,14 +163,24 @@ export default function EditDeclarationPage({ params }: EditPageProps) {
                     totalAmountFC: currentTax.creditAmount * EXCHANGE_RATE
                 },
                 meta: {
+                    // Preserve all existing meta fields, only override what changed
+                    ...((await getDeclarationById(id))?.meta as any || {}),
                     manualBaseAmount: isBoat && manualBase > 0 ? manualBase : undefined,
-                    manualMarqueType: isBoat ? 'Bateau' : undefined,
                     manualTaxpayer: {
                         name: formData.name.toUpperCase(),
                         nif: formData.nif.toUpperCase(),
                         address: cleanAddress(formData.address.toUpperCase()),
-                        type: 'N/A',  // ← TOUJOURS N/A
+                        type: 'N/A',
                     },
+                    taxpayerData: {
+                        name: formData.name.toUpperCase(),
+                        nif: formData.nif.toUpperCase(),
+                        address: cleanAddress(formData.address.toUpperCase()),
+                        type: 'N/A',
+                    },
+                    manualNIF: formData.nif.toUpperCase(),
+                    manualTaxpayerName: formData.name.toUpperCase(),
+                    manualTaxpayerAddress: cleanAddress(formData.address.toUpperCase()),
                     manualPaymentDate: formData.paymentDate ? new Date(`${formData.paymentDate}T10:00:00+01:00`).toISOString() : undefined
                 } as any
             };
