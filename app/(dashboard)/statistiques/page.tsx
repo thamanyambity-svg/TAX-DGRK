@@ -186,60 +186,63 @@ export default function StatistiquesPage() {
                                 <div className="flex items-center justify-between mb-3">
                                     <p className="text-[11px] uppercase font-bold text-gray-600 tracking-wider flex items-center gap-1.5">
                                         <FileText className="h-3.5 w-3.5 text-violet-600" />
-                                        Déclarations ({dayDecls.length})
+                                        Déclarations par ordre d'entrée ({dayDecls.length})
                                     </p>
                                     <span className="text-[11px] text-violet-600 font-semibold bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100">
                                         💡 Cliquez sur une ligne pour ouvrir le dossier
                                     </span>
                                 </div>
                                 <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                                    {dayDecls.map(d => {
-                                        const name = (d.meta as any)?.manualTaxpayerName || d.taxpayer?.name || 'Nom non spécifié';
-                                        return (
-                                            <div
-                                                key={d.id}
-                                                onClick={() => router.push(`/declarations/${d.id}`)}
-                                                className="flex items-center justify-between p-2.5 rounded-xl border border-gray-200/80 hover:border-violet-400 bg-white hover:bg-violet-50/70 transition-all cursor-pointer group shadow-2xs"
-                                                title={`Ouvrir la déclaration ${d.id}`}
-                                            >
-                                                <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="p-2 rounded-lg bg-gray-100 group-hover:bg-violet-100 text-gray-500 group-hover:text-violet-700 transition-colors shrink-0">
-                                                        <FileText className="h-4 w-4" />
+                                    {[...dayDecls]
+                                        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                                        .map((d, index) => {
+                                            const name = (d.meta as any)?.manualTaxpayerName || d.taxpayer?.name || 'Nom non spécifié';
+                                            const entryNumber = String(index + 1).padStart(2, '0');
+                                            return (
+                                                <div
+                                                    key={d.id}
+                                                    onClick={() => router.push(`/declarations/${d.id}`)}
+                                                    className="flex items-center justify-between p-2.5 rounded-xl border border-gray-200/80 hover:border-violet-400 bg-white hover:bg-violet-50/70 transition-all cursor-pointer group shadow-2xs"
+                                                    title={`Ouvrir la déclaration ${d.id}`}
+                                                >
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div className="flex items-center justify-center px-2 py-1 rounded-lg bg-violet-100 font-mono font-extrabold text-violet-700 text-xs shrink-0 group-hover:bg-violet-600 group-hover:text-white transition-colors">
+                                                            N° {entryNumber}
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <div className="flex items-center gap-2 flex-wrap">
+                                                                <span className="font-mono font-bold text-gray-900 text-xs">{d.vehicle?.plate || 'SANS PLAQUE'}</span>
+                                                                <span className="text-[10px] text-gray-400 font-mono">({d.id})</span>
+                                                                <span className="text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider bg-gray-100 text-gray-600">
+                                                                    {(d.meta as any)?.tariffMode === 'new2026' ? '2026' : 'Legacy'}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-600 font-medium truncate group-hover:text-violet-900 mt-0.5">
+                                                                {name}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div className="min-w-0">
-                                                        <div className="flex items-center gap-2 flex-wrap">
-                                                            <span className="font-mono font-bold text-gray-900 text-xs">{d.vehicle?.plate || 'SANS PLAQUE'}</span>
-                                                            <span className="text-[10px] text-gray-400 font-mono">({d.id})</span>
-                                                            <span className="text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider bg-gray-100 text-gray-600">
-                                                                {(d.meta as any)?.tariffMode === 'new2026' ? '2026' : 'Legacy'}
+
+                                                    <div className="flex items-center gap-3 shrink-0">
+                                                        <div className="text-right">
+                                                            <span className="text-xs font-bold text-emerald-600 block">$ {(d.tax?.baseRate || 0).toFixed(2)}</span>
+                                                            <span className="text-[10px] text-gray-400 block font-medium">
+                                                                FC {(d.tax?.totalAmountFC || 0).toLocaleString('en-US')}
                                                             </span>
                                                         </div>
-                                                        <p className="text-xs text-gray-600 font-medium truncate group-hover:text-violet-900 mt-0.5">
-                                                            {name}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex items-center gap-3 shrink-0">
-                                                    <div className="text-right">
-                                                        <span className="text-xs font-bold text-emerald-600 block">$ {(d.tax?.baseRate || 0).toFixed(2)}</span>
-                                                        <span className="text-[10px] text-gray-400 block font-medium">
-                                                            FC {(d.tax?.totalAmountFC || 0).toLocaleString('en-US')}
+                                                        <span className={cn(
+                                                            "px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide",
+                                                            d.status === 'Payée' ? "bg-emerald-100 text-emerald-800" : "bg-violet-100 text-violet-800"
+                                                        )}>
+                                                            {d.status}
                                                         </span>
-                                                    </div>
-                                                    <span className={cn(
-                                                        "px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide",
-                                                        d.status === 'Payée' ? "bg-emerald-100 text-emerald-800" : "bg-violet-100 text-violet-800"
-                                                    )}>
-                                                        {d.status}
-                                                    </span>
-                                                    <div className="p-1 rounded-md text-gray-300 group-hover:text-violet-600 group-hover:bg-violet-100 transition-colors">
-                                                        <ChevronRight className="h-4 w-4" />
+                                                        <div className="p-1 rounded-md text-gray-300 group-hover:text-violet-600 group-hover:bg-violet-100 transition-colors">
+                                                            <ChevronRight className="h-4 w-4" />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })}
                                 </div>
                             </div>
                         </div>
