@@ -82,7 +82,9 @@ const ReceiptView = ({
     // Vehicle fields
     const vehicleIsBoat = note.vehicle.category === 'Bateau';
     const marqueLabel = mapCategoryToDisplayLabel(String(((note as any).meta as any)?.tariffLabel || (note.vehicle as any).manualMarqueType || note.vehicle.category || '-'));
-    const modele = (note.vehicle as any).modele || (note.vehicle as any).model || '-';
+    const rawMarque = (note.vehicle as any)?.marque || ((note as any).meta as any)?.manualMarque || '';
+    const marqueDisplay = rawMarque ? rawMarque.toUpperCase() : marqueLabel;
+    const modele = (note.vehicle as any).modele || ((note as any).meta as any)?.manualModele || (note.vehicle as any).model || '-';
     const couleur = (note.vehicle as any).couleur || (note.vehicle as any).color || '-';
     const numMoteur = (note.vehicle as any).numMoteur || (note.vehicle as any).motorNumber || '0000';
     const anneeFab = (note.vehicle as any).annee || (note.vehicle as any).yearFab || '-';
@@ -202,7 +204,7 @@ const ReceiptView = ({
                                     {/* Row 2 */}
                                     <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-[3px] pt-[3px]">
                                         <span className="font-bold text-gray-600 whitespace-nowrap">Marque:</span>
-                                        <span className="text-gray-900 truncate lowercase first-letter:uppercase">{marqueLabel}</span>
+                                        <span className="text-gray-900 truncate uppercase">{marqueDisplay}</span>
                                     </div>
                                     <div className="flex gap-1 min-w-0 border-b border-[#F0F0F0] pb-[3px] pt-[3px]">
                                         <span className="font-bold text-gray-600 whitespace-nowrap">Modèle:</span>
@@ -435,9 +437,15 @@ export default function ReceiptPage() {
                             const raw = (manualNote.taxpayer.address || '').trim();
                             manualNote.taxpayer.address = `N/A, ${raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()}`;
                         }
-                        // Manual Marque Override
+                        // Manual Marque & Modele Overrides
                         if ((manualDecl.meta as any)?.manualMarqueType) {
                             (manualNote.vehicle as any).manualMarqueType = (manualDecl.meta as any).manualMarqueType;
+                        }
+                        if ((manualDecl.meta as any)?.manualMarque) {
+                            manualNote.vehicle.marque = (manualDecl.meta as any).manualMarque;
+                        }
+                        if ((manualDecl.meta as any)?.manualModele) {
+                            (manualNote.vehicle as any).modele = (manualDecl.meta as any).manualModele;
                         }
 
                         setNote(manualNote);
@@ -478,8 +486,8 @@ export default function ReceiptPage() {
                         const currentName = (manualDecl.meta as any)?.manualTaxpayerName || manualDecl.taxpayer?.name || '';
                         const currentAddress = (manualDecl.meta as any)?.manualTaxpayerAddress || manualDecl.taxpayer?.address || '';
                         setEditPlate(currentPlate);
-                        setEditMarque(manualDecl.vehicle?.marque || '');
-                        setEditModele(manualDecl.vehicle?.modele || '');
+                        setEditMarque((manualDecl.meta as any)?.manualMarque || manualDecl.vehicle?.marque || '');
+                        setEditModele((manualDecl.meta as any)?.manualModele || manualDecl.vehicle?.modele || '');
                         setEditNIF(currentNIF);
                         setEditName(currentName);
                         setEditAddress(currentAddress);
@@ -602,9 +610,9 @@ export default function ReceiptPage() {
             }
 
             // Vehicle
-            const origFiscalPower = decl.vehicle?.fiscalPower || '';
-            const origMarque = decl.vehicle?.marque || '';
-            const origModele = decl.vehicle?.modele || '';
+            const origFiscalPower = (decl.meta as any)?.manualFiscalPower || decl.vehicle?.fiscalPower || '';
+            const origMarque = (decl.meta as any)?.manualMarque || decl.vehicle?.marque || '';
+            const origModele = (decl.meta as any)?.manualModele || decl.vehicle?.modele || '';
             const vehicleChanged = editPlate !== origPlate || editMarque !== origMarque || editModele !== origModele || editCouleur !== origCouleur || editFiscalPower !== origFiscalPower || editAnneeFab !== origAnnee || editAnneeImmat !== origAnneeImmat;
             if (vehicleChanged) {
                 updates.vehicle = { ...decl.vehicle, plate: editPlate, marque: editMarque.toUpperCase(), modele: editModele.toUpperCase(), couleur: editCouleur, fiscalPower: editFiscalPower, annee: editAnneeFab, anneeImmat: editAnneeImmat };
