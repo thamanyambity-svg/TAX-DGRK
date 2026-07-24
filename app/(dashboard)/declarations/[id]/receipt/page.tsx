@@ -377,6 +377,7 @@ export default function ReceiptPage() {
     const [editName, setEditName] = useState('');
     const [editAddress, setEditAddress] = useState('');
     const [editCouleur, setEditCouleur] = useState('');
+    const [editFiscalPower, setEditFiscalPower] = useState('');
     const [editAnneeFab, setEditAnneeFab] = useState('');
     const [editAnneeImmat, setEditAnneeImmat] = useState('');
     const [isSavingDates, setIsSavingDates] = useState(false);
@@ -479,6 +480,7 @@ export default function ReceiptPage() {
                         setEditName(currentName);
                         setEditAddress(currentAddress);
                         setEditCouleur(manualDecl.vehicle?.couleur || '');
+                        setEditFiscalPower(manualDecl.vehicle?.fiscalPower || '');
                         setEditAnneeFab(manualDecl.vehicle?.annee || '');
                         setEditAnneeImmat((manualDecl.vehicle as any)?.anneeImmat || (manualDecl.meta as any)?.manualAnneeImmat || '');
 
@@ -596,41 +598,27 @@ export default function ReceiptPage() {
             }
 
             // Vehicle
-            const vehicleChanged = editPlate !== origPlate || editCouleur !== origCouleur || editAnneeFab !== origAnnee || editAnneeImmat !== origAnneeImmat;
+            const origFiscalPower = decl.vehicle?.fiscalPower || '';
+            const vehicleChanged = editPlate !== origPlate || editCouleur !== origCouleur || editFiscalPower !== origFiscalPower || editAnneeFab !== origAnnee || editAnneeImmat !== origAnneeImmat;
             if (vehicleChanged) {
-                updates.vehicle = { ...decl.vehicle, plate: editPlate, couleur: editCouleur, annee: editAnneeFab, anneeImmat: editAnneeImmat };
+                updates.vehicle = { ...decl.vehicle, plate: editPlate, couleur: editCouleur, fiscalPower: editFiscalPower, annee: editAnneeFab, anneeImmat: editAnneeImmat };
                 if (editPlate !== origPlate) updates.meta.manualPlate = editPlate;
                 if (editCouleur !== origCouleur) updates.meta.manualCouleur = editCouleur;
+                if (editFiscalPower !== origFiscalPower) updates.meta.manualFiscalPower = editFiscalPower;
                 if (editAnneeFab !== origAnnee) updates.meta.manualAnneeFab = editAnneeFab;
                 if (editAnneeImmat !== origAnneeImmat) updates.meta.manualAnneeImmat = editAnneeImmat;
             }
 
             // Marque
-            if (editMarqueType !== origMarque) {
-                updates.meta.manualMarqueType = editMarqueType;
-                updates.meta.tariffLabel = editMarqueType;
-            }
+            if (editMarqueType !== origMarque) updates.meta.manualMarqueType = editMarqueType;
 
             // Taxpayer
             const taxpayerChanged = editNIF !== origNIF || editName !== origName || editAddress !== origAddress;
             if (taxpayerChanged) {
-                const cleanNif = editNIF.toUpperCase().trim();
-                const cleanName = editName.toUpperCase().trim();
-                const cleanAddr = editAddress.trim();
-
-                const taxpayerObj = {
-                    name: cleanName,
-                    nif: cleanNif,
-                    address: cleanAddr,
-                    type: 'N/A'
-                };
-
-                updates.taxpayer = taxpayerObj;
-                updates.meta.manualNIF = cleanNif;
-                updates.meta.manualTaxpayerName = cleanName;
-                updates.meta.manualTaxpayerAddress = cleanAddr;
-                updates.meta.manualTaxpayer = taxpayerObj;
-                updates.meta.taxpayerData = taxpayerObj;
+                updates.taxpayer = { ...decl.taxpayer, nif: editNIF, name: editName, address: editAddress, type: decl.taxpayer?.type || 'N/A' };
+                if (editNIF !== origNIF) { updates.meta.manualNIF = editNIF; }
+                if (editName !== origName) { updates.meta.manualTaxpayerName = editName; updates.meta.manualTaxpayer = { name: editName, nif: editNIF, address: editAddress }; updates.meta.taxpayerData = { name: editName, nif: editNIF, address: editAddress }; }
+                if (editAddress !== origAddress) { updates.meta.manualTaxpayerAddress = editAddress; }
             }
 
             // Check if anything actually changed
@@ -862,6 +850,16 @@ export default function ReceiptPage() {
                             placeholder="GRISE"
                             value={editCouleur}
                             onChange={(e) => setEditCouleur(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] uppercase font-bold text-blue-800 tracking-wider">CV (Puissance)</label>
+                        <input
+                            type="text"
+                            className="px-2 py-1.5 text-xs border border-blue-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white font-medium w-24"
+                            placeholder="ex: 15 CV"
+                            value={editFiscalPower}
+                            onChange={(e) => setEditFiscalPower(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col gap-1">
