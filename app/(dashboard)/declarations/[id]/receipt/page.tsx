@@ -289,8 +289,8 @@ const ReceiptView = ({
                     {/* ═══ RIGHT COLUMN: Banque + QR ══════════════════ */}
                     <div className="flex flex-col gap-2 items-center w-[45mm]">
 
-                        {/* Bank Box — gray text, light border, rounded-lg */}
-                        <div className="border border-[#D1D5DB] bg-[#F9FAFB] flex items-center justify-center w-full rounded-lg" style={{ minHeight: '65px' }}>
+                        {/* Bank Box — gray text, light border, rounded-lg (Height: 41mm) */}
+                        <div className="border border-[#D1D5DB] bg-[#F9FAFB] flex items-center justify-center w-full rounded-lg" style={{ height: '41mm' }}>
                             <p className="text-[8px] text-gray-400 font-bold uppercase text-center leading-snug tracking-widest">
                                 CADRE RÉSERVÉ<br />À LA BANQUE
                             </p>
