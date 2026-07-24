@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Declaration } from '@/types';
-import { BarChart3, Sun, Moon, FileText, DollarSign, TrendingUp, CalendarDays } from 'lucide-react';
+import { BarChart3, Sun, Moon, FileText, ChevronRight, ExternalLink } from 'lucide-react';
 
 function cn(...classes: (string | undefined)[]) {
     return classes.filter(Boolean).join(' ');
@@ -36,6 +37,7 @@ function isToday(dateStr: string): boolean {
 }
 
 export default function StatistiquesPage() {
+    const router = useRouter();
     const [declarations, setDeclarations] = useState<Declaration[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -104,7 +106,7 @@ export default function StatistiquesPage() {
                         key={dayKey}
                         className={cn(
                             "rounded-xl border overflow-hidden transition-all",
-                            today ? "border-violet-300 shadow-md bg-gradient-to-br from-white to-violet-50" : "border-gray-200 shadow-sm bg-white"
+                            today ? "border-violet-300 shadow-md bg-gradient-to-br from-white to-violet-50/30" : "border-gray-200 shadow-sm bg-white"
                         )}
                     >
                         {/* Day Header */}
@@ -179,32 +181,67 @@ export default function StatistiquesPage() {
                                 </div>
                             </div>
 
-                            {/* Declaration list for today */}
-                            {today && (
-                                <div className="mt-4 pt-4 border-t border-gray-100">
-                                    <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider mb-2">Déclarations du jour</p>
-                                    <div className="space-y-1 max-h-48 overflow-y-auto">
-                                        {dayDecls.map(d => (
-                                            <div key={d.id} className="flex items-center justify-between py-1 px-2 rounded hover:bg-gray-50 text-xs">
-                                                <div className="flex items-center gap-2">
-                                                    <FileText className="h-3 w-3 text-gray-400" />
-                                                    <span className="font-mono text-gray-500">{d.vehicle.plate}</span>
-                                                    <span className="text-gray-400">{(d.meta as any)?.tariffMode === 'new2026' ? '2026' : 'Legacy'}</span>
+                            {/* Dynamic Interactive Declaration List */}
+                            <div className="mt-5 pt-4 border-t border-gray-100">
+                                <div className="flex items-center justify-between mb-3">
+                                    <p className="text-[11px] uppercase font-bold text-gray-600 tracking-wider flex items-center gap-1.5">
+                                        <FileText className="h-3.5 w-3.5 text-violet-600" />
+                                        Déclarations ({dayDecls.length})
+                                    </p>
+                                    <span className="text-[11px] text-violet-600 font-semibold bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100">
+                                        💡 Cliquez sur une ligne pour ouvrir le dossier
+                                    </span>
+                                </div>
+                                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                                    {dayDecls.map(d => {
+                                        const name = (d.meta as any)?.manualTaxpayerName || d.taxpayer?.name || 'Nom non spécifié';
+                                        return (
+                                            <div
+                                                key={d.id}
+                                                onClick={() => router.push(`/declarations/${d.id}`)}
+                                                className="flex items-center justify-between p-2.5 rounded-xl border border-gray-200/80 hover:border-violet-400 bg-white hover:bg-violet-50/70 transition-all cursor-pointer group shadow-2xs"
+                                                title={`Ouvrir la déclaration ${d.id}`}
+                                            >
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div className="p-2 rounded-lg bg-gray-100 group-hover:bg-violet-100 text-gray-500 group-hover:text-violet-700 transition-colors shrink-0">
+                                                        <FileText className="h-4 w-4" />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <div className="flex items-center gap-2 flex-wrap">
+                                                            <span className="font-mono font-bold text-gray-900 text-xs">{d.vehicle?.plate || 'SANS PLAQUE'}</span>
+                                                            <span className="text-[10px] text-gray-400 font-mono">({d.id})</span>
+                                                            <span className="text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider bg-gray-100 text-gray-600">
+                                                                {(d.meta as any)?.tariffMode === 'new2026' ? '2026' : 'Legacy'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-600 font-medium truncate group-hover:text-violet-900 mt-0.5">
+                                                            {name}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-gray-500">$ {(d.tax?.baseRate || 0).toFixed(2)}</span>
+
+                                                <div className="flex items-center gap-3 shrink-0">
+                                                    <div className="text-right">
+                                                        <span className="text-xs font-bold text-emerald-600 block">$ {(d.tax?.baseRate || 0).toFixed(2)}</span>
+                                                        <span className="text-[10px] text-gray-400 block font-medium">
+                                                            FC {(d.tax?.totalAmountFC || 0).toLocaleString('en-US')}
+                                                        </span>
+                                                    </div>
                                                     <span className={cn(
-                                                        "px-1.5 py-0.5 rounded text-[10px] font-bold",
-                                                        d.status === 'Payée' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
+                                                        "px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide",
+                                                        d.status === 'Payée' ? "bg-emerald-100 text-emerald-800" : "bg-violet-100 text-violet-800"
                                                     )}>
                                                         {d.status}
                                                     </span>
+                                                    <div className="p-1 rounded-md text-gray-300 group-hover:text-violet-600 group-hover:bg-violet-100 transition-colors">
+                                                        <ChevronRight className="h-4 w-4" />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
+                                        );
+                                    })}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     </div>
                 );
