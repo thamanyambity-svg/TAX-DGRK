@@ -1,6 +1,6 @@
 /**
  * Converts a number to French words for the bordereau amounts.
- * Specifically handles Congolese/French standard conventions.
+ * Specifically handles Congolese/Belgian standard conventions (septante for 70, nonente for 90).
  */
 export function numberToWords(n: number): string {
     if (n === 0) return "zéro";
@@ -8,7 +8,7 @@ export function numberToWords(n: number): string {
 
     const units = ["", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf"];
     const teens = ["dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept", "dix-huit", "dix-neuf"];
-    const tens = ["", "", "vingt", "trente", "quarante", "cinquante", "soixante", "soixante", "quatre-vingt", "quatre-vingt"];
+    const tens = ["", "", "vingt", "trente", "quarante", "cinquante", "soixante", "septante", "quatre-vingt", "nonente"];
 
     let words = "";
 
@@ -36,18 +36,18 @@ export function numberToWords(n: number): string {
         const unit = n % 10;
 
         if (ten === 7) {
-            words += "soixante";
-            if (unit === 1) words += " et onze";
-            else if (unit > 0) words += "-" + teens[unit];
-            else words += "-dix";
+            words += "septante";
+            if (unit === 1) words += " et un";
+            else if (unit > 0) words += "-" + units[unit];
         } else if (ten === 9) {
-            words += "quatre-vingt";
-            if (unit === 0) words += "s-dix"; // incorrect, usually quatre-vingt-dix
-            else words += "-" + teens[unit];
+            words += "nonente";
+            if (unit === 1) words += " et un";
+            else if (unit > 0) words += "-" + units[unit];
         } else if (ten === 8) {
             words += "quatre-vingt";
             if (unit === 0) words += "s";
-            else words += "-" + units[unit];
+            else if (unit === 1) words += "-un";
+            else if (unit > 0) words += "-" + units[unit];
         } else {
             words += tens[ten];
             if (unit === 1) words += " et un";
@@ -59,13 +59,5 @@ export function numberToWords(n: number): string {
         words += units[n];
     }
 
-    // Clean up trailing spaces and specific 90 case
-    let result = words.trim().replace("quatre-vingts-dix", "quatre-vingt-dix");
-
-    // Fix for 91-99 which might have double hyphens or extra spaces
-    if (result.includes("quatre-vingt-")) {
-        // already handled by logic above
-    }
-
-    return result;
+    return words.trim();
 }
