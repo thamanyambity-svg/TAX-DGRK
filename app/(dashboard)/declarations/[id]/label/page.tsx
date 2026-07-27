@@ -121,7 +121,7 @@ export default function LabelPage() {
                         height: '142mm',
                         border: `10px solid ${BLUE}`,
                         borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #f0f4fa, #e8edf5)',
+                        background: 'linear-gradient(135deg, #d6e4f7 0%, #c2d4ee 50%, #d0dff5 100%)',
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
@@ -148,7 +148,7 @@ export default function LabelPage() {
                                     transform: 'rotate(-35deg)',
                                     fontSize: '16px',
                                     fontWeight: 900,
-                                    color: 'rgba(26, 58, 107, 0.07)',
+                                    color: 'rgba(26, 58, 107, 0.14)',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     letterSpacing: '0.4em',
                                     whiteSpace: 'nowrap',
@@ -284,18 +284,17 @@ export default function LabelPage() {
                                 </div>
                             </div>
 
-                            {/* ── QR CODE + HOLOGRAM ZONE ─────────────── */}
+                            {/* ── QR CODE (centré) ────────────── */}
                             <div style={{
                                 width: '100%',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: '6mm',
-                                marginBottom: '3mm',
+                                marginBottom: '2mm',
                                 flexShrink: 0,
-                                paddingLeft: '2mm',
+                                position: 'relative',
                             }}>
-                                {/* QR Code */}
+                                {/* QR Code centré */}
                                 <div style={{
                                     background: 'white',
                                     padding: '5px',
@@ -303,19 +302,22 @@ export default function LabelPage() {
                                     borderRadius: '8px',
                                     lineHeight: 0,
                                 }}>
-                                    <QRCode value={verifyUrl} size={115} />
+                                    <QRCode value={verifyUrl} size={100} />
                                 </div>
 
-                                {/* HOLOGRAM ZONE */}
+                                {/* HOLOGRAM ZONE : décalé +30mm à droite en absolu */}
                                 <div style={{
-                                    width: '24mm',
-                                    height: '24mm',
-                                    border: `2px dashed #aaa`,
+                                    position: 'absolute',
+                                    right: '-30mm',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    width: '22mm',
+                                    height: '22mm',
+                                    border: '2px dashed #aaa',
                                     borderRadius: '4px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    flexShrink: 0,
                                 }}>
                                     <span style={{
                                         fontSize: '7px', color: '#888',
@@ -330,13 +332,17 @@ export default function LabelPage() {
                                 </div>
                             </div>
 
-                            {/* ── FOOTER ─────────────────────────────── */}
+                            {/* ── FOOTER ─────────────────── */}
                             <div style={{
                                 textAlign: 'center',
-                                fontSize: '9px', fontWeight: 700,
-                                color: BLACK, lineHeight: 1.5,
+                                fontSize: '10px', fontWeight: 800,
+                                color: BLUE, lineHeight: 1.6,
                                 fontFamily: 'Arial, Helvetica, sans-serif',
                                 flexShrink: 0,
+                                marginTop: '1mm',
+                                background: 'rgba(255,255,255,0.6)',
+                                borderRadius: '4px',
+                                padding: '1.5mm 4mm',
                             }}>
                                 <div>REF: {refId}</div>
                                 <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
