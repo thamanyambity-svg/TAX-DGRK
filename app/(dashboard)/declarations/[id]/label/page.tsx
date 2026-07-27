@@ -287,14 +287,14 @@ export default function LabelPage() {
                                     {/* ── QR CODE (centré) ────────────── */}
                                     <div style={{
                                         background: 'white',
-                                        padding: '2px',
-                                        border: '1px solid #cbd5e1',
-                                        borderRadius: '5px',
+                                        padding: '3px',
+                                        border: '1.5px solid #cbd5e1',
+                                        borderRadius: '6px',
                                         lineHeight: 0,
                                         marginBottom: '0.5mm',
                                         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
                                     }}>
-                                        <QRCode value={verifyUrl} size={52} />
+                                        <QRCode value={verifyUrl} size={64} />
                                     </div>
 
                                 </div>
