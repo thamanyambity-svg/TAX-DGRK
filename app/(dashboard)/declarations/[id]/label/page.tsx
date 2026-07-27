@@ -115,19 +115,19 @@ export default function LabelPage() {
                     boxSizing: 'border-box',
                 }}>
 
-                    {/* ── CARTE ÉTIQUETTE (Hauteur 88mm x Largeur 100mm) ─────────────────── */}
+                    {/* ── CARTE ÉTIQUETTE (Largeur 90mm x Hauteur 78mm) ─────────────────── */}
                     <div style={{
-                        width: '100mm',
-                        height: '88mm',
-                        border: `7px solid ${BLUE}`,
-                        borderRadius: '12px',
+                        width: '90mm',
+                        height: '78mm',
+                        border: `6px solid ${BLUE}`,
+                        borderRadius: '10px',
                         background: 'linear-gradient(135deg, #eef3f9 0%, #e2eaf5 100%)',
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         boxSizing: 'border-box',
-                        padding: '3mm 3mm 2mm',
+                        padding: '2.5mm 2.5mm 1.5mm',
                         overflow: 'hidden',
                     }}>
 
@@ -146,11 +146,11 @@ export default function LabelPage() {
                                     left: '-20%',
                                     width: '140%',
                                     transform: 'rotate(-35deg)',
-                                    fontSize: '12px',
+                                    fontSize: '11px',
                                     fontWeight: 900,
                                     color: 'rgba(26, 58, 107, 0.08)',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
-                                    letterSpacing: '0.3em',
+                                    letterSpacing: '0.28em',
                                     whiteSpace: 'nowrap',
                                     textTransform: 'uppercase',
                                 }}>
@@ -167,16 +167,16 @@ export default function LabelPage() {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: '5mm',
+                                gap: '4mm',
                                 width: '100%',
-                                marginBottom: '1mm',
+                                marginBottom: '0.8mm',
                                 flexShrink: 0,
                             }}>
                                 {/* Logo DGRK */}
                                 <img
                                     src="/dgrk-logo.jpg"
                                     alt="DGRK"
-                                    style={{ height: '10mm', width: 'auto', objectFit: 'contain' }}
+                                    style={{ height: '9mm', width: 'auto', objectFit: 'contain' }}
                                     crossOrigin="anonymous"
                                 />
 
@@ -184,15 +184,15 @@ export default function LabelPage() {
                                 <img
                                     src="/irms-logo-new.svg"
                                     alt="IRMS DGRK"
-                                    style={{ height: '13mm', width: 'auto', objectFit: 'contain' }}
+                                    style={{ height: '11.5mm', width: 'auto', objectFit: 'contain' }}
                                     crossOrigin="anonymous"
                                 />
                             </div>
 
                             {/* ── TITRES ────────────────────────────────── */}
-                            <div style={{ textAlign: 'center', lineHeight: 1.15, marginBottom: '1mm', flexShrink: 0 }}>
+                            <div style={{ textAlign: 'center', lineHeight: 1.15, marginBottom: '0.8mm', flexShrink: 0 }}>
                                 <div style={{
-                                    fontSize: '7px', fontWeight: 900, color: BLUE,
+                                    fontSize: '6.5px', fontWeight: 900, color: BLUE,
                                     textTransform: 'uppercase', letterSpacing: '0.02em',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     whiteSpace: 'nowrap',
@@ -200,7 +200,7 @@ export default function LabelPage() {
                                     RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
                                 </div>
                                 <div style={{
-                                    fontSize: '5.5px', fontWeight: 700, color: BLUE,
+                                    fontSize: '5px', fontWeight: 700, color: BLUE,
                                     textTransform: 'uppercase', letterSpacing: '0.01em',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     whiteSpace: 'nowrap',
@@ -213,7 +213,7 @@ export default function LabelPage() {
                             <div style={{
                                 width: '96%', height: '1px',
                                 background: BLUE,
-                                marginBottom: '1.5mm',
+                                marginBottom: '1mm',
                                 flexShrink: 0,
                             }} />
 
@@ -233,13 +233,13 @@ export default function LabelPage() {
                                     {/* ── BADGE ANNÉE ───────────────────────────── */}
                                     <div style={{
                                         background: BLUE, color: '#fff',
-                                        fontSize: '17px', fontWeight: 900,
+                                        fontSize: '15px', fontWeight: 900,
                                         letterSpacing: '0.05em',
                                         fontFamily: 'Arial, Helvetica, sans-serif',
                                         borderRadius: '999px',
-                                        padding: '1mm 9mm',
+                                        padding: '0.8mm 8mm',
                                         lineHeight: 1,
-                                        marginBottom: '1.5mm',
+                                        marginBottom: '1mm',
                                         flexShrink: 0,
                                         WebkitPrintColorAdjust: 'exact',
                                         printColorAdjust: 'exact',
@@ -249,18 +249,18 @@ export default function LabelPage() {
 
                                     {/* ── PLAQUE ────────────────────────────────── */}
                                     <div style={{
-                                        width: '54mm',
-                                        border: `2px solid ${BLACK}`,
-                                        borderRadius: '5px',
-                                        padding: '1.5mm 1mm',
+                                        width: '48mm',
+                                        border: `1.8px solid ${BLACK}`,
+                                        borderRadius: '4px',
+                                        padding: '1.2mm 1mm',
                                         textAlign: 'center',
-                                        fontSize: '22px', fontWeight: 900,
+                                        fontSize: '20px', fontWeight: 900,
                                         fontFamily: '"Cousine", "Courier New", monospace',
-                                        letterSpacing: '0.1em',
+                                        letterSpacing: '0.09em',
                                         textTransform: 'uppercase',
                                         color: BLACK, lineHeight: 1,
                                         background: 'white',
-                                        marginBottom: '1.5mm',
+                                        marginBottom: '1mm',
                                         flexShrink: 0,
                                         boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
                                     }}>
@@ -268,15 +268,15 @@ export default function LabelPage() {
                                     </div>
 
                                     {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
-                                    <div style={{ textAlign: 'center', marginBottom: '1.5mm', lineHeight: 1.2, flexShrink: 0 }}>
+                                    <div style={{ textAlign: 'center', marginBottom: '1mm', lineHeight: 1.15, flexShrink: 0 }}>
                                         <div style={{
-                                            fontSize: '8.5px', fontWeight: 700, color: '#111827',
+                                            fontSize: '8px', fontWeight: 700, color: '#111827',
                                             fontFamily: 'Arial, Helvetica, sans-serif',
                                         }}>
                                             {category.charAt(0).toUpperCase() + category.slice(1)}
                                         </div>
                                         <div style={{
-                                            fontSize: '7.5px', fontWeight: 500, color: '#334155',
+                                            fontSize: '7px', fontWeight: 500, color: '#334155',
                                             fontFamily: 'Arial, Helvetica, sans-serif',
                                         }}>
                                             {powerLabel} • {weightLabel}
@@ -286,14 +286,14 @@ export default function LabelPage() {
                                     {/* ── QR CODE (centré) ────────────── */}
                                     <div style={{
                                         background: 'white',
-                                        padding: '2.5px',
+                                        padding: '2px',
                                         border: '1px solid #cbd5e1',
-                                        borderRadius: '6px',
+                                        borderRadius: '5px',
                                         lineHeight: 0,
-                                        marginBottom: '1mm',
+                                        marginBottom: '0.5mm',
                                         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
                                     }}>
-                                        <QRCode value={verifyUrl} size={60} />
+                                        <QRCode value={verifyUrl} size={52} />
                                     </div>
 
                                 </div>
@@ -302,36 +302,36 @@ export default function LabelPage() {
                                 <div style={{
                                     position: 'absolute',
                                     right: '1mm',
-                                    bottom: '6mm',
-                                    width: '15mm',
-                                    height: '15mm',
-                                    border: '1.5px dashed #94a3b8',
-                                    borderRadius: '4px',
+                                    bottom: '5mm',
+                                    width: '13.5mm',
+                                    height: '13.5mm',
+                                    border: '1.2px dashed #94a3b8',
+                                    borderRadius: '3px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     zIndex: 2,
                                 }}>
                                     <span style={{
-                                        fontSize: '5px', color: '#64748b',
+                                        fontSize: '4.5px', color: '#64748b',
                                         fontFamily: 'Arial, Helvetica, sans-serif',
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
-                                        letterSpacing: '0.03em',
-                                        lineHeight: 1.15,
+                                        letterSpacing: '0.02em',
+                                        lineHeight: 1.1,
                                         fontWeight: 700,
                                     }}>
                                         HOLOGRAM<br />ZONE
                                     </span>
                                 </div>
 
-                                {/* ── FOOTER (Dates & Ref réajustées ensemble) ── */}
+                                {/* ── FOOTER ── */}
                                 <div style={{
                                     position: 'absolute',
                                     bottom: '0mm',
                                     textAlign: 'center',
-                                    fontSize: '7.5px', fontWeight: 800,
-                                    color: '#0f172a', lineHeight: 1.3,
+                                    fontSize: '7px', fontWeight: 800,
+                                    color: '#0f172a', lineHeight: 1.25,
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     zIndex: 2,
                                 }}>
