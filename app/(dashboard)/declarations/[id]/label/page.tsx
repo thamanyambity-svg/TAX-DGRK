@@ -306,6 +306,7 @@ export default function LabelPage() {
                                     bottom: '5mm',
                                     width: '13.5mm',
                                     height: '13.5mm',
+                                    background: 'white',
                                     border: '1.2px dashed #94a3b8',
                                     borderRadius: '3px',
                                     display: 'flex',
