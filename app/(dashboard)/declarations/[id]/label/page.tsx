@@ -118,7 +118,7 @@ export default function LabelPage() {
                     {/* ── CARTE ÉTIQUETTE ─────────────────── */}
                     <div style={{
                         width: '130mm',
-                        height: '148mm',
+                        height: '118mm',
                         border: `10px solid ${BLUE}`,
                         borderRadius: '16px',
                         background: 'linear-gradient(135deg, #eef3f9 0%, #e2eaf5 100%)',
@@ -127,7 +127,7 @@ export default function LabelPage() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         boxSizing: 'border-box',
-                        padding: '6mm 5mm 4mm',
+                        padding: '4mm 5mm 3mm',
                         overflow: 'hidden',
                     }}>
 
@@ -139,10 +139,10 @@ export default function LabelPage() {
                             zIndex: 0,
                             overflow: 'hidden',
                         }}>
-                            {[...Array(12)].map((_, i) => (
+                            {[...Array(10)].map((_, i) => (
                                 <div key={i} style={{
                                     position: 'absolute',
-                                    top: `${-15 + i * 18}%`,
+                                    top: `${-15 + i * 20}%`,
                                     left: '-20%',
                                     width: '140%',
                                     transform: 'rotate(-35deg)',
@@ -169,43 +169,30 @@ export default function LabelPage() {
                                 justifyContent: 'center',
                                 gap: '8mm',
                                 width: '100%',
-                                marginBottom: '2mm',
+                                marginBottom: '1.5mm',
                                 flexShrink: 0,
                             }}>
-                                {/* Logo DGRK */}
-                                <div style={{
-                                    display: 'flex', flexDirection: 'column',
-                                    alignItems: 'center', justifyContent: 'center',
-                                }}>
-                                    <img
-                                        src="/dgrk-logo.jpg"
-                                        alt="DGRK"
-                                        style={{ height: '15mm', width: 'auto', objectFit: 'contain' }}
-                                        crossOrigin="anonymous"
-                                    />
-                                    <div style={{
-                                        fontSize: '4.5px', color: '#475569',
-                                        fontFamily: 'Arial, Helvetica, sans-serif',
-                                        textAlign: 'center',
-                                        marginTop: '0.5mm',
-                                    }}>
-                                        Direction Générale des Recettes de Kinshasa
-                                    </div>
-                                </div>
+                                {/* Logo DGRK (sans texte en double en dessous) */}
+                                <img
+                                    src="/dgrk-logo.jpg"
+                                    alt="DGRK"
+                                    style={{ height: '14mm', width: 'auto', objectFit: 'contain' }}
+                                    crossOrigin="anonymous"
+                                />
 
                                 {/* Logo IRMS */}
                                 <img
                                     src="/irms-logo-new.svg"
                                     alt="IRMS DGRK"
-                                    style={{ height: '20mm', width: 'auto', objectFit: 'contain' }}
+                                    style={{ height: '18mm', width: 'auto', objectFit: 'contain' }}
                                     crossOrigin="anonymous"
                                 />
                             </div>
 
                             {/* ── TITRES ────────────────────────────────── */}
-                            <div style={{ textAlign: 'center', lineHeight: 1.25, marginBottom: '2mm', flexShrink: 0 }}>
+                            <div style={{ textAlign: 'center', lineHeight: 1.2, marginBottom: '1.5mm', flexShrink: 0 }}>
                                 <div style={{
-                                    fontSize: '9.5px', fontWeight: 900, color: BLUE,
+                                    fontSize: '9px', fontWeight: 900, color: BLUE,
                                     textTransform: 'uppercase', letterSpacing: '0.03em',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     whiteSpace: 'nowrap',
@@ -213,7 +200,7 @@ export default function LabelPage() {
                                     RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
                                 </div>
                                 <div style={{
-                                    fontSize: '7.5px', fontWeight: 700, color: BLUE,
+                                    fontSize: '7px', fontWeight: 700, color: BLUE,
                                     textTransform: 'uppercase', letterSpacing: '0.02em',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     whiteSpace: 'nowrap',
@@ -226,11 +213,11 @@ export default function LabelPage() {
                             <div style={{
                                 width: '96%', height: '1.5px',
                                 background: BLUE,
-                                marginBottom: '3mm',
+                                marginBottom: '2mm',
                                 flexShrink: 0,
                             }} />
 
-                            {/* ── COLONNE CENTRALE AVEC BANDE GRISE ────────────────── */}
+                            {/* ── ZONE CENTRALE (SANS FOND GRIS) ────────────────── */}
                             <div style={{
                                 position: 'relative',
                                 display: 'flex',
@@ -240,30 +227,20 @@ export default function LabelPage() {
                                 flexGrow: 1,
                             }}>
 
-                                {/* BANDE DE FOND GRIS DANS LE FOND DE LA ZONE CENTRALE */}
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '0',
-                                    bottom: '12mm',
-                                    width: '64mm',
-                                    background: 'rgba(0, 0, 0, 0.08)',
-                                    zIndex: 0,
-                                }} />
-
-                                {/* CONTENU SUR LA BANDE GRISE */}
+                                {/* CONTENU CENTRAL */}
                                 <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                                     
                                     {/* ── BADGE ANNÉE ───────────────────────────── */}
                                     <div style={{
                                         background: BLUE, color: '#fff',
-                                        fontSize: '26px', fontWeight: 900,
+                                        fontSize: '24px', fontWeight: 900,
                                         letterSpacing: '0.06em',
                                         fontFamily: 'Arial, Helvetica, sans-serif',
                                         borderRadius: '999px',
-                                        padding: '2.5mm 16mm',
+                                        padding: '2mm 14mm',
                                         lineHeight: 1,
-                                        marginBottom: '3mm',
-                                        marginTop: '1mm',
+                                        marginBottom: '2mm',
+                                        marginTop: '0.5mm',
                                         flexShrink: 0,
                                         WebkitPrintColorAdjust: 'exact',
                                         printColorAdjust: 'exact',
@@ -273,18 +250,18 @@ export default function LabelPage() {
 
                                     {/* ── PLAQUE ────────────────────────────────── */}
                                     <div style={{
-                                        width: '76mm',
+                                        width: '74mm',
                                         border: `3px solid ${BLACK}`,
                                         borderRadius: '8px',
-                                        padding: '3mm 2mm',
+                                        padding: '2.5mm 2mm',
                                         textAlign: 'center',
-                                        fontSize: '34px', fontWeight: 900,
+                                        fontSize: '32px', fontWeight: 900,
                                         fontFamily: '"Cousine", "Courier New", monospace',
                                         letterSpacing: '0.12em',
                                         textTransform: 'uppercase',
                                         color: BLACK, lineHeight: 1,
                                         background: 'white',
-                                        marginBottom: '2.5mm',
+                                        marginBottom: '2mm',
                                         flexShrink: 0,
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
                                     }}>
@@ -292,15 +269,15 @@ export default function LabelPage() {
                                     </div>
 
                                     {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
-                                    <div style={{ textAlign: 'center', marginBottom: '2.5mm', lineHeight: 1.4, flexShrink: 0 }}>
+                                    <div style={{ textAlign: 'center', marginBottom: '2mm', lineHeight: 1.3, flexShrink: 0 }}>
                                         <div style={{
-                                            fontSize: '11px', fontWeight: 700, color: '#111827',
+                                            fontSize: '10.5px', fontWeight: 700, color: '#111827',
                                             fontFamily: 'Arial, Helvetica, sans-serif',
                                         }}>
                                             {category.charAt(0).toUpperCase() + category.slice(1)}
                                         </div>
                                         <div style={{
-                                            fontSize: '10px', fontWeight: 500, color: '#334155',
+                                            fontSize: '9.5px', fontWeight: 500, color: '#334155',
                                             fontFamily: 'Arial, Helvetica, sans-serif',
                                         }}>
                                             {powerLabel} • {weightLabel}
@@ -310,25 +287,25 @@ export default function LabelPage() {
                                     {/* ── QR CODE (centré) ────────────── */}
                                     <div style={{
                                         background: 'white',
-                                        padding: '5px',
+                                        padding: '4px',
                                         border: '1.5px solid #cbd5e1',
                                         borderRadius: '8px',
                                         lineHeight: 0,
-                                        marginBottom: '3mm',
+                                        marginBottom: '2mm',
                                         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
                                     }}>
-                                        <QRCode value={verifyUrl} size={95} />
+                                        <QRCode value={verifyUrl} size={85} />
                                     </div>
 
                                 </div>
 
-                                {/* ── HOLOGRAM ZONE (En bas à droite du QR Code, sur le fond bleu) ── */}
+                                {/* ── HOLOGRAM ZONE (En bas à droite du QR Code) ── */}
                                 <div style={{
                                     position: 'absolute',
-                                    right: '4mm',
-                                    bottom: '14mm',
-                                    width: '21mm',
-                                    height: '21mm',
+                                    right: '3mm',
+                                    bottom: '10mm',
+                                    width: '20mm',
+                                    height: '20mm',
                                     border: '2px dashed #94a3b8',
                                     borderRadius: '6px',
                                     display: 'flex',
@@ -337,7 +314,7 @@ export default function LabelPage() {
                                     zIndex: 2,
                                 }}>
                                     <span style={{
-                                        fontSize: '6.5px', color: '#64748b',
+                                        fontSize: '6px', color: '#64748b',
                                         fontFamily: 'Arial, Helvetica, sans-serif',
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
@@ -349,13 +326,13 @@ export default function LabelPage() {
                                     </span>
                                 </div>
 
-                                {/* ── FOOTER (Tout en bas, centré sous le panneau) ── */}
+                                {/* ── FOOTER ── */}
                                 <div style={{
                                     position: 'absolute',
                                     bottom: '0mm',
                                     textAlign: 'center',
-                                    fontSize: '9.5px', fontWeight: 800,
-                                    color: '#0f172a', lineHeight: 1.45,
+                                    fontSize: '9px', fontWeight: 800,
+                                    color: '#0f172a', lineHeight: 1.4,
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     zIndex: 2,
                                 }}>
@@ -372,3 +349,4 @@ export default function LabelPage() {
         </div>
     );
 }
+
