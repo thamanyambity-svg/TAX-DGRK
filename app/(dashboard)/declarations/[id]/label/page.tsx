@@ -118,10 +118,10 @@ export default function LabelPage() {
                     {/* ── CARTE ÉTIQUETTE ─────────────────── */}
                     <div style={{
                         width: '132mm',
-                        minHeight: '175mm',
+                        height: '142mm',
                         border: `10px solid ${BLUE}`,
                         borderRadius: '12px',
-                        background: 'linear-gradient(160deg, #eef2f9 0%, #dce4f0 100%)',
+                        background: 'linear-gradient(135deg, #f0f4fa, #e8edf5)',
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
