@@ -9,21 +9,20 @@ import QRCode from 'react-qr-code';
 import { Declaration } from '@/types';
 import { mapCategoryToDisplayLabel } from '@/lib/category-display';
 
-const BLUE  = '#2472b6';
+const BLUE = '#1a3a6b';
 const BLACK = '#111111';
 
 export default function LabelPage() {
     const params = useParams();
     const router = useRouter();
-    const [decl, setDecl]       = useState<Declaration | null>(null);
+    const [decl, setDecl] = useState<Declaration | null>(null);
     const [loading, setLoading] = useState(true);
 
-    /* ── ID recovery ─────────────────────────────────────────────────── */
     let rawId = params?.id as string;
     if ((!rawId || rawId === 'undefined' || rawId === '[id]') && typeof window !== 'undefined') {
         try {
             const segs = window.location.pathname.split('/');
-            const idx  = segs.indexOf('declarations');
+            const idx = segs.indexOf('declarations');
             if (idx !== -1 && segs[idx + 1] && segs[idx + 1] !== '[id]') rawId = segs[idx + 1];
         } catch (_) {}
     }
@@ -38,8 +37,8 @@ export default function LabelPage() {
 
     useEffect(() => {
         const link = document.createElement('link');
-        link.rel   = 'stylesheet';
-        link.href  = '/print.css';
+        link.rel = 'stylesheet';
+        link.href = '/print.css';
         link.media = 'print';
         document.head.appendChild(link);
     }, []);
@@ -55,40 +54,35 @@ export default function LabelPage() {
     };
 
     if (loading) return <div className="p-10 text-center font-mono text-sm">Chargement…</div>;
-    if (!decl)   return <div className="p-10 text-center text-red-600">Déclaration introuvable.</div>;
+    if (!decl) return <div className="p-10 text-center text-red-600">Déclaration introuvable.</div>;
 
-    /* ── DONNÉES ─────────────────────────────────────────────────────── */
     const validYear = (decl.meta as any)?.annee_fiscale || (decl.createdAt ? new Date(decl.createdAt).getFullYear() : new Date().getFullYear());
     const yearLabel = `${validYear}`;
-    const plate     = decl.vehicle?.plate || '0000AB00';
+    const plate = decl.vehicle?.plate || '0000AB00';
 
-    // Catégorie — supprimer les parenthèses ex: "(11–15 CV)", "(basé sur...)"
-    const rawCat  = (decl.meta as any)?.tariffLabel
+    const rawCat = (decl.meta as any)?.tariffLabel
         || (decl.meta as any)?.manualMarqueType
         || decl.vehicle?.category
         || 'Vignette Automobile';
-    // Mapper vers un libellé lisible (Touristique light, Utilitaire Medium, etc.)
     const category = mapCategoryToDisplayLabel(rawCat);
 
-    // Puissance fiscale — ex: "11 CV" → "11 CV" ; si vide → "— CV"
-    const rawPower    = decl.vehicle?.fiscalPower || '';
+    const rawPower = decl.vehicle?.fiscalPower || '';
     const powerDigits = rawPower.replace(/(cv|vc)/gi, '').trim();
-    const powerLabel  = powerDigits ? `${powerDigits} CV` : '— CV';
+    const powerLabel = powerDigits ? `${powerDigits} CV` : '— CV';
 
-    // Poids — si non renseigné ou "0" / "N/A" → "0 T"
-    const rawWeight  = decl.vehicle?.weight || '';
-    const weightNum  = parseFloat(rawWeight);
+    const rawWeight = decl.vehicle?.weight || '';
+    const weightNum = parseFloat(rawWeight);
     const weightLabel =
         rawWeight && rawWeight !== '0' && rawWeight !== 'N/A' && rawWeight !== 'n/a' && !isNaN(weightNum)
             ? `${rawWeight} T`
             : '0 T';
 
-    const refId     = (decl.meta as any)?.ndpId || (decl.meta as any)?.reference || decl.id;
+    const refId = (decl.meta as any)?.ndpId || (decl.meta as any)?.reference || decl.id;
     const createdAt = decl.createdAt ? new Date(decl.createdAt) : new Date(`${validYear}-01-01`);
-    const validTo   = new Date(`${validYear}-12-31`);
-    const fmt       = (d: Date) =>
-        `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-    const verifyUrl = `https://tax-portal-two.vercel.app/verify/${decl.id}`;
+    const validTo = new Date(`${validYear}-12-31`);
+    const fmt = (d: Date) =>
+        `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    const verifyUrl = `https://tax-dgrk.vercel.app/verify/${decl.id}`;
 
     return (
         <div className="min-h-screen bg-gray-100 py-8">
@@ -96,7 +90,7 @@ export default function LabelPage() {
                 @import url('https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap');
             `}</style>
 
-            {/* ── Action bar ──────────────────────────────────────────── */}
+            {/* ── BARRE DE CONTRÔLE (pas imprimée) ─── */}
             <div className="no-print max-w-[210mm] mx-auto mb-6 px-4 flex justify-between items-center">
                 <button
                     onClick={() => router.back()}
@@ -112,7 +106,7 @@ export default function LabelPage() {
                 </button>
             </div>
 
-            {/* ── Feuille A4 ──────────────────────────────────────────── */}
+            {/* ── PAGE A4 ─────────────────────────── */}
             <div className="flex justify-center">
                 <div id="printable-root" style={{
                     width: '210mm', height: '297mm',
@@ -121,199 +115,235 @@ export default function LabelPage() {
                     boxSizing: 'border-box',
                 }}>
 
-                    {/*
-                     * ═══════════════════════════════════════════════════
-                     *  ÉTIQUETTE — UNE SEULE BORDURE épaisse + arrondie
-                     * ═══════════════════════════════════════════════════
-                     */}
+                    {/* ── CARTE ÉTIQUETTE ─────────────────── */}
                     <div style={{
-                        width:        '90mm',
-                        height:       '130mm',
-                        border:       `10px solid ${BLUE}`,   /* épaisse, unique */
-                        borderRadius: '8mm',
-                        background:   'white',
-                        position:     'relative',
-                        display:      'flex',
-                        flexDirection:'column',
-                        alignItems:   'center',
-                        boxSizing:    'border-box',
-                        padding:      '5mm 4mm 4mm',
-                        overflow:     'hidden',
+                        width: '132mm',
+                        minHeight: '175mm',
+                        border: `10px solid ${BLUE}`,
+                        borderRadius: '12px',
+                        background: 'linear-gradient(160deg, #eef2f9 0%, #dce4f0 100%)',
+                        position: 'relative',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        boxSizing: 'border-box',
+                        padding: '6mm 6mm 5mm',
+                        overflow: 'hidden',
                     }}>
 
-                        {/* ── LOGOS ─────────────────────────────────── */}
+                        {/* ── WATERMARK ─────────────────────────────────── */}
                         <div style={{
-                            display:        'flex',
-                            alignItems:     'center',
-                            justifyContent: 'center',
-                            gap:            '5mm',
-                            width:          '100%',
-                            marginBottom:   '1.5mm',
-                            flexShrink:     0,
+                            position: 'absolute',
+                            top: 0, left: 0, right: 0, bottom: 0,
+                            pointerEvents: 'none',
+                            zIndex: 0,
+                            overflow: 'hidden',
                         }}>
-                            {/* DGRK — Nouveau blason avec texte en dessous */}
+                            {[...Array(10)].map((_, i) => (
+                                <div key={i} style={{
+                                    position: 'absolute',
+                                    top: `${-10 + i * 22}%`,
+                                    left: '-10%',
+                                    width: '130%',
+                                    transform: 'rotate(-35deg)',
+                                    fontSize: '16px',
+                                    fontWeight: 900,
+                                    color: 'rgba(26, 58, 107, 0.07)',
+                                    fontFamily: 'Arial, Helvetica, sans-serif',
+                                    letterSpacing: '0.4em',
+                                    whiteSpace: 'nowrap',
+                                    textTransform: 'uppercase',
+                                }}>
+                                    DGRK • TAX • DGRK • TAX • DGRK • TAX • DGRK • TAX • DGRK • TAX
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* ── CONTENU ─────────────────────────────────── */}
+                        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+
+                            {/* ── LOGOS ─────────────────────────────────── */}
                             <div style={{
-                                display: 'flex', flexDirection: 'column',
-                                alignItems: 'center', justifyContent: 'center'
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8mm',
+                                width: '100%',
+                                marginBottom: '2.5mm',
+                                flexShrink: 0,
                             }}>
+                                {/* Logo DGRK : arc-en-ciel + DGRK + sous-titre */}
+                                <div style={{
+                                    display: 'flex', flexDirection: 'column',
+                                    alignItems: 'center', justifyContent: 'center',
+                                    gap: '0.5mm',
+                                }}>
+                                    <img
+                                        src="/dgrk-logo.jpg"
+                                        alt="DGRK"
+                                        style={{ height: '16mm', width: 'auto', objectFit: 'contain' }}
+                                        crossOrigin="anonymous"
+                                    />
+                                    <div style={{
+                                        fontSize: '5px', color: '#555',
+                                        fontFamily: 'Arial, Helvetica, sans-serif',
+                                        textAlign: 'center',
+                                    }}>
+                                        Direction Générale des Recettes de Kinshasa
+                                    </div>
+                                </div>
+
+                                {/* Logo IRMS : cercle */}
                                 <img
-                                    src="/kinshasa-coat.webp"
-                                    alt="Kinshasa"
-                                    style={{ height: '12mm', width: 'auto', objectFit: 'contain' }}
+                                    src="/irms-logo-new.svg"
+                                    alt="IRMS DGRK"
+                                    style={{ height: '22mm', width: 'auto', objectFit: 'contain' }}
                                     crossOrigin="anonymous"
                                 />
+                            </div>
+
+                            {/* ── TITRES ────────────────────────────────── */}
+                            <div style={{ textAlign: 'center', lineHeight: 1.3, marginBottom: '2.5mm', flexShrink: 0 }}>
                                 <div style={{
-                                    fontSize: '9px', fontWeight: 900, color: BLACK,
-                                    fontFamily: 'Arial, Helvetica, sans-serif', marginTop: '1mm',
-                                    letterSpacing: '0.05em'
+                                    fontSize: '9.5px', fontWeight: 900, color: BLUE,
+                                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                                    fontFamily: 'Arial, Helvetica, sans-serif',
+                                    whiteSpace: 'nowrap',
                                 }}>
-                                    DGRK
+                                    RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
+                                </div>
+                                <div style={{
+                                    fontSize: '7.5px', fontWeight: 700, color: BLUE,
+                                    textTransform: 'uppercase', letterSpacing: '0.03em',
+                                    fontFamily: 'Arial, Helvetica, sans-serif',
+                                    whiteSpace: 'nowrap',
+                                }}>
+                                    VILLE DE KINSHASA — DIRECTION GÉNÉRALE DES RECETTES
                                 </div>
                             </div>
-                            {/* IRMS — nouveau logo SVG exact */}
-                            <img
-                                src="/irms-logo-new.svg"
-                                alt="IRMS DGRK"
-                                style={{ height: '19mm', width: 'auto', objectFit: 'contain' }}
-                                crossOrigin="anonymous"
-                            />
-                        </div>
 
-                        {/* ── TITRES ────────────────────────────────── */}
-                        <div style={{ textAlign: 'center', lineHeight: 1.3, marginBottom: '1.5mm', flexShrink: 0 }}>
+                            {/* ── LIGNE SÉPARATRICE ──────────────────────── */}
                             <div style={{
-                                fontSize: '9px', fontWeight: 900, color: BLACK,
-                                textTransform: 'uppercase', letterSpacing: '0.05em',
-                                fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
-                                whiteSpace: 'nowrap',
-                            }}>
-                                RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
-                            </div>
-                            <div style={{
-                                fontSize: '8.5px', fontWeight: 300, color: BLACK,
-                                textTransform: 'uppercase', letterSpacing: '0.04em',
-                                fontFamily: '"Abadi MT Light", "Abadi MT", Arial, sans-serif',
-                                whiteSpace: 'nowrap',
-                            }}>
-                                VILLE DE KINSHASA/DGRK - TAXE VEHICULE
-                            </div>
-                        </div>
+                                width: '95%', height: '1.5px',
+                                background: BLUE,
+                                marginBottom: '4mm',
+                                flexShrink: 0,
+                            }} />
 
-                        {/* ── ENCADRÉ VÉHICULE (remplace le séparateur) ── */}
-                        <div style={{
-                            width: '90%',
-                            border: `1.5px solid ${BLUE}`,
-                            borderRadius: '8px',
-                            display: 'flex', flexDirection: 'column', alignItems: 'center',
-                            padding: '3mm 2mm 1mm',
-                            marginBottom: '3mm', flexShrink: 0,
-                        }}>
-
-                            {/* ── BADGE ANNÉE ───────────────────── */}
+                            {/* ── BADGE ANNÉE ───────────────────────────── */}
                             <div style={{
-                            background: BLUE, color: '#fff',
-                            fontSize: '24px', fontWeight: 900,
-                            letterSpacing: '0.06em',
-                            fontFamily: 'Arial, Helvetica, sans-serif',
-                            borderRadius: '999px',
-                            padding: '2.5mm 14mm',
-                            lineHeight: 1, marginBottom: '3mm', flexShrink: 0,
-                            WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact',
-                        }}>
-                            {yearLabel}
-                        </div>
-
-                        {/* ── PLAQUE ────────────────────────────────── */}
-                        <div style={{
-                            width: '64mm',
-                            border: `3.5px solid ${BLUE}`,
-                            borderRadius: '5px',
-                            padding: '3mm 2mm',
-                            textAlign: 'center',
-                            fontSize: '30px', fontWeight: 900,
-                            fontFamily: '"Cousine", "Courier New", monospace',
-                            letterSpacing: '0.12em',
-                            textTransform: 'uppercase',
-                            color: BLACK, lineHeight: 1,
-                            background: 'white',
-                            marginBottom: '2mm', flexShrink: 0,
-                        }}>
-                            {plate}
-                        </div>
-
-                        {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
-                        <div style={{ textAlign: 'center', marginBottom: '2mm', lineHeight: 1.4, flexShrink: 0 }}>
-                            {/* Catégorie sans parenthèses */}
-                            <div style={{
-                                fontSize: '8.5px', fontWeight: 600, color: '#222',
-                                fontFamily: 'Arial, Helvetica, sans-serif',
-                            }}>
-                                {category.charAt(0).toUpperCase() + category.slice(1)}
-                            </div>
-                            {/* Puissance fiscale + poids (remplace le montant FC) */}
-                            <div style={{
-                                fontSize: '8.5px', fontWeight: 700, color: BLUE,
-                                fontFamily: 'Arial, Helvetica, sans-serif',
-                            }}>
-                                {powerLabel} &nbsp;•&nbsp; {weightLabel}
-                            </div>
-                        </div>
-                        </div> {/* ── FIN ENCADRÉ VÉHICULE ── */}
-
-                        {/* ── ENCADRÉ SÉCURITÉ (QR + POL) ── */}
-                        <div style={{
-                            width: '90%',
-                            border: `1.5px solid ${BLUE}`,
-                            borderRadius: '8px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            padding: '2mm',
-                            marginBottom: '2mm', flexShrink: 0,
-                            position: 'relative',
-                        }}>
-                            <div style={{
-                                background: 'white',
-                                padding: '4px',
-                                border: '1.5px solid #d0d0d0',
-                                borderRadius: '3px',
-                                lineHeight: 0,
-                            }}>
-                                <QRCode value={verifyUrl} size={104} />
-                            </div>
-
-                            {/* ── POL. ─ */}
-                            <div style={{
-                                position: 'absolute',
-                                right: '4mm',
-                                top: '50%',
-                                transform: 'translateY(-50%) rotate(-90deg)',
-                                transformOrigin: 'center',
-                                color: BLACK,
-                                fontSize: '12px', fontWeight: 900,
+                                background: BLUE, color: '#fff',
+                                fontSize: '28px', fontWeight: 900,
                                 letterSpacing: '0.06em',
-                                fontFamily: '"Abadi MT Extra Bold", "Abadi MT", Arial, sans-serif',
+                                fontFamily: 'Arial, Helvetica, sans-serif',
+                                borderRadius: '999px',
+                                padding: '3mm 18mm',
+                                lineHeight: 1,
+                                marginBottom: '4mm',
+                                flexShrink: 0,
+                                WebkitPrintColorAdjust: 'exact',
+                                printColorAdjust: 'exact',
                             }}>
-                                POL.
+                                {yearLabel}
                             </div>
+
+                            {/* ── PLAQUE ────────────────────────────────── */}
+                            <div style={{
+                                width: '80mm',
+                                border: `4px solid ${BLACK}`,
+                                borderRadius: '8px',
+                                padding: '3.5mm 2mm',
+                                textAlign: 'center',
+                                fontSize: '36px', fontWeight: 900,
+                                fontFamily: '"Cousine", "Courier New", monospace',
+                                letterSpacing: '0.12em',
+                                textTransform: 'uppercase',
+                                color: BLACK, lineHeight: 1,
+                                background: 'white',
+                                marginBottom: '4mm',
+                                flexShrink: 0,
+                            }}>
+                                {plate}
+                            </div>
+
+                            {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
+                            <div style={{ textAlign: 'center', marginBottom: '3mm', lineHeight: 1.5, flexShrink: 0 }}>
+                                {/* Catégorie : noir gras */}
+                                <div style={{
+                                    fontSize: '11px', fontWeight: 700, color: BLACK,
+                                    fontFamily: 'Arial, Helvetica, sans-serif',
+                                }}>
+                                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                                </div>
+                                {/* CV • T : texte normal, couleur neutre */}
+                                <div style={{
+                                    fontSize: '10px', fontWeight: 400, color: '#333',
+                                    fontFamily: 'Arial, Helvetica, sans-serif',
+                                }}>
+                                    {powerLabel} • {weightLabel}
+                                </div>
+                            </div>
+
+                            {/* ── QR CODE + HOLOGRAM ZONE ─────────────── */}
+                            <div style={{
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6mm',
+                                marginBottom: '3mm',
+                                flexShrink: 0,
+                                paddingLeft: '2mm',
+                            }}>
+                                {/* QR Code */}
+                                <div style={{
+                                    background: 'white',
+                                    padding: '5px',
+                                    border: '2px solid #ccc',
+                                    borderRadius: '8px',
+                                    lineHeight: 0,
+                                }}>
+                                    <QRCode value={verifyUrl} size={115} />
+                                </div>
+
+                                {/* HOLOGRAM ZONE */}
+                                <div style={{
+                                    width: '24mm',
+                                    height: '24mm',
+                                    border: `2px dashed #aaa`,
+                                    borderRadius: '4px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0,
+                                }}>
+                                    <span style={{
+                                        fontSize: '7px', color: '#888',
+                                        fontFamily: 'Arial, Helvetica, sans-serif',
+                                        textAlign: 'center',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em',
+                                        lineHeight: 1.4,
+                                    }}>
+                                        HOLOGRAM<br />ZONE
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* ── FOOTER ─────────────────────────────── */}
+                            <div style={{
+                                textAlign: 'center',
+                                fontSize: '9px', fontWeight: 700,
+                                color: BLACK, lineHeight: 1.5,
+                                fontFamily: 'Arial, Helvetica, sans-serif',
+                                flexShrink: 0,
+                            }}>
+                                <div>REF: {refId}</div>
+                                <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
+                            </div>
+
                         </div>
-
-                        {/* ── FOOTER — dans le flux, juste sous l'encadré sécurité ───────── */}
-                        <div style={{
-                            textAlign: 'center',
-                            fontSize: '9px', fontWeight: 700,
-                            color: BLUE, lineHeight: 1.3,
-                            fontFamily: 'Arial, Helvetica, sans-serif',
-                            flexShrink: 0,
-                            marginTop: '-1mm', // pull it up slightly to ensure visibility
-                        }}>
-                            <div>REF: {refId}</div>
-                            <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
-                        </div>
-
-
-
-                    </div>{/* fin étiquette */}
+                    </div>
                 </div>
             </div>
         </div>
