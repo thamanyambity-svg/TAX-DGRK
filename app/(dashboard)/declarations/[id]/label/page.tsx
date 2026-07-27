@@ -131,30 +131,31 @@ export default function LabelPage() {
                         overflow: 'hidden',
                     }}>
 
-                        {/* ── WATERMARK ─────────────────────────────────── */}
+                        {/* ── WATERMARK & FOND DE SÉCURITÉ ─────────────────────────────────── */}
                         <div style={{
                             position: 'absolute',
                             top: 0, left: 0, right: 0, bottom: 0,
                             pointerEvents: 'none',
                             zIndex: 0,
                             overflow: 'hidden',
+                            background: 'repeating-linear-gradient(-35deg, rgba(255,255,255,0.7) 0px, rgba(255,255,255,0.7) 6px, rgba(228,238,252,0.7) 6px, rgba(228,238,252,0.7) 12px)',
                         }}>
-                            {[...Array(8)].map((_, i) => (
+                            {[...Array(6)].map((_, i) => (
                                 <div key={i} style={{
                                     position: 'absolute',
-                                    top: `${-10 + i * 22}%`,
-                                    left: '-20%',
-                                    width: '140%',
+                                    top: `${-15 + i * 26}%`,
+                                    left: '-30%',
+                                    width: '160%',
                                     transform: 'rotate(-35deg)',
-                                    fontSize: '11px',
+                                    fontSize: '13px',
                                     fontWeight: 900,
                                     color: 'rgba(26, 58, 107, 0.08)',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
-                                    letterSpacing: '0.28em',
+                                    letterSpacing: '0.35em',
                                     whiteSpace: 'nowrap',
                                     textTransform: 'uppercase',
                                 }}>
-                                    DGRK • TAXE • DGRK • TAXE • DGRK • TAXE • DGRK • TAXE • DGRK • TAXE
+                                    • DGRK • DGRK • DGRK • DGRK • DGRK • DGRK • DGRK
                                 </div>
                             ))}
                         </div>
