@@ -117,17 +117,17 @@ export default function LabelPage() {
 
                     {/* ── CARTE ÉTIQUETTE ─────────────────── */}
                     <div style={{
-                        width: '132mm',
-                        height: '142mm',
+                        width: '130mm',
+                        height: '148mm',
                         border: `10px solid ${BLUE}`,
-                        borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #d6e4f7 0%, #c2d4ee 50%, #d0dff5 100%)',
+                        borderRadius: '16px',
+                        background: 'linear-gradient(135deg, #eef3f9 0%, #e2eaf5 100%)',
                         position: 'relative',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         boxSizing: 'border-box',
-                        padding: '6mm 6mm 5mm',
+                        padding: '6mm 5mm 4mm',
                         overflow: 'hidden',
                     }}>
 
@@ -139,28 +139,28 @@ export default function LabelPage() {
                             zIndex: 0,
                             overflow: 'hidden',
                         }}>
-                            {[...Array(10)].map((_, i) => (
+                            {[...Array(12)].map((_, i) => (
                                 <div key={i} style={{
                                     position: 'absolute',
-                                    top: `${-10 + i * 22}%`,
-                                    left: '-10%',
-                                    width: '130%',
+                                    top: `${-15 + i * 18}%`,
+                                    left: '-20%',
+                                    width: '140%',
                                     transform: 'rotate(-35deg)',
-                                    fontSize: '16px',
+                                    fontSize: '15px',
                                     fontWeight: 900,
-                                    color: 'rgba(26, 58, 107, 0.14)',
+                                    color: 'rgba(26, 58, 107, 0.08)',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
-                                    letterSpacing: '0.4em',
+                                    letterSpacing: '0.35em',
                                     whiteSpace: 'nowrap',
                                     textTransform: 'uppercase',
                                 }}>
-                                    DGRK • TAX • DGRK • TAX • DGRK • TAX • DGRK • TAX • DGRK • TAX
+                                    DGRK • TAXE • DGRK • TAXE • DGRK • TAXE • DGRK • TAXE • DGRK • TAXE
                                 </div>
                             ))}
                         </div>
 
                         {/* ── CONTENU ─────────────────────────────────── */}
-                        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100%' }}>
 
                             {/* ── LOGOS ─────────────────────────────────── */}
                             <div style={{
@@ -169,44 +169,44 @@ export default function LabelPage() {
                                 justifyContent: 'center',
                                 gap: '8mm',
                                 width: '100%',
-                                marginBottom: '2.5mm',
+                                marginBottom: '2mm',
                                 flexShrink: 0,
                             }}>
-                                {/* Logo DGRK : arc-en-ciel + DGRK + sous-titre */}
+                                {/* Logo DGRK */}
                                 <div style={{
                                     display: 'flex', flexDirection: 'column',
                                     alignItems: 'center', justifyContent: 'center',
-                                    gap: '0.5mm',
                                 }}>
                                     <img
                                         src="/dgrk-logo.jpg"
                                         alt="DGRK"
-                                        style={{ height: '16mm', width: 'auto', objectFit: 'contain' }}
+                                        style={{ height: '15mm', width: 'auto', objectFit: 'contain' }}
                                         crossOrigin="anonymous"
                                     />
                                     <div style={{
-                                        fontSize: '5px', color: '#555',
+                                        fontSize: '4.5px', color: '#475569',
                                         fontFamily: 'Arial, Helvetica, sans-serif',
                                         textAlign: 'center',
+                                        marginTop: '0.5mm',
                                     }}>
                                         Direction Générale des Recettes de Kinshasa
                                     </div>
                                 </div>
 
-                                {/* Logo IRMS : cercle */}
+                                {/* Logo IRMS */}
                                 <img
                                     src="/irms-logo-new.svg"
                                     alt="IRMS DGRK"
-                                    style={{ height: '22mm', width: 'auto', objectFit: 'contain' }}
+                                    style={{ height: '20mm', width: 'auto', objectFit: 'contain' }}
                                     crossOrigin="anonymous"
                                 />
                             </div>
 
                             {/* ── TITRES ────────────────────────────────── */}
-                            <div style={{ textAlign: 'center', lineHeight: 1.3, marginBottom: '2.5mm', flexShrink: 0 }}>
+                            <div style={{ textAlign: 'center', lineHeight: 1.25, marginBottom: '2mm', flexShrink: 0 }}>
                                 <div style={{
                                     fontSize: '9.5px', fontWeight: 900, color: BLUE,
-                                    textTransform: 'uppercase', letterSpacing: '0.04em',
+                                    textTransform: 'uppercase', letterSpacing: '0.03em',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     whiteSpace: 'nowrap',
                                 }}>
@@ -214,7 +214,7 @@ export default function LabelPage() {
                                 </div>
                                 <div style={{
                                     fontSize: '7.5px', fontWeight: 700, color: BLUE,
-                                    textTransform: 'uppercase', letterSpacing: '0.03em',
+                                    textTransform: 'uppercase', letterSpacing: '0.02em',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     whiteSpace: 'nowrap',
                                 }}>
@@ -224,128 +224,145 @@ export default function LabelPage() {
 
                             {/* ── LIGNE SÉPARATRICE ──────────────────────── */}
                             <div style={{
-                                width: '95%', height: '1.5px',
+                                width: '96%', height: '1.5px',
                                 background: BLUE,
-                                marginBottom: '4mm',
+                                marginBottom: '3mm',
                                 flexShrink: 0,
                             }} />
 
-                            {/* ── BADGE ANNÉE ───────────────────────────── */}
+                            {/* ── COLONNE CENTRALE AVEC BANDE GRISE ────────────────── */}
                             <div style={{
-                                background: BLUE, color: '#fff',
-                                fontSize: '28px', fontWeight: 900,
-                                letterSpacing: '0.06em',
-                                fontFamily: 'Arial, Helvetica, sans-serif',
-                                borderRadius: '999px',
-                                padding: '3mm 18mm',
-                                lineHeight: 1,
-                                marginBottom: '4mm',
-                                flexShrink: 0,
-                                WebkitPrintColorAdjust: 'exact',
-                                printColorAdjust: 'exact',
-                            }}>
-                                {yearLabel}
-                            </div>
-
-                            {/* ── PLAQUE ────────────────────────────────── */}
-                            <div style={{
-                                width: '80mm',
-                                border: `4px solid ${BLACK}`,
-                                borderRadius: '8px',
-                                padding: '3.5mm 2mm',
-                                textAlign: 'center',
-                                fontSize: '36px', fontWeight: 900,
-                                fontFamily: '"Cousine", "Courier New", monospace',
-                                letterSpacing: '0.12em',
-                                textTransform: 'uppercase',
-                                color: BLACK, lineHeight: 1,
-                                background: 'white',
-                                marginBottom: '4mm',
-                                flexShrink: 0,
-                            }}>
-                                {plate}
-                            </div>
-
-                            {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
-                            <div style={{ textAlign: 'center', marginBottom: '3mm', lineHeight: 1.5, flexShrink: 0 }}>
-                                {/* Catégorie : noir gras */}
-                                <div style={{
-                                    fontSize: '11px', fontWeight: 700, color: BLACK,
-                                    fontFamily: 'Arial, Helvetica, sans-serif',
-                                }}>
-                                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                                </div>
-                                {/* CV • T : texte normal, couleur neutre */}
-                                <div style={{
-                                    fontSize: '10px', fontWeight: 400, color: '#333',
-                                    fontFamily: 'Arial, Helvetica, sans-serif',
-                                }}>
-                                    {powerLabel} • {weightLabel}
-                                </div>
-                            </div>
-
-                            {/* ── QR CODE (centré) ────────────── */}
-                            <div style={{
-                                width: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginBottom: '2mm',
-                                flexShrink: 0,
                                 position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                width: '100%',
+                                flexGrow: 1,
                             }}>
-                                {/* QR Code centré */}
-                                <div style={{
-                                    background: 'white',
-                                    padding: '5px',
-                                    border: '2px solid #ccc',
-                                    borderRadius: '8px',
-                                    lineHeight: 0,
-                                }}>
-                                    <QRCode value={verifyUrl} size={100} />
-                                </div>
 
-                                {/* HOLOGRAM ZONE : décalé +30mm à droite en absolu */}
+                                {/* BANDE DE FOND GRIS DANS LE FOND DE LA ZONE CENTRALE */}
                                 <div style={{
                                     position: 'absolute',
-                                    right: '-30mm',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    width: '22mm',
-                                    height: '22mm',
-                                    border: '2px dashed #aaa',
-                                    borderRadius: '4px',
+                                    top: '0',
+                                    bottom: '12mm',
+                                    width: '64mm',
+                                    background: 'rgba(0, 0, 0, 0.08)',
+                                    zIndex: 0,
+                                }} />
+
+                                {/* CONTENU SUR LA BANDE GRISE */}
+                                <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                                    
+                                    {/* ── BADGE ANNÉE ───────────────────────────── */}
+                                    <div style={{
+                                        background: BLUE, color: '#fff',
+                                        fontSize: '26px', fontWeight: 900,
+                                        letterSpacing: '0.06em',
+                                        fontFamily: 'Arial, Helvetica, sans-serif',
+                                        borderRadius: '999px',
+                                        padding: '2.5mm 16mm',
+                                        lineHeight: 1,
+                                        marginBottom: '3mm',
+                                        marginTop: '1mm',
+                                        flexShrink: 0,
+                                        WebkitPrintColorAdjust: 'exact',
+                                        printColorAdjust: 'exact',
+                                    }}>
+                                        {yearLabel}
+                                    </div>
+
+                                    {/* ── PLAQUE ────────────────────────────────── */}
+                                    <div style={{
+                                        width: '76mm',
+                                        border: `3px solid ${BLACK}`,
+                                        borderRadius: '8px',
+                                        padding: '3mm 2mm',
+                                        textAlign: 'center',
+                                        fontSize: '34px', fontWeight: 900,
+                                        fontFamily: '"Cousine", "Courier New", monospace',
+                                        letterSpacing: '0.12em',
+                                        textTransform: 'uppercase',
+                                        color: BLACK, lineHeight: 1,
+                                        background: 'white',
+                                        marginBottom: '2.5mm',
+                                        flexShrink: 0,
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                                    }}>
+                                        {plate}
+                                    </div>
+
+                                    {/* ── CATÉGORIE + PUISSANCE + POIDS ─────────── */}
+                                    <div style={{ textAlign: 'center', marginBottom: '2.5mm', lineHeight: 1.4, flexShrink: 0 }}>
+                                        <div style={{
+                                            fontSize: '11px', fontWeight: 700, color: '#111827',
+                                            fontFamily: 'Arial, Helvetica, sans-serif',
+                                        }}>
+                                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '10px', fontWeight: 500, color: '#334155',
+                                            fontFamily: 'Arial, Helvetica, sans-serif',
+                                        }}>
+                                            {powerLabel} • {weightLabel}
+                                        </div>
+                                    </div>
+
+                                    {/* ── QR CODE (centré) ────────────── */}
+                                    <div style={{
+                                        background: 'white',
+                                        padding: '5px',
+                                        border: '1.5px solid #cbd5e1',
+                                        borderRadius: '8px',
+                                        lineHeight: 0,
+                                        marginBottom: '3mm',
+                                        boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                                    }}>
+                                        <QRCode value={verifyUrl} size={95} />
+                                    </div>
+
+                                </div>
+
+                                {/* ── HOLOGRAM ZONE (En bas à droite du QR Code, sur le fond bleu) ── */}
+                                <div style={{
+                                    position: 'absolute',
+                                    right: '4mm',
+                                    bottom: '14mm',
+                                    width: '21mm',
+                                    height: '21mm',
+                                    border: '2px dashed #94a3b8',
+                                    borderRadius: '6px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
+                                    zIndex: 2,
                                 }}>
                                     <span style={{
-                                        fontSize: '7px', color: '#888',
+                                        fontSize: '6.5px', color: '#64748b',
                                         fontFamily: 'Arial, Helvetica, sans-serif',
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
                                         letterSpacing: '0.05em',
-                                        lineHeight: 1.4,
+                                        lineHeight: 1.3,
+                                        fontWeight: 700,
                                     }}>
                                         HOLOGRAM<br />ZONE
                                     </span>
                                 </div>
-                            </div>
 
-                            {/* ── FOOTER ─────────────────── */}
-                            <div style={{
-                                textAlign: 'center',
-                                fontSize: '10px', fontWeight: 800,
-                                color: BLUE, lineHeight: 1.6,
-                                fontFamily: 'Arial, Helvetica, sans-serif',
-                                flexShrink: 0,
-                                marginTop: '1mm',
-                                background: 'rgba(255,255,255,0.6)',
-                                borderRadius: '4px',
-                                padding: '1.5mm 4mm',
-                            }}>
-                                <div>REF: {refId}</div>
-                                <div>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
+                                {/* ── FOOTER (Tout en bas, centré sous le panneau) ── */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '0mm',
+                                    textAlign: 'center',
+                                    fontSize: '9.5px', fontWeight: 800,
+                                    color: '#0f172a', lineHeight: 1.45,
+                                    fontFamily: 'Arial, Helvetica, sans-serif',
+                                    zIndex: 2,
+                                }}>
+                                    <div>REF: {refId}</div>
+                                    <div style={{ fontWeight: 700, color: '#334155' }}>Valide du {fmt(createdAt)} au {fmt(validTo)}</div>
+                                </div>
+
                             </div>
 
                         </div>
