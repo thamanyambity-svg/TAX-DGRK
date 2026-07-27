@@ -138,7 +138,7 @@ export default function LabelPage() {
                             pointerEvents: 'none',
                             zIndex: 0,
                             overflow: 'hidden',
-                            background: 'repeating-linear-gradient(-35deg, rgba(255,255,255,0.7) 0px, rgba(255,255,255,0.7) 6px, rgba(228,238,252,0.7) 6px, rgba(228,238,252,0.7) 12px)',
+                            background: 'repeating-linear-gradient(35deg, rgba(255,255,255,0.85) 0px, rgba(255,255,255,0.85) 6px, rgba(235,243,253,0.35) 6px, rgba(235,243,253,0.35) 12px)',
                         }}>
                             {[...Array(6)].map((_, i) => (
                                 <div key={i} style={{
@@ -146,10 +146,10 @@ export default function LabelPage() {
                                     top: `${-15 + i * 26}%`,
                                     left: '-30%',
                                     width: '160%',
-                                    transform: 'rotate(-35deg)',
+                                    transform: 'rotate(35deg)',
                                     fontSize: '13px',
                                     fontWeight: 900,
-                                    color: 'rgba(26, 58, 107, 0.08)',
+                                    color: 'rgba(26, 58, 107, 0.04)',
                                     fontFamily: 'Arial, Helvetica, sans-serif',
                                     letterSpacing: '0.35em',
                                     whiteSpace: 'nowrap',
