@@ -8,7 +8,7 @@ import { getDeclarationById } from '@/lib/store';
 import { generateNote } from '@/lib/generator';
 import { NoteDePerception } from '@/types';
 import QRCode from 'react-qr-code';
-import { ArrowLeft, Download, Scissors, CalendarClock, Save, X, Printer, Edit3 } from 'lucide-react';
+import { ArrowLeft, Download, Scissors, CalendarClock, Save, X, Printer, Edit3, Building, User } from 'lucide-react';
 import { updateDeclaration } from '@/lib/store';
 import { GRILLE_2026 } from '@/lib/tarif-2026';
 import { LEGACY_PRICES } from '@/lib/tax-rules';
@@ -668,6 +668,26 @@ export default function ReceiptPage() {
         }
     };
 
+    const handleSwitchRegime = async (newRegime: 'PM' | 'PP') => {
+        if (!decl || !id) return;
+        const tariffLabel: string = (decl.meta as any)?.tariffLabel || '';
+        const { calculer2026, SOUS_CATEGORIES_2026, getCvFromLabel, getTonnageFromLabel } = await import('@/lib/tarif-2026');
+        const sub = SOUS_CATEGORIES_2026.find(sc => sc.label === tariffLabel);
+        if (!sub) return alert("Impossible de déterminer la catégorie 2026.");
+        const cvForCalc = getCvFromLabel(sub.label).min;
+        const tonnageForCalc = getTonnageFromLabel(sub.label);
+        const result = calculer2026({ categorie: sub.categorie, cv: cvForCalc, tonnage: tonnageForCalc, sousCategorie: sub.label, regime: newRegime });
+        const EXCHANGE_RATE = 2244.76;
+        const totalFC = Math.round(result.total * EXCHANGE_RATE);
+        const { updateDeclaration } = await import('@/lib/store');
+        const res = await updateDeclaration(id, {
+            tax: { ...decl.tax, baseRate: result.total, totalAmountFC: totalFC },
+            meta: { ...decl.meta, regime: newRegime, manualBaseAmount: result.total }
+        });
+        if (res.success) window.location.reload();
+        else alert("Erreur lors du changement de régime.");
+    };
+
     if (error) {
         return (
             <div className="min-h-screen flex flex-col gap-4 items-center justify-center text-gray-500 bg-white">
@@ -719,6 +739,26 @@ export default function ReceiptPage() {
                             <CalendarClock className="h-3.5 w-3.5" />
                             {showAdminDates ? 'Masquer Admin' : 'Admin Dates'}
                         </button>
+
+                        {/* PM / PP TOGGLE */}
+                        {(decl?.meta as any)?.tariffMode === 'new2026' && (
+                            <div className="flex gap-0.5 border border-gray-300 rounded-lg overflow-hidden">
+                                <button
+                                    onClick={() => handleSwitchRegime('PM')}
+                                    className={`px-1.5 py-1 text-[10px] font-bold flex items-center gap-0.5 transition-all ${(decl?.meta as any)?.regime !== 'PP' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-400 hover:bg-indigo-50'}`}
+                                    title="Personne Morale"
+                                >
+                                    <Building className="h-2.5 w-2.5" /> PM
+                                </button>
+                                <button
+                                    onClick={() => handleSwitchRegime('PP')}
+                                    className={`px-1.5 py-1 text-[10px] font-bold flex items-center gap-0.5 transition-all ${(decl?.meta as any)?.regime === 'PP' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-400 hover:bg-indigo-50'}`}
+                                    title="Personne Physique"
+                                >
+                                    <User className="h-2.5 w-2.5" /> PP
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex gap-2">
