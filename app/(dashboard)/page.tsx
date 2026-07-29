@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, ArrowRight, RefreshCw, Trash2, Pencil, Briefcase } from 'lucide-react';
+import { FileText, ArrowRight, RefreshCw, Trash2, Pencil, Briefcase, Building, User } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
@@ -43,6 +43,41 @@ export default function Home() {
       } else {
         alert("Erreur lors de la suppression. Vérifiez la console.");
       }
+    }
+  };
+
+  const handleSwitchRegime = async (decl: Declaration, regime: 'PM' | 'PP') => {
+    const tariffLabel: string = (decl.meta as any)?.tariffLabel || '';
+    const { calculer2026, SOUS_CATEGORIES_2026 } = await import('@/lib/tarif-2026');
+    const sub = SOUS_CATEGORIES_2026.find(sc => sc.label === tariffLabel);
+    if (!sub) return alert("Impossible de déterminer la catégorie 2026.");
+    const { getCvFromLabel, getTonnageFromLabel } = await import('@/lib/tarif-2026');
+    const cvForCalc = getCvFromLabel(sub.label).min;
+    const tonnageForCalc = getTonnageFromLabel(sub.label);
+    const result = calculer2026({ categorie: sub.categorie, cv: cvForCalc, tonnage: tonnageForCalc, sousCategorie: sub.label, regime });
+    const EXCHANGE_RATE = 2244.76;
+    const totalFC = Math.round(result.total * EXCHANGE_RATE);
+    const { updateDeclaration } = await import('@/lib/store');
+    const res = await updateDeclaration(decl.id, {
+      tax: {
+        ...decl.tax,
+        baseRate: result.total,
+        totalAmountFC: totalFC,
+      },
+      meta: {
+        ...decl.meta,
+        regime,
+        manualBaseAmount: result.total,
+      }
+    });
+    if (res.success) {
+      setDeclarations(prev => prev.map(d =>
+        d.id === decl.id ? {
+          ...d,
+          tax: { ...d.tax, baseRate: result.total, totalAmountFC: totalFC },
+          meta: { ...d.meta, regime, manualBaseAmount: result.total }
+        } : d
+      ));
     }
   };
 
@@ -314,6 +349,24 @@ export default function Home() {
                         )}>
                           {decl.status}
                         </span>
+                        {(decl.meta as any)?.tariffMode === 'new2026' && (
+                          <div className="flex gap-0.5 border border-gray-200 rounded-lg overflow-hidden">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleSwitchRegime(decl, 'PM'); }}
+                              className={`px-1.5 py-1 text-[10px] font-bold flex items-center gap-0.5 transition-all ${(decl.meta as any)?.regime !== 'PP' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-400 hover:bg-indigo-50'}`}
+                              title="Passer en Personne Morale"
+                            >
+                              <Building className="h-2.5 w-2.5" /> PM
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleSwitchRegime(decl, 'PP'); }}
+                              className={`px-1.5 py-1 text-[10px] font-bold flex items-center gap-0.5 transition-all ${(decl.meta as any)?.regime === 'PP' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-400 hover:bg-indigo-50'}`}
+                              title="Passer en Personne Physique"
+                            >
+                              <User className="h-2.5 w-2.5" /> PP
+                            </button>
+                          </div>
+                        )}
                         <Link
                           href={`/edit/${decl.id}`}
                           onClick={(e) => { e.stopPropagation(); }}
