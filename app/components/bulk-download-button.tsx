@@ -255,11 +255,11 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
     const [progressLabel, setProgressLabel] = useState('');
     const [currentDecl, setCurrentDecl] = useState<Declaration | null>(null);
 
-    const capturePage = async (elementId: string, pdf: jsPDF, scale = 3): Promise<jsPDF> => {
+    const capturePage = async (elementId: string, pdf: jsPDF, scale = 1.5): Promise<jsPDF> => {
         const el = document.getElementById(elementId);
         if (!el) return pdf;
         const canvas = await html2canvas(el, { scale, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false });
-        const imgData = canvas.toDataURL('image/png');
+        const imgData = canvas.toDataURL('image/jpeg', 0.6);
         const pdfW = pdf.internal.pageSize.getWidth();
         const pdfH = (canvas.height * pdfW) / canvas.width;
         const pageH = pdf.internal.pageSize.getHeight();
@@ -293,7 +293,7 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
             await new Promise(r => setTimeout(r, 800));
             if (!first) pdf.addPage();
             first = false;
-            await capturePage(`receipt-pdf-${decl.id}`, pdf, 3);
+            await capturePage(`receipt-pdf-${decl.id}`, pdf, 2);
         }
 
         setCurrentDecl(null);
@@ -329,7 +329,7 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
             await new Promise(r => setTimeout(r, 800));
             if (!first) pdf.addPage();
             first = false;
-            await capturePage(`bordereau-pdf-${decl.id}`, pdf, 3);
+            await capturePage(`bordereau-pdf-${decl.id}`, pdf, 2);
         }
 
         setCurrentDecl(null);
