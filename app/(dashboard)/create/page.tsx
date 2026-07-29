@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, FileText, Car, User, Building, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, FileText, Car, User, Building, AlertCircle, Search } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
+import { supabase } from '@/lib/supabase';
 import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
 import { getNowOrBusinessHours } from '@/lib/business-calendar';
 import { getTariffMode, TariffMode } from '@/lib/tariff-mode';
@@ -49,6 +50,42 @@ export default function NewDeclarationPage() {
         modele: '',
         regime: 'PM' as 'PM' | 'PP',
     });
+
+    const [nifLoading, setNifLoading] = useState(false);
+
+    useEffect(() => {
+        const nif = formData.nif.trim().toUpperCase();
+        if (nif.length < 5) return;
+        setNifLoading(true);
+        const timer = setTimeout(async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('declarations')
+                    .select('meta')
+                    .filter('meta->manualTaxpayer->>nif', 'eq', nif)
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    const mt = (data[0].meta as any)?.manualTaxpayer;
+                    if (mt?.name && mt.name !== 'N/A') {
+                        setFormData(prev => ({
+                            ...prev,
+                            name: mt.name,
+                            address: mt.address && mt.address !== 'N/A' ? mt.address : prev.address,
+                        }));
+                    }
+                }
+            } catch (e) {
+                console.warn('NIF lookup failed:', e);
+            } finally {
+                setNifLoading(false);
+            }
+        }, 600);
+        return () => clearTimeout(timer);
+    }, [formData.nif]);
 
     // 2026 specific state
     const [primaryCategory2026, setPrimaryCategory2026] = useState(PRIMARY_CATEGORIES_2026[0]);
@@ -266,14 +303,24 @@ export default function NewDeclarationPage() {
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Numéro d'Impôt / NIF <span className="text-red-500">*</span>
                             </label>
-                            <input
-                                type="text"
-                                required
-                                placeholder="Ex: A1234567K"
-                                className="w-full rounded-lg border-gray-300 border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase tracking-wide font-mono bg-yellow-50/50 border-yellow-200 text-gray-900"
-                                value={formData.nif}
-                                onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
-                            />
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="Ex: A1234567K"
+                                    className={`w-full rounded-lg border border-yellow-200 px-3 py-2 pr-10 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase tracking-wide font-mono bg-yellow-50/50 text-gray-900 ${nifLoading ? 'opacity-60' : ''}`}
+                                    value={formData.nif}
+                                    onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
+                                />
+                                {nifLoading && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+                                    </div>
+                                )}
+                                {!nifLoading && formData.nif.trim().length >= 5 && formData.name && (
+                                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+                                )}
+                            </div>
                             <p className="text-[10px] text-gray-400 mt-1">Le NIF est obligatoire pour la validité du récépissé.</p>
                         </div>
 
