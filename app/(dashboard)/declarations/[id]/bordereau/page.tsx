@@ -117,6 +117,16 @@ export default function BordereauPage() {
         });
     }, [id]);
 
+    // Auto-download if ?download=1
+    useEffect(() => {
+        if (!decl) return;
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('download') === '1') {
+            const timer = setTimeout(() => handleDownloadPDF(), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [decl]);
+
     const handleSaveDates = async () => {
         if (!decl || !id) return;
         setIsSavingDates(true);

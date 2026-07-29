@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getDeclarations } from '@/lib/store';
-import { ArrowLeft, Building, Car, FileText, Download, Printer } from 'lucide-react';
+import { ArrowLeft, Building, Car, FileText, Printer, ChevronDown, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import BulkDownloadButton from '@/app/components/bulk-download-button';
@@ -99,114 +99,147 @@ export default async function DossierSpecifiquePage({ params }: { params: Promis
                 </div>
             </div>
 
-            {/* List of Declarations */}
-            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Car className="h-5 w-5 text-indigo-600" />
-                Flotte de {totalVehicles} véhicules
-            </h2>
+            {/* Group by Marque */}
+            {(() => {
+                const groups = new Map<string, Declaration[]>();
+                companyDecls.forEach(decl => {
+                    const marque = (decl.vehicle.marque || 'INCONNUE').toUpperCase().trim();
+                    if (!groups.has(marque)) groups.set(marque, []);
+                    groups.get(marque)!.push(decl);
+                });
+                const brandEntries = Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
 
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-gray-50 border-b border-gray-200">
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest">Réf Numérotation</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest">Véhicule</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest">Type</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Montant (FC)</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest text-center">Statut</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Documents</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {companyDecls.map((decl, index) => {
-                                const reference = decl.meta?.reference || decl.meta?.systemId || decl.id;
+                return (
+                    <>
+                        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <Car className="h-5 w-5 text-indigo-600" />
+                            Flotte de {totalVehicles} véhicules
+                            <span className="text-sm font-normal text-gray-400 ml-2">
+                                ({brandEntries.length} marques)
+                            </span>
+                        </h2>
 
-                                return (
-                                    <tr key={decl.id} className="hover:bg-indigo-50/30 transition-colors group">
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col">
-                                                <span className="font-mono text-sm font-semibold text-gray-900 border border-gray-200 bg-gray-50 rounded px-2 py-0.5 w-fit">
-                                                    #{companyDecls.length - index}
-                                                </span>
-                                                <span className="text-xs text-gray-400 font-mono mt-1">{reference}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col">
-                                                <span className="font-bold text-gray-900 font-mono text-lg tracking-wider">
-                                                    {decl.vehicle.plate}
-                                                </span>
-                                                <span className="text-xs text-gray-500 font-mono">
-                                                    Châssis: {decl.vehicle.chassis}
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex flex-col gap-1">
-                                                <span className="inline-flex py-1 px-2.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold w-fit">
-                                                    {decl.vehicle.category}
-                                                </span>
-                                                <div className="flex gap-2 text-xs text-gray-500">
-                                                    {decl.vehicle.fiscalPower && <span>{decl.vehicle.fiscalPower}</span>}
-                                                    {decl.vehicle.weight && <span>• {decl.vehicle.weight}</span>}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <span className="font-bold text-gray-900 font-mono block">
-                                                {(decl.tax?.totalAmountFC || 0).toLocaleString()}
+                        {brandEntries.map(([marque, decls]) => {
+                            const vehiclesWithoutPlate = decls.filter(d => {
+                                const p = d.vehicle.plate || '';
+                                return !p || /^0+[A-Z]*0+\d*$/.test(p) || /^0{3,}/.test(p);
+                            });
+
+                            return (
+                                <details key={marque} className="mb-4 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden" open>
+                                    <summary className="px-6 py-3.5 bg-gradient-to-r from-indigo-50/60 to-white cursor-pointer hover:from-indigo-100/60 transition-colors flex items-center justify-between gap-4 list-none [&::-webkit-details-marker]:hidden">
+                                        <div className="flex items-center gap-3">
+                                            <ChevronDown className="h-4 w-4 text-indigo-400 transition-transform details-open:rotate-0 -rotate-90" />
+                                            <span className="font-bold text-gray-900 text-base">{marque}</span>
+                                            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                                                {decls.length} véh.
                                             </span>
-                                            <span className="text-xs text-gray-400 font-mono">
-                                                ${(decl.tax?.baseRate || 0).toFixed(2)}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className={cn(
-                                                "text-xs font-medium px-2 py-1 rounded-full",
-                                                decl.status === 'Payée' || decl.status === 'Payé' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
-                                            )}>
-                                                {decl.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-100 rounded-lg transition-colors border border-transparent"
-                                                    title="Télécharger Bordereau PDF"
-                                                >
-                                                    <Download className="h-4 w-4" />
-                                                </button>
-                                                <Link
-                                                    href={`/declarations/${decl.id}/bordereau`}
-                                                    className="p-2 text-indigo-600 hover:bg-indigo-100 rounded-lg transition-colors border border-transparent hover:border-indigo-200"
-                                                    title="Voir Bordereau"
-                                                >
-                                                    <FileText className="h-4 w-4" />
-                                                </Link>
-                                                <div className="w-px h-6 bg-gray-200 my-auto mx-1"></div>
-                                                <button
-                                                    className="p-2 text-gray-500 hover:text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-transparent"
-                                                    title="Télécharger Récépissé PDF"
-                                                >
-                                                    <Download className="h-4 w-4" />
-                                                </button>
-                                                <Link
-                                                    href={`/declarations/${decl.id}/receipt`}
-                                                    className="p-2 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors border border-transparent hover:border-emerald-200"
-                                                    title="Voir Récépissé"
-                                                >
-                                                    <Printer className="h-4 w-4" />
-                                                </Link>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                            {vehiclesWithoutPlate.length > 0 && (
+                                                <span className="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                    <AlertTriangle className="h-3 w-3" />
+                                                    {vehiclesWithoutPlate.length} sans plaque
+                                                </span>
+                                            )}
+                                        </div>
+                                        <span className="text-sm font-mono font-bold text-gray-700">
+                                            {(decls.reduce((s, d) => s + (d.tax?.totalAmountFC || 0), 0)).toLocaleString()} FC
+                                        </span>
+                                    </summary>
+
+                                    <div className="overflow-x-auto border-t border-gray-100">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-gray-50/80 border-b border-gray-200">
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">#</th>
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Plaque</th>
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Châssis</th>
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">Type</th>
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Montant (FC)</th>
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest text-center">Statut</th>
+                                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100">
+                                                {decls.map((decl, idx) => {
+                                                    const plate = decl.vehicle.plate || '';
+                                                    const noPlate = !plate || /^0+[A-Z]*0+\d*$/.test(plate) || /^0{3,}/.test(plate);
+
+                                                    return (
+                                                        <tr key={decl.id} className={cn(
+                                                            "transition-colors group",
+                                                            noPlate ? "bg-amber-50/40 hover:bg-amber-100/40" : "hover:bg-indigo-50/30"
+                                                        )}>
+                                                            <td className="px-6 py-3">
+                                                                <span className="font-mono text-xs font-semibold text-gray-400">#{idx + 1}</span>
+                                                            </td>
+                                                            <td className="px-6 py-3">
+                                                                <span className={cn(
+                                                                    "font-bold font-mono text-lg tracking-wider",
+                                                                    noPlate ? "text-amber-600" : "text-gray-900"
+                                                                )}>
+                                                                    {plate || <span className="text-amber-500 italic text-sm">Aucune plaque</span>}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-3">
+                                                                <span className="font-mono text-sm text-gray-600">{decl.vehicle.chassis}</span>
+                                                            </td>
+                                                            <td className="px-6 py-3">
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="inline-flex py-0.5 px-2 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold w-fit">
+                                                                        {decl.vehicle.category}
+                                                                    </span>
+                                                                    <div className="flex gap-2 text-xs text-gray-500">
+                                                                        {decl.vehicle.fiscalPower && <span>{decl.vehicle.fiscalPower}</span>}
+                                                                        {decl.vehicle.weight && <span>• {decl.vehicle.weight}</span>}
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-3 text-right">
+                                                                <span className="font-bold text-gray-900 font-mono">
+                                                                    {(decl.tax?.totalAmountFC || 0).toLocaleString()}
+                                                                </span>
+                                                                <span className="text-xs text-gray-400 font-mono block">
+                                                                    ${(decl.tax?.baseRate || 0).toFixed(2)}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-3 text-center">
+                                                                <span className={cn(
+                                                                    "text-xs font-medium px-2 py-1 rounded-full",
+                                                                    decl.status === 'Payée' || decl.status === 'Payé' ? "bg-green-100 text-green-700" : "bg-violet-100 text-violet-700"
+                                                                )}>
+                                                                    {decl.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-6 py-3 text-right">
+                                                                <div className="flex justify-end gap-2">
+                                                                <Link
+                                                                    href={`/declarations/${decl.id}/bordereau?download=1`}
+                                                                    className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-lg transition-colors"
+                                                                    title="Télécharger Bordereau PDF"
+                                                                >
+                                                                    <FileText className="h-3.5 w-3.5" />
+                                                                </Link>
+                                                                <Link
+                                                                    href={`/declarations/${decl.id}/receipt?download=1`}
+                                                                    className="p-1.5 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+                                                                    title="Télécharger Récépissé PDF"
+                                                                >
+                                                                    <Printer className="h-3.5 w-3.5" />
+                                                                </Link>
+                                                            </div>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </details>
+                            );
+                        })}
+                    </>
+                );
+            })()}
         </div>
     );
 }

@@ -1,7 +1,9 @@
 /**
- * GRILLE TARIFAIRE 2026 — Personnes Physiques
- * Arrêté Provincial de l'Hôtel de Ville de Kinshasa — 30 Janvier 2026
- * Annexe 2 (Véhicules Terrestres) et Annexe 3 (Unités Flottantes)
+ * GRILLE TARIFAIRE 2026 — Personnes Morales
+ * Arrêté du Ministre Provincial N°SC/003/GPK/MIN.FIN.ECO.NUM/MKO/MBC/2026
+ * du 30 Janvier 2026 — Exercice 2026
+ * Annexe 1 (Personnes Morales — Véhicules Terrestres)
+ * Annexe 3 (Unités Flottantes — commune PM/PP)
  *
  * Structure terrestre :
  *   impot     = Impôt sur les véhicules (USD)
@@ -138,57 +140,57 @@ const TRICYCLE: Tarif2026Breakdown = {
 
 // ─── VÉHICULES DE TOURISME ───────────────────────────────────────────────────
 const TOURISME_1_10: Tarif2026Breakdown = {
-    impot: 35.60, tsc: 30.40, redevance: 6.00, imprime: 5.00, total: 77.00,
+    impot: 35.60, tsc: 32.40, redevance: 12.00, imprime: 5.00, total: 85.00,
     categorie: 'Véhicule de Tourisme Light (1–10 CV)',
 };
 const TOURISME_11_15: Tarif2026Breakdown = {
-    impot: 39.20, tsc: 34.90, redevance: 6.00, imprime: 5.00, total: 85.10,
+    impot: 39.20, tsc: 38.40, redevance: 12.00, imprime: 5.00, total: 94.60,
     categorie: 'Véhicule de Tourisme Medium (11–15 CV)',
 };
 const TOURISME_PLUS15: Tarif2026Breakdown = {
-    impot: 44.00, tsc: 39.40, redevance: 6.00, imprime: 5.00, total: 94.40,
+    impot: 44.00, tsc: 43.20, redevance: 12.00, imprime: 5.00, total: 104.20,
     categorie: 'Véhicule de Tourisme Heavy (> 15 CV)',
 };
 
 // ─── VÉHICULES UTILITAIRES ───────────────────────────────────────────────────
 const UTIL_M2K5: Tarif2026Breakdown = {
-    impot: 28.00, tsc: 31.60, redevance: 6.00, imprime: 5.00, total: 70.60,
+    impot: 28.00, tsc: 39.20, redevance: 12.00, imprime: 5.00, total: 84.20,
     categorie: 'Véhicule Utilitaire Light (≤ 2.500 kg, 1–10 CV)',
 };
 const UTIL_2K5_10K: Tarif2026Breakdown = {
-    impot: 32.00, tsc: 30.40, redevance: 6.00, imprime: 5.00, total: 73.40,
+    impot: 32.00, tsc: 43.20, redevance: 12.00, imprime: 5.00, total: 92.20,
     categorie: 'Véhicule Utilitaire Medium (2.500–10.000 kg, 11–15 CV)',
 };
 const UTIL_P10K: Tarif2026Breakdown = {
-    impot: 35.10, tsc: 34.90, redevance: 6.00, imprime: 5.00, total: 81.00,
+    impot: 35.10, tsc: 49.80, redevance: 12.00, imprime: 5.00, total: 100.90,
     categorie: 'Véhicule Utilitaire Heavy (> 10.000 kg, > 15 CV)',
 };
 
 // ─── TRACTEURS ────────────────────────────────────────────────────────────────
 const TRACTEUR_1_10: Tarif2026Breakdown = {
-    impot: 26.80, tsc: 23.60, redevance: 6.00, imprime: 5.00, total: 61.40,
+    impot: 26.80, tsc: 23.60, redevance: 12.00, imprime: 5.00, total: 67.40,
     categorie: 'Tracteur — 1 à 10 CV',
 };
 const TRACTEUR_11_15: Tarif2026Breakdown = {
-    impot: 31.60, tsc: 28.40, redevance: 6.00, imprime: 5.00, total: 71.00,
+    impot: 34.60, tsc: 28.40, redevance: 12.00, imprime: 5.00, total: 80.00,
     categorie: 'Tracteur — 11 à 15 CV',
 };
 const TRACTEUR_PLUS15: Tarif2026Breakdown = {
-    impot: 35.20, tsc: 34.40, redevance: 6.00, imprime: 5.00, total: 80.60,
+    impot: 35.20, tsc: 34.40, redevance: 12.00, imprime: 5.00, total: 86.60,
     categorie: 'Tracteur — Plus de 15 CV',
 };
 
 // ─── REMORQUES ────────────────────────────────────────────────────────────────
 const REMORQUE_M2K5: Tarif2026Breakdown = {
-    impot: 31.60, tsc: 28.40, redevance: 6.00, imprime: 5.00, total: 71.00,
+    impot: 31.60, tsc: 28.40, redevance: 12.00, imprime: 5.00, total: 77.00,
     categorie: 'Remorque — Moins de 2.500 kg',
 };
 const REMORQUE_2K5_10K: Tarif2026Breakdown = {
-    impot: 35.20, tsc: 34.40, redevance: 6.00, imprime: 5.00, total: 80.60,
+    impot: 35.20, tsc: 34.40, redevance: 12.00, imprime: 5.00, total: 86.60,
     categorie: 'Remorque — 2.500 à 10.000 kg',
 };
 const REMORQUE_P10K: Tarif2026Breakdown = {
-    impot: 40.00, tsc: 39.20, redevance: 6.00, imprime: 5.00, total: 90.20,
+    impot: 40.00, tsc: 39.20, redevance: 12.00, imprime: 5.00, total: 96.20,
     categorie: 'Remorque — Plus de 10.000 kg',
 };
 

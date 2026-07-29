@@ -520,6 +520,16 @@ export default function ReceiptPage() {
         return () => { isMounted = false; clearTimeout(timeoutId); };
     }, [id, rawId]);
 
+    // Auto-download if ?download=1
+    useEffect(() => {
+        if (!note) return;
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('download') === '1') {
+            const timer = setTimeout(() => handleDownloadPDF(), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [note]);
+
     const setupPrintMode = (cssClass: string) => {
         document.body.classList.add(cssClass);
         const cleanup = () => {
