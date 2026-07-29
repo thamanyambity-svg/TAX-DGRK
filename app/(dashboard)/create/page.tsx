@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, FileText, Car, User, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, FileText, Car, User, Building, AlertCircle } from 'lucide-react';
 import { TaxpayerType, VehicleCategory, Declaration } from '@/types';
 import { saveDeclaration } from '@/lib/store';
 import { generateDeclarationId, generateNoteId, getSecureSequence } from '@/lib/generator';
@@ -47,6 +47,7 @@ export default function NewDeclarationPage() {
         weight: '',
         marque: '',
         modele: '',
+        regime: 'PM' as 'PM' | 'PP',
     });
 
     // 2026 specific state
@@ -76,7 +77,7 @@ export default function NewDeclarationPage() {
     if (tariffMode === 'new2026') {
         const cvForCalc = getCvFromLabel(sousCategorie2026.label).min;
         const tonnageForCalc = getTonnageFromLabel(sousCategorie2026.label);
-        const result = calculer2026({ categorie: sousCategorie2026.categorie, cv: cvForCalc, tonnage: tonnageForCalc, sousCategorie: sousCategorie2026.label });
+        const result = calculer2026({ categorie: sousCategorie2026.categorie, cv: cvForCalc, tonnage: tonnageForCalc, sousCategorie: sousCategorie2026.label, regime: formData.regime });
         tarif2026Breakdown = result;
         currentAmountUSD = result.total;
         currentAmountFC = Math.round(result.total * EXCHANGE_RATE);
@@ -147,6 +148,7 @@ export default function NewDeclarationPage() {
                 ndpId: noteId,
                 tariffMode: tariffMode,
                 tariffLabel: tariffMode === 'new2026' ? sousCategorie2026.label : formData.category,
+                regime: formData.regime,
                 manualBaseAmount: baseRate,
                 manualTaxpayer: {
                     name: formData.name.toUpperCase(),
@@ -218,6 +220,46 @@ export default function NewDeclarationPage() {
                                 value={formData.city}
                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                             />
+                        </div>
+
+                        <div className="col-span-2 md:col-span-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Type de Contribuable <span className="text-red-500">*</span>
+                            </label>
+                            <div className="flex gap-3">
+                                <label className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${
+                                    formData.regime === 'PM'
+                                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                                        : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                                }`}>
+                                    <input
+                                        type="radio"
+                                        name="regime"
+                                        value="PM"
+                                        checked={formData.regime === 'PM'}
+                                        onChange={() => setFormData({ ...formData, regime: 'PM' })}
+                                        className="sr-only"
+                                    />
+                                    <Building className="h-4 w-4" />
+                                    Personne Morale
+                                </label>
+                                <label className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${
+                                    formData.regime === 'PP'
+                                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                                        : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
+                                }`}>
+                                    <input
+                                        type="radio"
+                                        name="regime"
+                                        value="PP"
+                                        checked={formData.regime === 'PP'}
+                                        onChange={() => setFormData({ ...formData, regime: 'PP' })}
+                                        className="sr-only"
+                                    />
+                                    <User className="h-4 w-4" />
+                                    Personne Physique
+                                </label>
+                            </div>
                         </div>
 
                         <div className="col-span-2">

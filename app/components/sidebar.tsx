@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, ScanLine, ShieldAlert, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Briefcase, ScanLine, ShieldAlert, BarChart3, QrCode } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
@@ -14,6 +14,7 @@ const navigation = [
     { name: 'Dossiers Entreprises', href: '/societes', icon: Briefcase },
     { name: 'Statistiques', href: '/statistiques', icon: BarChart3 },
     { name: 'Paramètres', href: '/parametres', icon: Settings },
+    { name: 'Routeur QR', href: '/admin/qr-router', icon: QrCode },
 ];
 
 export function AppSidebar() {

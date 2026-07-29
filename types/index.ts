@@ -62,6 +62,16 @@ export interface Declaration {
   };
 }
 
+export interface QrRouterSequence {
+  id: number;
+  token: string;
+  queue_order: number;
+  external_url: string;
+  is_used: boolean;
+  scan_date: string | null;
+  created_at: string;
+}
+
 export interface NoteDePerception {
   id: string; // e.g. "NDP-2026-1579A471"
   declarationId: string;

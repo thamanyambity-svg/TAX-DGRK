@@ -46,6 +46,7 @@ export interface Calcul2026Input {
     cv?: number;
     tonnage?: number;
     sousCategorie?: string;
+    regime?: 'PM' | 'PP';
 }
 
 // ─── SOUS-CATÉGORIES ──────────────────────────────────────────────────────────
@@ -129,68 +130,120 @@ export const getTonnageFromLabel = (label: string): number => {
 };
 
 // ─── MOTOCYCLES ───────────────────────────────────────────────────────────────
-const BICYCLE: Tarif2026Breakdown = {
+const BICYCLE: Tarif2026Breakdown = { // PM = PP
     impot: 9.50, tsc: 2.50, redevance: 0.00, imprime: 5.00, total: 17.00,
     categorie: 'Bicycle — Toutes cylindrées',
 };
-const TRICYCLE: Tarif2026Breakdown = {
+const TRICYCLE: Tarif2026Breakdown = { // PM = PP
     impot: 11.00, tsc: 4.00, redevance: 0.00, imprime: 5.00, total: 20.00,
     categorie: 'Tricycle',
 };
 
-// ─── VÉHICULES DE TOURISME ───────────────────────────────────────────────────
-const TOURISME_1_10: Tarif2026Breakdown = {
+// ─── PM RATES (Annexe 1 — Personnes Morales) ──────────────────────────────────
+
+const PM_TOURISME_1_10: Tarif2026Breakdown = {
     impot: 35.60, tsc: 32.40, redevance: 12.00, imprime: 5.00, total: 85.00,
+    categorie: 'Véhicule de Tourisme Light (1–10 CV) – PM',
+};
+const PM_TOURISME_11_15: Tarif2026Breakdown = {
+    impot: 39.20, tsc: 38.40, redevance: 12.00, imprime: 5.00, total: 94.60,
+    categorie: 'Véhicule de Tourisme Medium (11–15 CV) – PM',
+};
+const PM_TOURISME_PLUS15: Tarif2026Breakdown = {
+    impot: 44.00, tsc: 43.20, redevance: 12.00, imprime: 5.00, total: 104.20,
+    categorie: 'Véhicule de Tourisme Heavy (> 15 CV) – PM',
+};
+
+const PM_UTIL_M2K5: Tarif2026Breakdown = {
+    impot: 28.00, tsc: 39.20, redevance: 12.00, imprime: 5.00, total: 84.20,
+    categorie: 'Véhicule Utilitaire Light (≤ 2.500 kg, 1–10 CV) – PM',
+};
+const PM_UTIL_2K5_10K: Tarif2026Breakdown = {
+    impot: 32.00, tsc: 43.20, redevance: 12.00, imprime: 5.00, total: 92.20,
+    categorie: 'Véhicule Utilitaire Medium (2.500–10.000 kg, 11–15 CV) – PM',
+};
+const PM_UTIL_P10K: Tarif2026Breakdown = {
+    impot: 35.10, tsc: 49.80, redevance: 12.00, imprime: 5.00, total: 100.90,
+    categorie: 'Véhicule Utilitaire Heavy (> 10.000 kg, > 15 CV) – PM',
+};
+
+const PM_TRACTEUR_1_10: Tarif2026Breakdown = {
+    impot: 26.80, tsc: 23.60, redevance: 12.00, imprime: 5.00, total: 67.40,
+    categorie: 'Tracteur — 1 à 10 CV – PM',
+};
+const PM_TRACTEUR_11_15: Tarif2026Breakdown = {
+    impot: 34.60, tsc: 28.40, redevance: 12.00, imprime: 5.00, total: 80.00,
+    categorie: 'Tracteur — 11 à 15 CV – PM',
+};
+const PM_TRACTEUR_PLUS15: Tarif2026Breakdown = {
+    impot: 35.20, tsc: 34.40, redevance: 12.00, imprime: 5.00, total: 86.60,
+    categorie: 'Tracteur — Plus de 15 CV – PM',
+};
+
+const PM_REMORQUE_M2K5: Tarif2026Breakdown = {
+    impot: 31.60, tsc: 28.40, redevance: 12.00, imprime: 5.00, total: 77.00,
+    categorie: 'Remorque — Moins de 2.500 kg – PM',
+};
+const PM_REMORQUE_2K5_10K: Tarif2026Breakdown = {
+    impot: 35.20, tsc: 34.40, redevance: 12.00, imprime: 5.00, total: 86.60,
+    categorie: 'Remorque — 2.500 à 10.000 kg – PM',
+};
+const PM_REMORQUE_P10K: Tarif2026Breakdown = {
+    impot: 40.00, tsc: 39.20, redevance: 12.00, imprime: 5.00, total: 96.20,
+    categorie: 'Remorque — Plus de 10.000 kg – PM',
+};
+
+// ─── PP RATES (Annexe 2 — Personnes Physiques) ────────────────────────────────
+
+const PP_TOURISME_1_10: Tarif2026Breakdown = {
+    impot: 35.60, tsc: 30.40, redevance: 6.00, imprime: 5.00, total: 77.00,
     categorie: 'Véhicule de Tourisme Light (1–10 CV)',
 };
-const TOURISME_11_15: Tarif2026Breakdown = {
-    impot: 39.20, tsc: 38.40, redevance: 12.00, imprime: 5.00, total: 94.60,
+const PP_TOURISME_11_15: Tarif2026Breakdown = {
+    impot: 39.20, tsc: 34.90, redevance: 6.00, imprime: 5.00, total: 85.10,
     categorie: 'Véhicule de Tourisme Medium (11–15 CV)',
 };
-const TOURISME_PLUS15: Tarif2026Breakdown = {
-    impot: 44.00, tsc: 43.20, redevance: 12.00, imprime: 5.00, total: 104.20,
+const PP_TOURISME_PLUS15: Tarif2026Breakdown = {
+    impot: 44.00, tsc: 39.40, redevance: 6.00, imprime: 5.00, total: 94.40,
     categorie: 'Véhicule de Tourisme Heavy (> 15 CV)',
 };
 
-// ─── VÉHICULES UTILITAIRES ───────────────────────────────────────────────────
-const UTIL_M2K5: Tarif2026Breakdown = {
-    impot: 28.00, tsc: 39.20, redevance: 12.00, imprime: 5.00, total: 84.20,
+const PP_UTIL_M2K5: Tarif2026Breakdown = {
+    impot: 28.00, tsc: 31.60, redevance: 6.00, imprime: 5.00, total: 70.60,
     categorie: 'Véhicule Utilitaire Light (≤ 2.500 kg, 1–10 CV)',
 };
-const UTIL_2K5_10K: Tarif2026Breakdown = {
-    impot: 32.00, tsc: 43.20, redevance: 12.00, imprime: 5.00, total: 92.20,
+const PP_UTIL_2K5_10K: Tarif2026Breakdown = {
+    impot: 32.00, tsc: 30.40, redevance: 6.00, imprime: 5.00, total: 73.40,
     categorie: 'Véhicule Utilitaire Medium (2.500–10.000 kg, 11–15 CV)',
 };
-const UTIL_P10K: Tarif2026Breakdown = {
-    impot: 35.10, tsc: 49.80, redevance: 12.00, imprime: 5.00, total: 100.90,
+const PP_UTIL_P10K: Tarif2026Breakdown = {
+    impot: 35.10, tsc: 34.90, redevance: 6.00, imprime: 5.00, total: 81.00,
     categorie: 'Véhicule Utilitaire Heavy (> 10.000 kg, > 15 CV)',
 };
 
-// ─── TRACTEURS ────────────────────────────────────────────────────────────────
-const TRACTEUR_1_10: Tarif2026Breakdown = {
-    impot: 26.80, tsc: 23.60, redevance: 12.00, imprime: 5.00, total: 67.40,
+const PP_TRACTEUR_1_10: Tarif2026Breakdown = {
+    impot: 26.80, tsc: 23.60, redevance: 6.00, imprime: 5.00, total: 61.40,
     categorie: 'Tracteur — 1 à 10 CV',
 };
-const TRACTEUR_11_15: Tarif2026Breakdown = {
-    impot: 34.60, tsc: 28.40, redevance: 12.00, imprime: 5.00, total: 80.00,
+const PP_TRACTEUR_11_15: Tarif2026Breakdown = {
+    impot: 31.60, tsc: 28.40, redevance: 6.00, imprime: 5.00, total: 71.00,
     categorie: 'Tracteur — 11 à 15 CV',
 };
-const TRACTEUR_PLUS15: Tarif2026Breakdown = {
-    impot: 35.20, tsc: 34.40, redevance: 12.00, imprime: 5.00, total: 86.60,
+const PP_TRACTEUR_PLUS15: Tarif2026Breakdown = {
+    impot: 35.20, tsc: 34.40, redevance: 6.00, imprime: 5.00, total: 80.60,
     categorie: 'Tracteur — Plus de 15 CV',
 };
 
-// ─── REMORQUES ────────────────────────────────────────────────────────────────
-const REMORQUE_M2K5: Tarif2026Breakdown = {
-    impot: 31.60, tsc: 28.40, redevance: 12.00, imprime: 5.00, total: 77.00,
+const PP_REMORQUE_M2K5: Tarif2026Breakdown = {
+    impot: 31.60, tsc: 28.40, redevance: 6.00, imprime: 5.00, total: 71.00,
     categorie: 'Remorque — Moins de 2.500 kg',
 };
-const REMORQUE_2K5_10K: Tarif2026Breakdown = {
-    impot: 35.20, tsc: 34.40, redevance: 12.00, imprime: 5.00, total: 86.60,
+const PP_REMORQUE_2K5_10K: Tarif2026Breakdown = {
+    impot: 35.20, tsc: 34.40, redevance: 6.00, imprime: 5.00, total: 80.60,
     categorie: 'Remorque — 2.500 à 10.000 kg',
 };
-const REMORQUE_P10K: Tarif2026Breakdown = {
-    impot: 40.00, tsc: 39.20, redevance: 12.00, imprime: 5.00, total: 96.20,
+const PP_REMORQUE_P10K: Tarif2026Breakdown = {
+    impot: 40.00, tsc: 39.20, redevance: 6.00, imprime: 5.00, total: 90.20,
     categorie: 'Remorque — Plus de 10.000 kg',
 };
 
@@ -232,38 +285,35 @@ const BATEAUX: Record<string, Tarif2026Breakdown> = {
 // ─── FONCTION PRINCIPALE DE CALCUL ──────────────────────────────────────────
 
 export function calculer2026(input: Calcul2026Input): Tarif2026Breakdown {
-    const { categorie, cv = 0, tonnage = 0, sousCategorie } = input;
+    const { categorie, cv = 0, tonnage = 0, sousCategorie, regime = 'PM' } = input;
+    const isPM = regime === 'PM';
 
     switch (categorie) {
         case 'moto':
             return cv >= 1 ? TRICYCLE : BICYCLE;
 
         case 'tourisme': {
-            if (cv <= 10) return TOURISME_1_10;
-            if (cv <= 15) return TOURISME_11_15;
-            return TOURISME_PLUS15;
+            if (cv <= 10) return isPM ? PM_TOURISME_1_10 : PP_TOURISME_1_10;
+            if (cv <= 15) return isPM ? PM_TOURISME_11_15 : PP_TOURISME_11_15;
+            return isPM ? PM_TOURISME_PLUS15 : PP_TOURISME_PLUS15;
         }
 
         case 'utilitaire': {
-            // Règle Utilitaires Système 2026 (Tonnage + CV) :
-            // Heavy  : > 10.000 kg (> 10T) ou > 15 CV
-            // Medium : 2.500 kg à 10.000 kg (2.5T–10T) ou 11 CV à 15 CV
-            // Light  : ≤ 2.500 kg (≤ 2.5T) ou 1 CV à 10 CV
-            if (tonnage > 10 || cv > 15) return UTIL_P10K;
-            if (tonnage > 2.5 || cv >= 11) return UTIL_2K5_10K;
-            return UTIL_M2K5;
+            if (tonnage > 10 || cv > 15) return isPM ? PM_UTIL_P10K : PP_UTIL_P10K;
+            if (tonnage > 2.5 || cv >= 11) return isPM ? PM_UTIL_2K5_10K : PP_UTIL_2K5_10K;
+            return isPM ? PM_UTIL_M2K5 : PP_UTIL_M2K5;
         }
 
         case 'tracteur': {
-            if (cv <= 10) return TRACTEUR_1_10;
-            if (cv <= 15) return TRACTEUR_11_15;
-            return TRACTEUR_PLUS15;
+            if (cv <= 10) return isPM ? PM_TRACTEUR_1_10 : PP_TRACTEUR_1_10;
+            if (cv <= 15) return isPM ? PM_TRACTEUR_11_15 : PP_TRACTEUR_11_15;
+            return isPM ? PM_TRACTEUR_PLUS15 : PP_TRACTEUR_PLUS15;
         }
 
         case 'remorque': {
-            if (tonnage <= 2.5) return REMORQUE_M2K5;
-            if (tonnage <= 10) return REMORQUE_2K5_10K;
-            return REMORQUE_P10K;
+            if (tonnage <= 2.5) return isPM ? PM_REMORQUE_M2K5 : PP_REMORQUE_M2K5;
+            if (tonnage <= 10) return isPM ? PM_REMORQUE_2K5_10K : PP_REMORQUE_2K5_10K;
+            return isPM ? PM_REMORQUE_P10K : PP_REMORQUE_P10K;
         }
 
         case 'bateau': {
@@ -274,7 +324,7 @@ export function calculer2026(input: Calcul2026Input): Tarif2026Breakdown {
         }
 
         default:
-            return TOURISME_1_10;
+            return isPM ? PM_TOURISME_1_10 : PP_TOURISME_1_10;
     }
 }
 
@@ -283,18 +333,18 @@ export function calculer2026(input: Calcul2026Input): Tarif2026Breakdown {
 export const GRILLE_2026: Array<{ label: string; categorie: string; tarif: Tarif2026Breakdown }> = [
     { label: 'Bicycle — Toutes cylindrées', categorie: 'Motocycle', tarif: BICYCLE },
     { label: 'Tricycle', categorie: 'Motocycle', tarif: TRICYCLE },
-    { label: 'Tourisme 1–10 CV', categorie: 'Véhicule de Tourisme', tarif: TOURISME_1_10 },
-    { label: 'Tourisme 11–15 CV', categorie: 'Véhicule de Tourisme', tarif: TOURISME_11_15 },
-    { label: 'Tourisme > 15 CV', categorie: 'Véhicule de Tourisme', tarif: TOURISME_PLUS15 },
-    { label: 'Utilitaire < 2.500 kg', categorie: 'Véhicule Utilitaire', tarif: UTIL_M2K5 },
-    { label: 'Utilitaire 2.500–10.000 kg', categorie: 'Véhicule Utilitaire', tarif: UTIL_2K5_10K },
-    { label: 'Utilitaire > 10.000 kg', categorie: 'Véhicule Utilitaire', tarif: UTIL_P10K },
-    { label: 'Tracteur 1–10 CV', categorie: 'Tracteur', tarif: TRACTEUR_1_10 },
-    { label: 'Tracteur 11–15 CV', categorie: 'Tracteur', tarif: TRACTEUR_11_15 },
-    { label: 'Tracteur > 15 CV', categorie: 'Tracteur', tarif: TRACTEUR_PLUS15 },
-    { label: 'Remorque < 2.500 kg', categorie: 'Remorque', tarif: REMORQUE_M2K5 },
-    { label: 'Remorque 2.500–10.000 kg', categorie: 'Remorque', tarif: REMORQUE_2K5_10K },
-    { label: 'Remorque > 10.000 kg', categorie: 'Remorque', tarif: REMORQUE_P10K },
+    { label: 'Tourisme 1–10 CV', categorie: 'Véhicule de Tourisme', tarif: PM_TOURISME_1_10 },
+    { label: 'Tourisme 11–15 CV', categorie: 'Véhicule de Tourisme', tarif: PM_TOURISME_11_15 },
+    { label: 'Tourisme > 15 CV', categorie: 'Véhicule de Tourisme', tarif: PM_TOURISME_PLUS15 },
+    { label: 'Utilitaire < 2.500 kg', categorie: 'Véhicule Utilitaire', tarif: PM_UTIL_M2K5 },
+    { label: 'Utilitaire 2.500–10.000 kg', categorie: 'Véhicule Utilitaire', tarif: PM_UTIL_2K5_10K },
+    { label: 'Utilitaire > 10.000 kg', categorie: 'Véhicule Utilitaire', tarif: PM_UTIL_P10K },
+    { label: 'Tracteur 1–10 CV', categorie: 'Tracteur', tarif: PM_TRACTEUR_1_10 },
+    { label: 'Tracteur 11–15 CV', categorie: 'Tracteur', tarif: PM_TRACTEUR_11_15 },
+    { label: 'Tracteur > 15 CV', categorie: 'Tracteur', tarif: PM_TRACTEUR_PLUS15 },
+    { label: 'Remorque < 2.500 kg', categorie: 'Remorque', tarif: PM_REMORQUE_M2K5 },
+    { label: 'Remorque 2.500–10.000 kg', categorie: 'Remorque', tarif: PM_REMORQUE_2K5_10K },
+    { label: 'Remorque > 10.000 kg', categorie: 'Remorque', tarif: PM_REMORQUE_P10K },
     ...Object.entries(BATEAUX).map(([label, tarif]) => ({
         label, categorie: 'Unité Flottante', tarif,
     })),

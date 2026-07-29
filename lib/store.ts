@@ -274,17 +274,11 @@ export const updateDeclaration = async (id: string, rawUpdates: Partial<Declarat
             SESSION_CACHE.push(merged);
         }
 
-        const taxpayerObj = merged.taxpayer || merged.meta?.manualTaxpayer || merged.meta?.taxpayerData || { name: 'N/A', nif: 'N/A', address: 'N/A', type: 'N/A' };
-
         const dbPayload = cleanZombies({
             ...merged,
             meta: {
                 ...merged.meta,
-                taxpayerData: taxpayerObj,
-                manualTaxpayer: taxpayerObj,
-                manualNIF: taxpayerObj.nif || merged.meta?.manualNIF || '',
-                manualTaxpayerName: taxpayerObj.name || merged.meta?.manualTaxpayerName || '',
-                manualTaxpayerAddress: taxpayerObj.address || merged.meta?.manualTaxpayerAddress || '',
+                taxpayerData: merged.taxpayer
             }
         });
 

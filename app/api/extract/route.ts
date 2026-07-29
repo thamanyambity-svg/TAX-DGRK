@@ -1,18 +1,53 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { EXTRACTION_TOOL, buildPrompt } from '@/lib/extraction-prompt';
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { buildPrompt } from '@/lib/extraction-prompt';
 import { ImagePayload, ResultatExtraction } from '@/lib/scan-types';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
-const MODEL = 'claude-sonnet-4-6';
+const MODEL = 'gemini-2.5-flash';
+
+const REPONSE_SCHEMA = {
+    type: SchemaType.OBJECT,
+    properties: {
+        donnees: {
+            type: SchemaType.OBJECT,
+            properties: {
+                nom: { type: SchemaType.STRING, description: 'Nom ou raison sociale du propriétaire/assujetti' },
+                nif: { type: SchemaType.STRING, description: 'Numéro impôt / NIF. Chaîne vide "" si absent.' },
+                adresse: { type: SchemaType.STRING, description: 'Adresse physique complète' },
+                plaque: { type: SchemaType.STRING, description: "Numéro de plaque d'immatriculation" },
+                chassis: { type: SchemaType.STRING, description: 'Numéro de châssis' },
+                marque_type: { type: SchemaType.STRING, description: 'Marque et type/modèle (ex: SUZUKI SWIFT)' },
+                cv: { type: SchemaType.STRING, description: 'Puissance fiscale en CV, chiffres uniquement (ex: "8")' },
+                usage: { type: SchemaType.STRING, description: 'Usage (Personnel, Transport, Marchandises, Taxi, ...)' },
+                genre: { type: SchemaType.STRING, description: 'Genre (Voiture, Jeep, Bus, Camion, Moto, ...)' },
+                annee: { type: SchemaType.STRING, description: 'Année de fabrication' },
+                couleur: { type: SchemaType.STRING, description: 'Couleur du véhicule' },
+                poids: { type: SchemaType.STRING, description: 'Poids si présent, sinon chaîne vide ""' },
+            },
+            required: ['nom', 'nif', 'adresse', 'plaque', 'chassis', 'marque_type', 'cv', 'usage', 'genre', 'annee', 'couleur', 'poids'],
+        },
+        champs_a_verifier: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: "Noms des champs de 'donnees' dont la lecture est incertaine, illisible ou ambiguë.",
+        },
+        qualite_photo: {
+            type: SchemaType.STRING,
+            enum: ['bonne', 'moyenne', 'faible'],
+            description: 'Qualité globale de lisibilité des photos fournies.',
+        },
+    },
+    required: ['donnees', 'champs_a_verifier', 'qualite_photo'],
+};
 
 export async function POST(req: Request) {
     try {
-        const apiKey = process.env.ANTHROPIC_API_KEY;
+        const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             return Response.json(
-                { error: "Service d'extraction non configuré (ANTHROPIC_API_KEY absente côté serveur)." },
+                { error: "Service d'extraction non configuré (GEMINI_API_KEY absente côté serveur)." },
                 { status: 500 }
             );
         }
@@ -22,33 +57,34 @@ export async function POST(req: Request) {
             return Response.json({ error: 'Aucune image fournie.' }, { status: 400 });
         }
 
-        const client = new Anthropic({ apiKey });
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({
+            model: MODEL,
+            generationConfig: {
+                responseMimeType: 'application/json',
+                responseSchema: REPONSE_SCHEMA as any,
+            },
+        });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const content: any[] = [
-            { type: 'text', text: buildPrompt(body.typeDoc) },
-        ];
+        const parts: any[] = [{ text: buildPrompt(body.typeDoc) }];
         for (const img of body.images) {
-            content.push({
-                type: 'image',
-                source: { type: 'base64', media_type: img.mediaType as 'image/jpeg', data: img.base64 },
+            parts.push({
+                inlineData: {
+                    mimeType: img.mediaType,
+                    data: img.base64,
+                },
             });
         }
 
-        const msg = await client.messages.create({
-            model: MODEL,
-            max_tokens: 1024,
-            tools: [EXTRACTION_TOOL as Anthropic.Tool],
-            tool_choice: { type: 'tool', name: 'extraire_vehicule' },
-            messages: [{ role: 'user', content }],
-        });
+        const result = await model.generateContent(parts);
+        const text = result.response.text();
 
-        const toolUse = msg.content.find((c) => c.type === 'tool_use');
-        if (!toolUse || toolUse.type !== 'tool_use') {
+        if (!text) {
             return Response.json({ error: "L'IA n'a pas pu structurer la réponse." }, { status: 502 });
         }
 
-        return Response.json(toolUse.input as ResultatExtraction);
+        const parsed = JSON.parse(text) as ResultatExtraction;
+        return Response.json(parsed);
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : "Erreur du service d'extraction.";
         console.error('Extract error:', e);
