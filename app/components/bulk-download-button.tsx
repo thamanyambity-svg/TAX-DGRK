@@ -259,7 +259,7 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
         const el = document.getElementById(elementId);
         if (!el) return pdf;
         const canvas = await html2canvas(el, { scale, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false });
-        const imgData = canvas.toDataURL('image/jpeg', 0.6);
+        const imgData = canvas.toDataURL('image/jpeg', 0.7);
         const pdfW = pdf.internal.pageSize.getWidth();
         const pdfH = (canvas.height * pdfW) / canvas.width;
         const pageH = pdf.internal.pageSize.getHeight();

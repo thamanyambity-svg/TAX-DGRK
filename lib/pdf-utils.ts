@@ -29,12 +29,12 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
 
         // High quality canvas capture with improved settings
         const canvas = await html2canvas(element, {
-            scale: 1.5,
+            scale: 2.5,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',
-            windowWidth: Math.max(Math.ceil(width * 1.5), 800),
-            windowHeight: Math.max(Math.ceil(height * 1.5), 1200),
+            windowWidth: Math.max(Math.ceil(width * 2.5), 1000),
+            windowHeight: Math.max(Math.ceil(height * 2.5), 1600),
             allowTaint: true,
             removeContainer: false,
             ignoreElements: (el) => {
@@ -51,7 +51,7 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
 
         console.log(`Canvas created: ${canvas.width}x${canvas.height}`);
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.5);
+        const imgData = canvas.toDataURL('image/jpeg', 0.7);
 
         // A4 dimensions in mm
         const pdf = new jsPDF({
@@ -98,7 +98,7 @@ export const getElementAsPDFBlob = async (elementId: string): Promise<Blob | nul
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         const canvas = await html2canvas(element, {
-            scale: 1,
+            scale: 2,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',
@@ -108,7 +108,7 @@ export const getElementAsPDFBlob = async (elementId: string): Promise<Blob | nul
             removeContainer: false
         });
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.5);
+        const imgData = canvas.toDataURL('image/jpeg', 0.7);
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
