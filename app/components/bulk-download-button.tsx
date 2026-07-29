@@ -265,12 +265,12 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
         const pageH = pdf.internal.pageSize.getHeight();
         let heightLeft = pdfH;
         let position = 0;
-        pdf.addImage(imgData, 'PNG', 0, position, pdfW, pdfH);
+        pdf.addImage(imgData, 'JPEG', 0, position, pdfW, pdfH);
         heightLeft -= pageH;
         while (heightLeft > 0) {
             position = heightLeft - pdfH;
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, pdfW, pdfH);
+            pdf.addImage(imgData, 'JPEG', 0, position, pdfW, pdfH);
             heightLeft -= pageH;
         }
         return pdf;

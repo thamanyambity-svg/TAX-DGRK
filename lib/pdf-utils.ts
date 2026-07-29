@@ -29,12 +29,12 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
 
         // High quality canvas capture with improved settings
         const canvas = await html2canvas(element, {
-            scale: 3,
+            scale: 1.5,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',
-            windowWidth: Math.max(Math.ceil(width * 3), 1200),
-            windowHeight: Math.max(Math.ceil(height * 3), 1600),
+            windowWidth: Math.max(Math.ceil(width * 1.5), 800),
+            windowHeight: Math.max(Math.ceil(height * 1.5), 1200),
             allowTaint: true,
             removeContainer: false,
             ignoreElements: (el) => {
@@ -51,7 +51,7 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
 
         console.log(`Canvas created: ${canvas.width}x${canvas.height}`);
 
-        const imgData = canvas.toDataURL('image/png', 0.95);
+        const imgData = canvas.toDataURL('image/jpeg', 0.5);
 
         // A4 dimensions in mm
         const pdf = new jsPDF({
@@ -68,14 +68,14 @@ export const downloadElementAsPDF = async (elementId: string, fileName: string) 
         let position = 0;
 
         // Add first page
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
         // Add additional pages if content overflows
         while (heightLeft > 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
 
@@ -98,7 +98,7 @@ export const getElementAsPDFBlob = async (elementId: string): Promise<Blob | nul
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         const canvas = await html2canvas(element, {
-            scale: 2,
+            scale: 1,
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff',
@@ -108,7 +108,7 @@ export const getElementAsPDFBlob = async (elementId: string): Promise<Blob | nul
             removeContainer: false
         });
 
-        const imgData = canvas.toDataURL('image/png', 0.95);
+        const imgData = canvas.toDataURL('image/jpeg', 0.5);
         const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
@@ -119,7 +119,7 @@ export const getElementAsPDFBlob = async (elementId: string): Promise<Blob | nul
         const pageHeight = 297;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
 
         return pdf.output('blob');
     } catch (error) {
