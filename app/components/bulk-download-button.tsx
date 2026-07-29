@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { FileArchive, Loader2, CheckCircle2, FileText, Landmark } from 'lucide-react';
+import { FileText, Loader2, CheckCircle2, Landmark } from 'lucide-react';
 import { Declaration } from '@/types';
-import JSZip from 'jszip';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas-pro';
 import { generateNote, DECL_BASE, CONGO_NAMES, generateRandomPhone } from '@/lib/generator';
@@ -20,9 +19,7 @@ function ReceiptTemplate({ decl, containerId }: { decl: Declaration; containerId
         document.head.appendChild(link1);
     }
     const note = generateNote(decl);
-    if (decl.meta?.manualTaxpayer) {
-        note.taxpayer = (decl.meta as any).manualTaxpayer;
-    }
+    if (decl.meta?.manualTaxpayer) note.taxpayer = (decl.meta as any).manualTaxpayer;
     if (decl.meta?.manualTaxpayer?.nif) note.taxpayer.nif = decl.meta.manualTaxpayer.nif;
 
     const RATE_FC = 2244.76;
@@ -162,7 +159,6 @@ function BordereauTemplate({ decl, containerId }: { decl: Declaration; container
     return (
         <div id={containerId} style={{ position: 'fixed', top: '-19999px', left: '-19999px', background: 'white', padding: '0' }}>
             <div style={{ width: '210mm', minHeight: '296.5mm', background: 'white', padding: '20px 30px', fontFamily: f, fontSize: '10pt', lineHeight: '1.2', boxSizing: 'border-box', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, opacity: 0.15, backgroundImage: 'url(/bordereau-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }} />
                 <div style={{ position: 'relative', zIndex: 10, color: '#333' }}>
                     <div style={{ height: '120px' }} />
                     <div style={{ textAlign: 'center', marginBottom: '16px', whiteSpace: 'pre' }}>BORDEREAU DE VERSEMENT DEVISE No  {bordereauNo}</div>
@@ -259,16 +255,25 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
     const [progressLabel, setProgressLabel] = useState('');
     const [currentDecl, setCurrentDecl] = useState<Declaration | null>(null);
 
-    const captureToPdf = async (containerId: string, scale = 2) => {
-        const el = document.getElementById(containerId);
-        if (!el) return null;
+    const capturePage = async (elementId: string, pdf: jsPDF, scale = 3): Promise<jsPDF> => {
+        const el = document.getElementById(elementId);
+        if (!el) return pdf;
         const canvas = await html2canvas(el, { scale, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false });
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const imgData = canvas.toDataURL('image/png');
         const pdfW = pdf.internal.pageSize.getWidth();
         const pdfH = (canvas.height * pdfW) / canvas.width;
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, Math.min(pdfH, pdf.internal.pageSize.getHeight()));
-        return pdf.output('blob');
+        const pageH = pdf.internal.pageSize.getHeight();
+        let heightLeft = pdfH;
+        let position = 0;
+        pdf.addImage(imgData, 'PNG', 0, position, pdfW, pdfH);
+        heightLeft -= pageH;
+        while (heightLeft > 0) {
+            position = heightLeft - pdfH;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfW, pdfH);
+            heightLeft -= pageH;
+        }
+        return pdf;
     };
 
     const handleDownloadReceipts = async () => {
@@ -276,8 +281,8 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
         setRecStatus('generating');
         setProgress(0);
 
-        const zip = new JSZip();
-        const folder = zip.folder(`Recepisses_${companyName.replace(/\s+/g, '_')}`);
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        let first = true;
 
         for (let i = 0; i < declarations.length; i++) {
             const decl = declarations[i];
@@ -285,22 +290,16 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
             setCurrentDecl(decl);
             setProgress(Math.round(((i + 0.5) / declarations.length) * 100));
             setProgressLabel(`Récépissé ${i + 1}/${declarations.length} – ${plate}`);
-            await new Promise(r => setTimeout(r, 600));
-            const blob = await captureToPdf(`receipt-pdf-${decl.id}`);
-            if (blob) folder?.file(`recepisse_${plate}.pdf`, blob);
+            await new Promise(r => setTimeout(r, 800));
+            if (!first) pdf.addPage();
+            first = false;
+            await capturePage(`receipt-pdf-${decl.id}`, pdf, 3);
         }
 
         setCurrentDecl(null);
         setProgress(100);
-        const content = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(content);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `RECEPISSES-${companyName.toUpperCase().replace(/\s+/g, '-')}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const name = `RECEPISSES-${companyName.toUpperCase().replace(/\s+/g, '-')}.pdf`;
+        pdf.save(name);
         setRecStatus('done');
         setTimeout(() => { setRecStatus('idle'); setProgressLabel(''); }, 3000);
     };
@@ -310,8 +309,8 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
         setBorStatus('generating');
         setProgress(0);
 
-        const zip = new JSZip();
-        const folder = zip.folder(`Bordereaux_${companyName.replace(/\s+/g, '_')}`);
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        let first = true;
 
         for (let i = 0; i < declarations.length; i++) {
             const decl = declarations[i];
@@ -319,27 +318,19 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
             setCurrentDecl(decl);
             setProgress(Math.round(((i + 0.5) / declarations.length) * 100));
             setProgressLabel(`Bordereau ${i + 1}/${declarations.length} – ${plate}`);
-            await new Promise(r => setTimeout(r, 600));
-            const blob = await captureToPdf(`bordereau-pdf-${decl.id}`, 3);
-            if (blob) folder?.file(`bordereau_${plate}.pdf`, blob);
+            await new Promise(r => setTimeout(r, 800));
+            if (!first) pdf.addPage();
+            first = false;
+            await capturePage(`bordereau-pdf-${decl.id}`, pdf, 3);
         }
 
         setCurrentDecl(null);
         setProgress(100);
-        const content = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(content);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `BORDEREAUX-${companyName.toUpperCase().replace(/\s+/g, '-')}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const name = `BORDEREAUX-${companyName.toUpperCase().replace(/\s+/g, '-')}.pdf`;
+        pdf.save(name);
         setBorStatus('done');
         setTimeout(() => { setBorStatus('idle'); setProgressLabel(''); }, 3000);
     };
-
-    const status = recStatus !== 'idle' ? recStatus : borStatus;
 
     return (
         <>
@@ -349,7 +340,7 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
                     disabled={recStatus !== 'idle'}
                     className={`flex-1 ${recStatus === 'done' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-indigo-600 hover:bg-indigo-700 text-white'} py-3 px-4 rounded-xl flex items-center justify-center gap-2 font-medium transition-all shadow-sm border`}
                 >
-                    {recStatus === 'idle' && <><FileArchive className="h-5 w-5" />Télécharger Récépissés (ZIP)</>}
+                    {recStatus === 'idle' && <><FileText className="h-5 w-5" />Télécharger Récépissés (PDF)</>}
                     {recStatus === 'generating' && <><Loader2 className="h-5 w-5 animate-spin" />Génération {progress}% – {progressLabel}</>}
                     {recStatus === 'done' && <><CheckCircle2 className="h-5 w-5" />Récépissés téléchargés !</>}
                 </button>
@@ -358,7 +349,7 @@ export default function BulkDownloadButton({ declarations, companyName }: { decl
                     disabled={borStatus !== 'idle'}
                     className={`flex-1 ${borStatus === 'done' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-gray-800 hover:bg-black text-white'} py-3 px-4 rounded-xl flex items-center justify-center gap-2 font-medium transition-all shadow-sm border`}
                 >
-                    {borStatus === 'idle' && <><Landmark className="h-5 w-5" />Télécharger Bordereaux (ZIP)</>}
+                    {borStatus === 'idle' && <><Landmark className="h-5 w-5" />Télécharger Bordereaux (PDF)</>}
                     {borStatus === 'generating' && <><Loader2 className="h-5 w-5 animate-spin" />Génération {progress}% – {progressLabel}</>}
                     {borStatus === 'done' && <><CheckCircle2 className="h-5 w-5" />Bordereaux téléchargés !</>}
                 </button>
