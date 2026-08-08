@@ -9,6 +9,19 @@ describe('USD_DENOMINATIONS', () => {
     it('liste les coupures en circulation, ordre décroissant', () => {
         expect(USD_DENOMINATIONS).toEqual([100, 50, 20, 10, 5, 1]);
     });
+
+    it('est gelée : une coupure ne peut pas être réintroduite à chaud', () => {
+        expect(Object.isFrozen(USD_DENOMINATIONS)).toBe(true);
+        // En mode non strict la mutation échoue silencieusement, en strict elle jette :
+        // les deux sont acceptables, ce qui compte est que la liste ne bouge pas.
+        try {
+            (USD_DENOMINATIONS as unknown as number[]).push(2);
+        } catch {
+            // TypeError attendue en mode strict
+        }
+        expect(USD_DENOMINATIONS).toEqual([100, 50, 20, 10, 5, 1]);
+        expect(calculateAccountingBilletage(63).map((r) => r.value)).not.toContain(2);
+    });
 });
 
 describe('calculateAccountingBilletage', () => {
