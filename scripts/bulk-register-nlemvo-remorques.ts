@@ -22,6 +22,10 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUz
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const DRY_RUN = process.argv.includes('--dry-run');
+// L'écriture réelle doit être demandée explicitement : sans --dry-run NI
+// --confirm-write, le script ne fait rien. Un lancement distrait ne peut donc
+// pas insérer 10 déclarations dans le projet Supabase par défaut ci-dessus.
+const CONFIRM_WRITE = process.argv.includes('--confirm-write');
 
 // ─── À RENSEIGNER AVANT EXÉCUTION ────────────────────────────────────────────
 
@@ -104,13 +108,25 @@ const VEHICLES_DATA: RemorqueRow[] = [
 // ─── EXÉCUTION ───────────────────────────────────────────────────────────────
 
 async function runBulkRegistration() {
+    if (!DRY_RUN && !CONFIRM_WRITE) {
+        console.error('❌ Aucun mode choisi. Utilisez --dry-run pour contrôler, ou --confirm-write pour écrire réellement en base.');
+        process.exit(1);
+    }
+
     if (!DRY_RUN && !COMPANY_INFO.nif) {
-        console.error('❌ NIF manquant dans COMPANY_INFO. Renseignez-le avant d\'exécuter sans --dry-run.');
+        console.error('❌ NIF manquant dans COMPANY_INFO. Renseignez-le avant d\'écrire en base.');
         process.exit(1);
     }
 
     console.log(`${DRY_RUN ? '[DRY-RUN] ' : ''}Enregistrement groupé — ${COMPANY_INFO.name}`);
-    console.log(`Régime: ${REGIME} | ${VEHICLES_DATA.length} remorques | Taux: ${TAUX_FC} FC/USD\n`);
+    console.log(`Régime: ${REGIME} | ${VEHICLES_DATA.length} remorques | Taux: ${TAUX_FC} FC/USD`);
+    if (!DRY_RUN) {
+        // La cible est affichée avant toute écriture : le fallback codé en dur
+        // pointe vers un projet précis, autant que ce soit visible à l'écran.
+        console.log(`⚠️  ÉCRITURE RÉELLE vers ${supabaseUrl}`);
+        console.log(`    Source des identifiants: ${process.env.NEXT_PUBLIC_SUPABASE_URL ? 'variables d\'environnement' : 'valeurs par défaut du script'}`);
+    }
+    console.log('');
 
     const baseSequence = getSecureSequence();
     let currentSequence = baseSequence;
@@ -165,6 +181,12 @@ async function runBulkRegistration() {
                 tariffLabel: tarif.categorie,
                 regime: REGIME,
                 manualBaseAmount: baseRate,
+                // Traçabilité : la tranche est choisie sur TONNAGE_TARIFAIRE et non
+                // sur le tonnage porté par le véhicule. Sans ces champs, une UM à
+                // 10 t taxée en « Plus de 10.000 kg » serait inexplicable à l'audit.
+                tonnageDeclare: vehicle.tonnage,
+                tonnageTarifaire: TONNAGE_TARIFAIRE,
+                motifTranche: 'Tonnage de la liste de charroi lu comme poids total en charge : tranche > 10.000 kg appliquée à tout le charroi.',
                 manualTaxpayer: {
                     name: COMPANY_INFO.name,
                     nif: COMPANY_INFO.nif,
