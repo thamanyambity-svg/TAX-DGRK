@@ -37,6 +37,21 @@ const COMPANY_INFO = {
 const REGIME: 'PM' | 'PP' = 'PP';
 
 /**
+ * Tranche tarifaire appliquée à tout le charroi : « Remorque > 10.000 kg »,
+ * soit 90.20 USD en PP.
+ *
+ * Le tonnage porté sur la liste de charroi est un poids total en charge.
+ * L'UM 01 est à 10 t : `calculer2026()` coupe à `tonnage <= 10` et l'aurait
+ * placée dans la tranche 2.500–10.000 kg (80.60 USD). Elle atteint en réalité
+ * la limite des 10.000 kg et relève de la tranche supérieure comme le reste
+ * du charroi — d'où cette valeur commune, juste au-dessus du seuil.
+ *
+ * Le tonnage réel de chaque unité reste porté tel quel sur la déclaration
+ * (`vehicle.weight`) ; seule la sélection de la tranche passe par ici.
+ */
+const TONNAGE_TARIFAIRE = 10.001;
+
+/**
  * Châssis manquant sur la liste source (UM 06, plaque 1726AN10).
  * Même parti pris que scripts/bulk-register-trans-continental.ts : un numéro
  * de 17 caractères est généré. Il est ici dérivé de la plaque plutôt que tiré
@@ -110,7 +125,7 @@ async function runBulkRegistration() {
 
         const tarif = calculer2026({
             categorie: 'remorque',
-            tonnage: vehicle.tonnage,
+            tonnage: TONNAGE_TARIFAIRE,
             regime: REGIME,
         });
 
