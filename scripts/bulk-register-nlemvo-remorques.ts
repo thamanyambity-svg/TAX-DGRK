@@ -26,8 +26,7 @@ const DRY_RUN = process.argv.includes('--dry-run');
 // ─── À RENSEIGNER AVANT EXÉCUTION ────────────────────────────────────────────
 
 const COMPANY_INFO = {
-    // TODO: NIF non fourni dans la liste de charroi — à compléter avant d'exécuter.
-    nif: '',
+    nif: 'A2309753C',
     name: 'ETS MU NLEMVO NZAMBI J',
     address: 'GOMBE',
     city: 'KINSHASA',
