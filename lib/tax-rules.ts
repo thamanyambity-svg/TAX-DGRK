@@ -38,10 +38,17 @@ const getNumberText = (totalInt: number): string => {
     return numberToWords(totalInt);
 };
 
+// Coupures USD réellement en circulation en RDC, de la plus grande à la plus petite.
+// Le billet de 2 USD est volontairement exclu : il n'est pas accepté au guichet
+// et ne doit donc jamais figurer sur un bordereau de versement.
+// Gelée : la fonction l'utilise par référence, un push() depuis un autre module
+// réintroduirait sinon une coupure sans que le billetage lui-même soit touché.
+export const USD_DENOMINATIONS = Object.freeze([100, 50, 20, 10, 5, 1] as const);
+
 // Fonction comptable de billetage automatique (décomposition monétaire en billets de banque USD)
 export function calculateAccountingBilletage(amount: number): { value: number; count: number; total: number }[] {
     const total = Math.round(amount * 100) / 100;
-    const bills = [100, 50, 20, 10, 5, 2, 1];
+    const bills = USD_DENOMINATIONS;
     let remaining = total;
     const breakdown: { value: number; count: number; total: number }[] = [];
 
