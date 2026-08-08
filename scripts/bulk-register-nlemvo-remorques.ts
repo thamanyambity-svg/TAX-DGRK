@@ -37,9 +37,29 @@ const COMPANY_INFO = {
 // Détermine le tarif : remorque > 10 t → 90.20 USD en PP, 96.20 USD en PM.
 const REGIME: 'PM' | 'PP' = 'PP';
 
-// Châssis manquant sur la liste source (UM 06). Renseigner la vraie valeur ;
-// 'N/A' est conservé tel quel dans la déclaration si elle reste inconnue.
-const CHASSIS_UM06 = 'N/A';
+/**
+ * Châssis manquant sur la liste source (UM 06, plaque 1726AN10).
+ * Même parti pris que scripts/bulk-register-trans-continental.ts : un numéro
+ * de 17 caractères est généré. Il est ici dérivé de la plaque plutôt que tiré
+ * au hasard, pour que le dry-run et l'exécution réelle donnent la même valeur
+ * et qu'un ré-run ne produise pas un châssis différent.
+ * À remplacer par le vrai numéro dès qu'il est connu.
+ */
+function generateChassis(seedStr: string): string {
+    const chars = 'ABCDEFGHJKLMNPRSTUVWXYZ0123456789';
+    let seed = 0;
+    for (let i = 0; i < seedStr.length; i++) {
+        seed = (seedStr.charCodeAt(i) + ((seed << 5) - seed)) | 0;
+    }
+    let result = '';
+    for (let i = 0; i < 17; i++) {
+        seed = (seed * 1103515245 + 12345) | 0;
+        result += chars.charAt(Math.abs(seed) % chars.length);
+    }
+    return result;
+}
+
+const CHASSIS_UM06 = generateChassis('1726AN10');
 
 // ─── DONNÉES DU CHARROI ──────────────────────────────────────────────────────
 
@@ -145,7 +165,7 @@ async function runBulkRegistration() {
             console.log(
                 `[${vehicle.um}] ${vehicle.plate.padEnd(10)} ${vehicle.marque.padEnd(9)} ` +
                 `${String(vehicle.tonnage).padStart(2)}t → ${baseRate.toFixed(2)} USD ` +
-                `(${totalAmountFC.toLocaleString('fr-FR')} FC) | ${tarif.categorie}`
+                `(${totalAmountFC.toLocaleString('fr-FR')} FC) | ${vehicle.chassis.padEnd(19)} | ${tarif.categorie}`
             );
         } else {
             const { error } = await supabase
